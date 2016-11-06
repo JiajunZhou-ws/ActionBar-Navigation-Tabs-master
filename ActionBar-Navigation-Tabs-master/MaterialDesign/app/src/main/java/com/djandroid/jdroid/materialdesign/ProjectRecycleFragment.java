@@ -2,16 +2,28 @@ package com.djandroid.jdroid.materialdesign;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.djandroid.jdroid.materialdesign.ClientLibrary.EauditingClient;
+import com.djandroid.jdroid.materialdesign.ClientLibrary.HttpModel.AndroidTaskService.TaskInformation;
+import com.djandroid.jdroid.materialdesign.ClientLibrary.HttpModel.UserService.UserLoginResponse;
+import com.djandroid.jdroid.materialdesign.ClientLibrary.HttpModel.UserService.UserLoginStatus;
+import com.djandroid.jdroid.materialdesign.ClientLibrary.Parameter.AuditStatus;
+
+import java.util.List;
+
+import static java.lang.System.in;
 
 
 /**
@@ -20,7 +32,7 @@ import android.widget.TextView;
 public class ProjectRecycleFragment extends Fragment {
 
     RecyclerView recList;
-
+    GetProjectTask getprojecttask;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +66,11 @@ public class ProjectRecycleFragment extends Fragment {
         Context context;
         // Provide a suitable constructor (depends on the kind of dataset)
         public MyAdapter(Context context) {
+
             this.context = context;
+
+            getprojecttask = new GetProjectTask();
+            getprojecttask.execute((Void) null);
         }
 
         // Create new views (invoked by the layout manager)
@@ -96,7 +112,36 @@ public class ProjectRecycleFragment extends Fragment {
             return project_name.length;
         }
     }
+    public class GetProjectTask extends AsyncTask<Void, Void, List<TaskInformation>> {
+        GetProjectTask() {
+        }
 
+        @Override
+        protected List<TaskInformation> doInBackground(Void... params) {
+            // TODO: attempt authentication against projectdetail network service.
+
+
+            // Simulate network access.
+            return EauditingClient.GetTaskList("admin", AuditStatus.None);
+
+
+        }
+
+        @Override
+        protected void onPostExecute(final List<TaskInformation> success) {
+            for(int i=0; i < success.size();i++)
+            {
+                Log.d("projecttasklist",success.get(i).idTask);
+                Log.d("projecttasklist",success.get(i).Categories);
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            getprojecttask = null;
+
+        }
+    }
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
