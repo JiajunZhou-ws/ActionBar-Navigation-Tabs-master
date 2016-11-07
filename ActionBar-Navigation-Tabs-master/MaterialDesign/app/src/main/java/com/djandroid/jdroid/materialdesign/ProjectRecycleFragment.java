@@ -1,5 +1,6 @@
 package com.djandroid.jdroid.materialdesign;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.djandroid.jdroid.materialdesign.ClientLibrary.EauditingClient;
 import com.djandroid.jdroid.materialdesign.ClientLibrary.HttpModel.AndroidTaskService.TaskInformation;
@@ -21,6 +23,7 @@ import com.djandroid.jdroid.materialdesign.ClientLibrary.HttpModel.UserService.U
 import com.djandroid.jdroid.materialdesign.ClientLibrary.HttpModel.UserService.UserLoginStatus;
 import com.djandroid.jdroid.materialdesign.ClientLibrary.Parameter.AuditStatus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.System.in;
@@ -29,10 +32,18 @@ import static java.lang.System.in;
 /**
  * Created by dhawal sodha parmar on 5/4/2015.
  */
+@SuppressLint("ValidFragment")
 public class ProjectRecycleFragment extends Fragment {
 
     RecyclerView recList;
-    GetProjectTask getprojecttask;
+    Boolean isget;
+    List<TaskInformation> listfromserver;
+    public ProjectRecycleFragment()
+    {}
+    public ProjectRecycleFragment(List<TaskInformation> temp)
+    {
+        listfromserver = temp;
+    }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,9 +58,10 @@ public class ProjectRecycleFragment extends Fragment {
         //recList.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
-        recList.setAdapter(new MyAdapter(getActivity()));
+        recList.setAdapter(new MyAdapter(getActivity(), listfromserver));
         recList.setLayoutManager(llm);
         return rootView;
+
     }
 
     @Override
@@ -63,14 +75,13 @@ public class ProjectRecycleFragment extends Fragment {
                 "AX005-项目5","AX006-项目6","AX007-项目7","AX008-项目8","AX009-项目9","AX010-项目10","AX011-项目11"};
         String [] customer_name={"华为审计","华为审计","ABB审计","平安审计",
                 "XX审计","XX审计","XX审计","XX审计","XX审计","XX审计","XX审计"};
+        List<TaskInformation> projectlist;
         Context context;
         // Provide a suitable constructor (depends on the kind of dataset)
-        public MyAdapter(Context context) {
+        public MyAdapter(Context context,List<TaskInformation> listfromserver) {
 
             this.context = context;
-
-            getprojecttask = new GetProjectTask();
-            getprojecttask.execute((Void) null);
+            this.projectlist = listfromserver;
         }
 
         // Create new views (invoked by the layout manager)
@@ -100,48 +111,36 @@ public class ProjectRecycleFragment extends Fragment {
         // Replace the contents of a view (invoked by the layout manager)
         @Override
         public void onBindViewHolder(final RecylerViewHolder holder, int position) {
-            holder.tv1.setText(project_name[position]);
-            holder.tv2.setText(customer_name[position]);
+            String textstatus = "";
+            holder.tv1.setText(projectlist.get(position).siteid + projectlist.get(position).sitename);
+            switch (projectlist.get(position).status)
+            {
+                case None:
+                    textstatus = "未完成";
+                    break;
+                case NoPass:
+                    textstatus = "审核未通过";
+                    break;
+                case Pass:
+                    textstatus = "已完成";
+                    break;
+                case Waiting:
+                    textstatus = "待审核";
+                    break;
+
+            }
+            holder.tv2.setText(textstatus);
             holder.itemView.setOnClickListener(clickListener);
             holder.itemView.setTag(holder);
+            Log.d("zhoujiajun",String.valueOf(projectlist.size()));
         }
 
         // Return the size of your dataset (invoked by the layout manager)
         @Override
         public int getItemCount() {
-            return project_name.length;
-        }
+            return projectlist.size();       }
     }
-    public class GetProjectTask extends AsyncTask<Void, Void, List<TaskInformation>> {
-        GetProjectTask() {
-        }
 
-        @Override
-        protected List<TaskInformation> doInBackground(Void... params) {
-            // TODO: attempt authentication against projectdetail network service.
-
-
-            // Simulate network access.
-            return EauditingClient.GetTaskList("admin", AuditStatus.None);
-
-
-        }
-
-        @Override
-        protected void onPostExecute(final List<TaskInformation> success) {
-            for(int i=0; i < success.size();i++)
-            {
-                Log.d("projecttasklist",success.get(i).idTask);
-                Log.d("projecttasklist",success.get(i).Categories);
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            getprojecttask = null;
-
-        }
-    }
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -19,6 +20,14 @@ import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.AbsListView;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.djandroid.jdroid.materialdesign.ClientLibrary.EauditingClient;
+import com.djandroid.jdroid.materialdesign.ClientLibrary.HttpModel.AndroidTaskService.TaskInformation;
+import com.djandroid.jdroid.materialdesign.ClientLibrary.Parameter.AuditStatus;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity
@@ -32,12 +41,13 @@ public class MainActivity extends AppCompatActivity
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
+    List<TaskInformation> listfromserver;
     private CharSequence mTitle;
     private ActionBarDrawerToggle mDrawerToggle;
     DrawerLayout drawer_layout;
     ActionBar actionBar;
     Toolbar toolbar;
-
+    GetProjectTask getprojecttask;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +61,7 @@ public class MainActivity extends AppCompatActivity
         mNavigationDrawerFragment = (NavigationDrawFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
-
+        listfromserver = new ArrayList<TaskInformation>();
         drawer_layout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         // Set up the drawer.
@@ -77,33 +87,59 @@ public class MainActivity extends AppCompatActivity
         mDrawerToggle.setDrawerIndicatorEnabled(true);
         drawer_layout.setDrawerListener(mDrawerToggle);
     }
-
+    public class GetProjectTask extends AsyncTask<Void, Void, List<TaskInformation>> {
+        GetProjectTask() {
+        }
+        @Override
+        protected void onPreExecute() {
+        }
+        @Override
+        protected List<TaskInformation> doInBackground(Void... params) {
+            // TODO: attempt authentication against projectdetail network service.
+            // Simulate network access.
+            return EauditingClient.GetTaskList("admin", AuditStatus.None);
+        }
+        @Override
+        protected void onPostExecute(final List<TaskInformation> success) {
+            listfromserver.clear();
+            for(int i=0; i < success.size();i++)
+            {
+                listfromserver.add(success.get(i));
+                Log.d("projecttasklist",listfromserver.get(0).idTask);
+                Log.d("projecttasklist",listfromserver.get(0).siteid);
+                Log.d("projecttasklist",listfromserver.get(0).sitename);
+                Log.d("projecttasklist",listfromserver.get(0).siteaddress);
+                Log.d("projecttasklist",listfromserver.get(0).region);
+                Log.d("projecttasklist",listfromserver.get(0).Categories);
+            }
+            //android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            //getSupportFragmentManager().beginTransaction()
+            //       .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+            //      .commit();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, new ProjectRecycleFragment(listfromserver))
+                    .commit();
+            //transaction.addToBackStack(null);
+            //transaction.commit();
+            onSectionAttached(1);
+        }
+        @Override
+        protected void onCancelled() {
+        }
+    }
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         switch (position) {
             case NavigationDrawFragment.NAVDRAWER_ITEM_FLOATING_ACTION:
-                android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                //getSupportFragmentManager().beginTransaction()
-                 //       .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                  //      .commit();
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container, new ProjectRecycleFragment())
-                        .commit();
-                //transaction.addToBackStack(null);
-                transaction.commit();
-                onSectionAttached(1);
+                getprojecttask = new GetProjectTask();
+                getprojecttask.execute((Void) null);
                 break;
             case NavigationDrawFragment.NAVDRAWER_ITEM_TAB:
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container, new ProjectRecycleFragment())
-                        .commit();
+
                 onSectionAttached(2);
                 break;
             case NavigationDrawFragment.NAVDRAWER_ITEM_CARD:
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container, new ProjectRecycleFragment())
-                        .commit();
                 onSectionAttached(6);
                 break;
             case NavigationDrawFragment.NAVDRAWER_ITEM_DJ:
