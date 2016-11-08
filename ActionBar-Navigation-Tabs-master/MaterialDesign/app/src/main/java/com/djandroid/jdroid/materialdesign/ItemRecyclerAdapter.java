@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.djandroid.jdroid.materialdesign.ClientLibrary.HttpModel.AndroidTaskService.TaskDetailResponse;
+import com.google.gson.Gson;
+
 /**
  * Created by kundan on 10/26/2015.
  */
@@ -19,8 +22,10 @@ public class ItemRecyclerAdapter extends  RecyclerView.Adapter<ItemRecylerViewHo
             "人员5","工具1","工具2","工具3","工具4","工具5","工具6"};
     Context context;
     LayoutInflater inflater;
-    public ItemRecyclerAdapter(Context context) {
+    TaskDetailResponse projectdetail;
+    public ItemRecyclerAdapter(Context context, TaskDetailResponse temp) {
         this.context=context;
+        this.projectdetail = temp;
         inflater=LayoutInflater.from(context);
     }
     @Override
@@ -32,7 +37,7 @@ public class ItemRecyclerAdapter extends  RecyclerView.Adapter<ItemRecylerViewHo
 
     @Override
     public void onBindViewHolder(ItemRecylerViewHolder holder, int position) {
-        holder.tv1.setText(project_name[position]);
+        holder.tv1.setText(projectdetail.taskCategoryList.get(position).CategoryName);
         holder.itemView.setOnClickListener(clickListener);
         holder.itemView.setTag(holder);
     }
@@ -43,7 +48,7 @@ public class ItemRecyclerAdapter extends  RecyclerView.Adapter<ItemRecylerViewHo
             ItemRecylerViewHolder vholder = (ItemRecylerViewHolder) v.getTag();
             int position = vholder.getPosition();
             Intent intent=new Intent();
-            intent.putExtra("projectname", project_name[position]);
+            intent.putExtra("projectitems", new Gson().toJson(projectdetail.taskCategoryList.get(position)));
             intent.setClass(context, QuestionActivity.class);
             context.startActivity(intent);
 
@@ -54,6 +59,6 @@ public class ItemRecyclerAdapter extends  RecyclerView.Adapter<ItemRecylerViewHo
 
     @Override
     public int getItemCount() {
-        return project_name.length;
+        return projectdetail.taskCategoryList.size();
     }
 }

@@ -15,7 +15,12 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:background="@color/cardview_light_background"/>
-
+    <TextView
+        android:id="@+id/text_view_explanation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:background="@color/cardview_light_background"/>
     <RadioGroup
         android:id="@+id/radio_group_options"
         android:layout_width="match_parent"

@@ -22,10 +22,12 @@ import com.djandroid.jdroid.materialdesign.ClientLibrary.HttpModel.AndroidTaskSe
 import com.djandroid.jdroid.materialdesign.ClientLibrary.HttpModel.UserService.UserLoginResponse;
 import com.djandroid.jdroid.materialdesign.ClientLibrary.HttpModel.UserService.UserLoginStatus;
 import com.djandroid.jdroid.materialdesign.ClientLibrary.Parameter.AuditStatus;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.djandroid.jdroid.materialdesign.ClientLibrary.EauditingClient.gson;
 import static java.lang.System.in;
 
 
@@ -71,10 +73,10 @@ public class ProjectRecycleFragment extends Fragment {
     }
 
     public class MyAdapter extends RecyclerView.Adapter<RecylerViewHolder> {
-        String [] project_name={"AX001-项目1","AX002-项目2","AX003-项目3","AX004-项目4",
-                "AX005-项目5","AX006-项目6","AX007-项目7","AX008-项目8","AX009-项目9","AX010-项目10","AX011-项目11"};
-        String [] customer_name={"华为审计","华为审计","ABB审计","平安审计",
-                "XX审计","XX审计","XX审计","XX审计","XX审计","XX审计","XX审计"};
+       // String [] project_name={"AX001-项目1","AX002-项目2","AX003-项目3","AX004-项目4",
+      //          "AX005-项目5","AX006-项目6","AX007-项目7","AX008-项目8","AX009-项目9","AX010-项目10","AX011-项目11"};
+       // String [] customer_name={"华为审计","华为审计","ABB审计","平安审计",
+      //          "XX审计","XX审计","XX审计","XX审计","XX审计","XX审计","XX审计"};
         List<TaskInformation> projectlist;
         Context context;
         // Provide a suitable constructor (depends on the kind of dataset)
@@ -102,7 +104,8 @@ public class ProjectRecycleFragment extends Fragment {
                 int position = vholder.getPosition();
                  //Toast.makeText(context,"This is position "+position,Toast.LENGTH_SHORT ).show();
                 Intent intent = new Intent();
-                intent.putExtra("projectname",project_name[position]);
+                //String temp = new Gson().toJson(projectlist.get(position));
+                intent.putExtra("TaskInfomation", new Gson().toJson(projectlist.get(position)));
                 intent.setClass(context,ProjectDetailActivity.class);
                 context.startActivity(intent);
 
@@ -112,7 +115,7 @@ public class ProjectRecycleFragment extends Fragment {
         @Override
         public void onBindViewHolder(final RecylerViewHolder holder, int position) {
             String textstatus = "";
-            holder.tv1.setText(projectlist.get(position).siteid + projectlist.get(position).sitename);
+            holder.tv1.setText(projectlist.get(position).siteid + projectlist.get(position).projectName);
             switch (projectlist.get(position).status)
             {
                 case None:
@@ -138,7 +141,7 @@ public class ProjectRecycleFragment extends Fragment {
         // Return the size of your dataset (invoked by the layout manager)
         @Override
         public int getItemCount() {
-            return projectlist.size();       }
+            return projectlist.size();}
     }
 
     // Provide a reference to the views for each data item

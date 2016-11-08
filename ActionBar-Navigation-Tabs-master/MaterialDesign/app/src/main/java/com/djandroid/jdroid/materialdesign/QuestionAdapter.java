@@ -43,6 +43,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         Question current = questions.get(position);
         holder.setQuestion(current.question);
+        holder.textDescription.setText(current.description);
         //holder.textcomment.setTag(position);
         holder.myCustomEditTextListener.updatePosition(holder.getAdapterPosition());
         holder.textcomment.setText(questions.get(holder.getAdapterPosition()).comment);
@@ -63,7 +64,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
     class ViewHolder extends RecyclerView.ViewHolder {
 
         private LinearLayout linearLayoutContainer;
-        private TextView textViewQuestion, textViewAnswer;
+        private TextView textViewQuestion, textDescription;
         private EditText textcomment;
         private RadioGroup radioGroupOptions;
         private RadioButton radioButtonOption1, radioButtonOption2;
@@ -73,7 +74,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             super(itemView);
             linearLayoutContainer = (LinearLayout) itemView.findViewById(R.id.linear_layout_container);
             textViewQuestion = (TextView) itemView.findViewById(R.id.text_view_question);
-            textViewAnswer = (TextView) itemView.findViewById(R.id.text_view_answer);
+            textDescription = (TextView) itemView.findViewById(R.id.text_view_explanation);
             radioGroupOptions = (RadioGroup) itemView.findViewById(R.id.radio_group_options);
             radioButtonOption1 = (RadioButton) itemView.findViewById(R.id.radio_button_option_1);
             radioButtonOption2 = (RadioButton) itemView.findViewById(R.id.radio_button_option_2);

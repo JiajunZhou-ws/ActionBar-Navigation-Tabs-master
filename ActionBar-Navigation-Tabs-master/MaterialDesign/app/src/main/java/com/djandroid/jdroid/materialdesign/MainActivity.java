@@ -105,12 +105,14 @@ public class MainActivity extends AppCompatActivity
             for(int i=0; i < success.size();i++)
             {
                 listfromserver.add(success.get(i));
-                Log.d("projecttasklist",listfromserver.get(0).idTask);
-                Log.d("projecttasklist",listfromserver.get(0).siteid);
-                Log.d("projecttasklist",listfromserver.get(0).sitename);
-                Log.d("projecttasklist",listfromserver.get(0).siteaddress);
-                Log.d("projecttasklist",listfromserver.get(0).region);
-                Log.d("projecttasklist",listfromserver.get(0).Categories);
+                Log.d("projecttasklist",listfromserver.get(i).projectName);
+                Log.d("projecttasklist",listfromserver.get(i).subcontractor);
+                Log.d("projecttasklist",listfromserver.get(i).idTask);
+                Log.d("projecttasklist",listfromserver.get(i).siteid);
+                Log.d("projecttasklist",listfromserver.get(i).sitename);
+                Log.d("projecttasklist",listfromserver.get(i).siteaddress);
+                Log.d("projecttasklist",listfromserver.get(i).region);
+                Log.d("projecttasklist",listfromserver.get(i).Categories);
             }
             //android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             //getSupportFragmentManager().beginTransaction()
