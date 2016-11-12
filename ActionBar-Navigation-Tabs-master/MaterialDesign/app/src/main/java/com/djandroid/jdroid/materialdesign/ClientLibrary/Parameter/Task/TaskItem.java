@@ -10,11 +10,12 @@ import com.djandroid.jdroid.materialdesign.ClientLibrary.Parameter.*;
 public class TaskItem {
     private String itemId;
     private String item;
-    private String compliance; //是否通过
+    private Integer score;
     private String remark;
     private String violationLevel;
-    private String explanation; //标题下面
-    private String auditStatus; //no use now
+    private String explanation;
+    private String auditStatus;
+    private boolean isScore;
     private List<String> picturePathList;
 
     public String getItemId() {
@@ -33,12 +34,12 @@ public class TaskItem {
         this.item = item;
     }
 
-    public Compliance getCompliance() {
-        return Compliance.valueOf(compliance);
+    public Integer getScore() {
+        return score;
     }
 
-    public void setCompliance(Compliance compliance) {
-        this.compliance = compliance.toString();
+    public void setScore(Integer score) {
+        this.score = score;
     }
 
     public String getRemark() {
@@ -83,7 +84,7 @@ public class TaskItem {
 
     public void addPicture(String picture)
     {
-        if (this.picturePathList == null) this.picturePathList = new ArrayList<String>();
+        if (this.picturePathList == null) this.picturePathList = new ArrayList<>();
         this.picturePathList.add(picture);
     }
 
@@ -92,16 +93,12 @@ public class TaskItem {
         this.picturePathList.remove(picture);
     }
 
-    public TaskItem(){}
-
-    public TaskItem(String _itemId, String _item, ViolationLevel _violationLevel, String _explanation)
-    {
-        this.itemId = _itemId;
-        this.item = _item;
-        this.compliance = Compliance.None.toString();
-        this.remark = "";
-        this.violationLevel = _violationLevel.toString();
-        this.explanation = _explanation;
-        this.auditStatus = AuditStatus.None.toString();
+    public boolean isScore() {
+        return isScore;
     }
+
+    public void setScore(boolean score) {
+        isScore = score;
+    }
+
 }

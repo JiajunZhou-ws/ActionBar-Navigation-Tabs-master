@@ -8,6 +8,7 @@ import java.util.List;
  */
 public class TaskCategory {
     private String categoryName;
+    private String categoryId;
     private List<TaskItem> taskItemList;
 
     public String getCategoryName() {
@@ -26,9 +27,17 @@ public class TaskCategory {
         this.taskItemList = taskItemList;
     }
 
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
+    }
+
     public void addItem(TaskItem item)
     {
-        if (this.taskItemList == null) this.taskItemList = new ArrayList<TaskItem>();
+        if (this.taskItemList == null) this.taskItemList = new ArrayList<>();
         this.taskItemList.add(item);
     }
 

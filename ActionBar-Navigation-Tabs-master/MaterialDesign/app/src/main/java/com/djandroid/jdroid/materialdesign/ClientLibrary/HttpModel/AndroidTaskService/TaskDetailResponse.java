@@ -8,11 +8,6 @@ import java.util.List;
  */
 public class TaskDetailResponse {
     public String taskSiteid;
+    public String taskSiteName;
     public List<TaskCategoryDetail> taskCategoryList;
-
-    public void addTaskCategoryDetail(TaskCategoryDetail taskCategoryDetail)
-    {
-        if (this.taskCategoryList == null) this.taskCategoryList = new ArrayList<TaskCategoryDetail>();
-        this.taskCategoryList.add(taskCategoryDetail);
-    }
 }

@@ -10,11 +10,7 @@ import com.djandroid.jdroid.materialdesign.ClientLibrary.Parameter.Task.TaskItem
  */
 public class TaskCategoryDetail {
     public String CategoryName;
+    public String CategoryId;
+    public String FieldName;
     public List<TaskItem> taskItemList;
-
-    public void addTaskItem(TaskItem taskItem)
-    {
-        if (this.taskItemList == null) this.taskItemList = new ArrayList<TaskItem>();
-        this.taskItemList.add(taskItem);
-    }
 }

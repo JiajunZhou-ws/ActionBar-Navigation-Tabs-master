@@ -2,6 +2,9 @@ package com.djandroid.jdroid.materialdesign.ClientLibrary;
 
 import android.os.AsyncTask;
 
+import com.djandroid.jdroid.materialdesign.ClientLibrary.HttpModel.AndroidTaskService.PictureSaveRequest;
+import com.djandroid.jdroid.materialdesign.ClientLibrary.HttpModel.AndroidTaskService.TaskSaveRequest;
+import com.djandroid.jdroid.materialdesign.ClientLibrary.Parameter.Task.TaskItem;
 import com.google.gson.Gson;
 
 import org.apache.http.HttpStatus;
@@ -37,7 +40,7 @@ public class EauditingClient {
 
             String requestEntity = gson.toJson(request);
 
-            EAuditingHttpResponse userLoginResponse = HttpWrapper.HttpPost("/user/login", requestEntity);
+            EAuditingHttpResponse userLoginResponse = HttpWrapper.HttpPost("/android/user/login", requestEntity);
 
             if (userLoginResponse.httpStatus != HttpStatus.SC_OK) return errorResponse;
             return gson.fromJson(userLoginResponse.response, UserLoginResponse.class);
@@ -56,16 +59,47 @@ public class EauditingClient {
 
         String requestEntity = gson.toJson(request);
 
-        EAuditingHttpResponse response = HttpWrapper.HttpPost("/android/tasklist", requestEntity);
+        EAuditingHttpResponse response = HttpWrapper.HttpPost("/android/task/tasklist/get", requestEntity);
         GetTaskListResponse taskListResponse = gson.fromJson(response.response, GetTaskListResponse.class);
         return taskListResponse.taskInformationList;
     }
 
     public static TaskDetailResponse GetTaskDetail(String taskid)
     {
-        String requestFormat = String.format("/android/taskdetail?taskid=%s", taskid);
+        String requestFormat = String.format("/android/task/taskdetail/get?taskid=%s", taskid);
         EAuditingHttpResponse response = HttpWrapper.HttpGet(requestFormat);
         return gson.fromJson(response.response, TaskDetailResponse.class);
     }
 
+    public static String PictureSave(String pictureName, String pictureBase64)
+    {
+        PictureSaveRequest request = new PictureSaveRequest();
+        request.pictureName = pictureName;
+        request.pictureBase64 = pictureBase64;
+
+        String requestEntity = gson.toJson(request);
+
+        EAuditingHttpResponse response = HttpWrapper.HttpPost("/android/task/picture/save", requestEntity);
+        return response.response;
+    }
+
+    public static String PictureGet(String pictureName)
+    {
+        String requestFormat = String.format("/android/task/picture/get?pictureid=%s", pictureName);
+        EAuditingHttpResponse response = HttpWrapper.HttpGet(requestFormat);
+        return response.response;
+    }
+
+    public static String TaskSave(String taskid, String categoryId, List<TaskItem> itemList)
+    {
+        TaskSaveRequest request = new TaskSaveRequest();
+        request.taskid = taskid;
+        request.categoryid = categoryId;
+        request.itemList = itemList;
+
+        String requestEntity = gson.toJson(request);
+
+        EAuditingHttpResponse response = HttpWrapper.HttpPost("/android/task/taskdetail/save", requestEntity);
+        return response.response;
+    }
 }

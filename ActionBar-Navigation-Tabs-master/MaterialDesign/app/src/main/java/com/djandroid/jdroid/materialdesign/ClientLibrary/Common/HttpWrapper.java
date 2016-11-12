@@ -24,28 +24,18 @@ public class HttpWrapper {
         {
             HttpClient httpclient = new DefaultHttpClient();
             String fullURL = ClientConfiguration.ServiceUrl + url;
-            try
-            {
-                HttpGet httpGet = new HttpGet(fullURL);
-                HttpResponse response1 = httpclient.execute(httpGet);
 
-                try {
-                    System.out.println(response1.getStatusLine());
-                    String responseString = EntityUtils.toString(response1.getEntity());
-                    response.response = responseString;
-                    response.httpStatus = HttpStatus.SC_OK;
-                } finally {
+            HttpGet httpGet = new HttpGet(fullURL);
+            HttpResponse response1 = httpclient.execute(httpGet);
 
-                }
-            }
-            finally
-            {
-
-             }
+            String responseString = EntityUtils.toString(response1.getEntity());
+            response.response = responseString;
+            response.httpStatus = HttpStatus.SC_OK;
         }
         catch(Exception e)
         {
-            System.out.println(e.toString());
+            System.out.println("Error occured in HttpGet:" + url + "\n" + e.toString() + "\n----------------------------");
+            e.printStackTrace();
         }
         return response;
     }
@@ -58,30 +48,20 @@ public class HttpWrapper {
         {
             HttpClient httpclient = new DefaultHttpClient();
             String fullURL = ClientConfiguration.ServiceUrl + url;
-            try
-            {
-                HttpPost httpPost = new HttpPost(fullURL);
-                httpPost.setEntity(new StringEntity(requestBody));
-                httpPost.setHeader("Content-Type", "application/json");
-                HttpResponse response1 = httpclient.execute(httpPost);
 
+            HttpPost httpPost = new HttpPost(fullURL);
+            httpPost.setEntity(new StringEntity(requestBody));
+            httpPost.setHeader("Content-Type", "application/json");
+            HttpResponse response1 = httpclient.execute(httpPost);
 
-
-                try {
-                    System.out.println(response1.getStatusLine());
-                    String responseString = EntityUtils.toString(response1.getEntity());
-                    response.response = responseString;
-                    response.httpStatus = HttpStatus.SC_OK;
-                } finally {
-                }
-            }
-            finally
-            {
-            }
+            String responseString = EntityUtils.toString(response1.getEntity());
+            response.response = responseString;
+            response.httpStatus = HttpStatus.SC_OK;
         }
         catch(Exception e)
         {
-            System.out.println("zhouzhou");
+            System.out.println("Error occured in HttpPost:" + url + "\n" + e.toString() + "\n----------------------------");
+            e.printStackTrace();
         }
         return response;
     }
