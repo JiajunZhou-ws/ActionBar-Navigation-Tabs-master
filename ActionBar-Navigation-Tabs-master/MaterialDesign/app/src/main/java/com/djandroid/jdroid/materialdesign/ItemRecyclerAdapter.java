@@ -47,6 +47,7 @@ public class ItemRecyclerAdapter extends  RecyclerView.Adapter<ItemRecylerViewHo
         public void onClick(View v) {
             ItemRecylerViewHolder vholder = (ItemRecylerViewHolder) v.getTag();
             int position = vholder.getPosition();
+
             Intent intent=new Intent();
             intent.putExtra("projectitems", new Gson().toJson(projectdetail.taskCategoryList.get(position)));
             intent.setClass(context, QuestionActivity.class);

@@ -36,7 +36,7 @@ public class ProjectDetailActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("" + getResources().getString(R.string.app_name));
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_drawer_explore);
+        toolbar.setNavigationIcon(R.drawable.back);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,7 +104,7 @@ public class ProjectDetailActivity extends AppCompatActivity
        }
        @Override
        public boolean onCreateOptionsMenu(Menu menu) {
-               getMenuInflater().inflate(R.menu.main, menu);
+              //admin getMenuInflater().inflate(R.menu.main, menu);
            return super.onCreateOptionsMenu(menu);
        }
 
@@ -116,9 +116,9 @@ public class ProjectDetailActivity extends AppCompatActivity
            int id = item.getItemId();
 
            //noinspection SimplifiableIfStatement
-           if (id == R.id.action_settings) {
-               return true;
-           }
+          // if (id == R.id.action_settings) {
+         //      return true;
+          // }
 
            return super.onOptionsItemSelected(item);
        }
