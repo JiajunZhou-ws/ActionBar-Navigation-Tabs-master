@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">EAuditing</string>
-    <string name="title_section1">未完成</string>
+    <string name="app_name">eAuditing</string>
+    <string name="title_section1">新任务</string>
     <string name="title_section2">已提交</string>
-    <string name="title_section3">设定</string>
-    <string name="title_section4">帮助</string>
+    <string name="title_section3">已完成</string>
+    <string name="title_section4">设定</string>
     <string name="title_section5">Social</string>
-    <string name="title_section6">已审核</string>
+    <string name="title_section6"></string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
@@ -18,13 +18,16 @@
     <string name="header_title">Test title text</string>
     <string name="header_subtitle">Test subtitle text</string>
 
-    <string name="prompt_email">Username</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
+    <string name="PictureNewList">picturenewlist</string>
+
+
+    <string name="prompt_email">用户名</string>
+    <string name="prompt_password">密码</string>
+    <string name="action_sign_in">登录</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_invalid_email">用户名</string>
+    <string name="error_invalid_password">密码失效</string>
+    <string name="error_incorrect_password">密码出错</string>
     <string name="error_field_required">This field is required</string>
 
     <color name="colorPrimary">#03a9f4</color>
