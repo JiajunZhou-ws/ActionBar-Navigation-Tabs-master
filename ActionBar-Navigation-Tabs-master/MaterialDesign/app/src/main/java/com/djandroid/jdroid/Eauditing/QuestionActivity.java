@@ -34,7 +34,7 @@ public class QuestionActivity extends AppCompatActivity {
 
     private RecyclerView recyclerViewQuestions;
     TaskCategoryDetail taskcategorydetail;
-    public List<Question> questions = new ArrayList<>();
+    public static List<Question> questions = new ArrayList<>();
     public static String catogoryid;
     public static LinkedHashMap<String,TaskItem> readfromlocal = new LinkedHashMap<>();;
     Toolbar toolbar;
@@ -66,6 +66,7 @@ public class QuestionActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        questions.clear();
         prepareQuestions();
         initQuestionsAdapter();
     }
@@ -117,7 +118,7 @@ public class QuestionActivity extends AppCompatActivity {
     private void initQuestionsAdapter() {
 
         recyclerViewQuestions.setLayoutManager(new LinearLayoutManager(this));
-        QuestionAdapter questionAdapter = new QuestionAdapter(this, questions, ProjectDetailActivity.taskid + taskcategorydetail.CategoryId, taskcategorydetail);
+        QuestionAdapter questionAdapter = new QuestionAdapter(this,ProjectDetailActivity.taskid + taskcategorydetail.CategoryId, taskcategorydetail);
         recyclerViewQuestions.setAdapter(questionAdapter);
     }
 
@@ -141,6 +142,12 @@ public class QuestionActivity extends AppCompatActivity {
              return true;
          }
 
+        if  (id == R.id.otherfinding)
+        {
+            Intent intent = new Intent();
+            intent.setClass(this, OtherFindingActivity.class);
+            this.startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 

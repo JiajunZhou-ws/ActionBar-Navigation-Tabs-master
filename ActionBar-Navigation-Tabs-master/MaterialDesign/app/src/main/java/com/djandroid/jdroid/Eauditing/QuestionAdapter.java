@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.djandroid.jdroid.Eauditing.QuestionActivity.questions;
+
 /**
  * Created by krishna on 9/1/16.
  */
@@ -31,14 +33,13 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
 
     private static final String TAG = "QuestionAdapter";
     private LayoutInflater inflater;
-    private List<Question> questions;
+    //private List<Question> questions;
     private String mapfilename;
     TaskCategoryDetail taskcategorydetail;
     //private String[] mDataset;
     private Context context;
-    public QuestionAdapter(Context context, List<Question> questions , String mapfilename, TaskCategoryDetail temp) {
+    public QuestionAdapter(Context context, String mapfilename, TaskCategoryDetail temp) {
         this.inflater = LayoutInflater.from(context);
-        this.questions = questions;
         this.context = context;
         this.mapfilename = mapfilename;
         this.taskcategorydetail = temp;

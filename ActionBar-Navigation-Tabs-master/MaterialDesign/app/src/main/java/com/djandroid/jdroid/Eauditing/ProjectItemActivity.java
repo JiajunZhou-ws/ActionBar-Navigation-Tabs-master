@@ -161,7 +161,7 @@ public class ProjectItemActivity extends AppCompatActivity {
                 //List<String> taskcategorydetail = new Gson().fromJson(res, List.class);
                 Type listType = new TypeToken<LinkedHashMap<String,TaskItem>>(){}.getType();
                 uploadmap = new Gson().fromJson(res,listType);
-                Toast.makeText(this,"yijingduqudao"+fileName,Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this,"yijingduqudao"+fileName,Toast.LENGTH_SHORT).show();
                 //Log.d("Main",res.toString());
                 fin.close();
                 return true;

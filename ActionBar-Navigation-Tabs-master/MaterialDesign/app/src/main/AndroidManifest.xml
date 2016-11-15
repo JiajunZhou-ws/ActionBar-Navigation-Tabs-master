@@ -13,41 +13,44 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
-        android:name="com.djandroid.jdroid.Eauditing.MyApplication"
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme_new">
         <activity
-            android:name="com.djandroid.jdroid.Eauditing.LoginActivity"
+            android:name=".LoginActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name="com.djandroid.jdroid.Eauditing.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name" />
         <activity
-            android:name="com.djandroid.jdroid.Eauditing.PhotoActivity"
+            android:name=".PhotoActivity"
             android:label="@string/app_name" />
         <activity
-            android:name="com.djandroid.jdroid.Eauditing.SocialActivity"
+            android:name=".SocialActivity"
             android:label="@string/app_name" />
         <activity
-            android:name="com.djandroid.jdroid.Eauditing.ProjectDetailActivity"
+            android:name=".ProjectDetailActivity"
             android:label="@string/app_name" />
         <activity
-            android:name="com.djandroid.jdroid.Eauditing.ProjectItemActivity"
+            android:name=".ProjectItemActivity"
             android:label="@string/app_name" />
         <activity
-            android:name="com.djandroid.jdroid.Eauditing.ItemDetailActivity"
+            android:name=".ItemDetailActivity"
             android:label="@string/app_name" />
         <activity
-            android:name="com.djandroid.jdroid.Eauditing.QuestionActivity"
+            android:name=".QuestionActivity"
             android:label="@string/app_name" />
+        <activity
+            android:name=".OtherFindingActivity"
+            android:label="@string/title_activity_other_finding"></activity>
     </application>
 
 </manifest>

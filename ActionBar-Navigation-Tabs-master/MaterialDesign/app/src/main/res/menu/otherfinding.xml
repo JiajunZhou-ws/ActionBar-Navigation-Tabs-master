@@ -3,11 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
     <item
-        android:id="@+id/savetofile"
+        android:id="@+id/saveotherfinding"
         android:title="保存"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/otherfinding"
-        android:title="新建项目"
         app:showAsAction="ifRoom" />
 </menu>
