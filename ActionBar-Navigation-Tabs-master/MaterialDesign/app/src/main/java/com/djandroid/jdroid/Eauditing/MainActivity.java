@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity
      */
     List<TaskInformation> listfromserver;
     private CharSequence mTitle;
+    private String username;
     private ActionBarDrawerToggle mDrawerToggle;
     DrawerLayout drawer_layout;
     ActionBar actionBar;
@@ -83,7 +84,8 @@ public class MainActivity extends AppCompatActivity
             }
         };
 
-
+        Intent intent = getIntent();
+        username = intent.getStringExtra("username");
         mDrawerToggle.setDrawerIndicatorEnabled(true);
         drawer_layout.setDrawerListener(mDrawerToggle);
     }
@@ -99,7 +101,7 @@ public class MainActivity extends AppCompatActivity
         protected List<TaskInformation> doInBackground(Void... params) {
             // TODO: attempt authentication against projectdetail network service.
             // Simulate network access.
-            return EauditingClient.GetTaskList("admin", status);
+            return EauditingClient.GetTaskList(username, status);
         }
         @Override
         protected void onPostExecute(final List<TaskInformation> success) {

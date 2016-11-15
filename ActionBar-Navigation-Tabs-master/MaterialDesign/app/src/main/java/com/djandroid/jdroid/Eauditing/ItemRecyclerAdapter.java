@@ -20,10 +20,9 @@ public class ItemRecyclerAdapter extends  RecyclerView.Adapter<ItemRecylerViewHo
             "人员5","工具1","工具2","工具3","工具4","工具5","工具6"};
     Context context;
     LayoutInflater inflater;
-    TaskDetailResponse projectdetail;
-    public ItemRecyclerAdapter(Context context, TaskDetailResponse temp) {
+    //TaskDetailResponse projectdetail;
+    public ItemRecyclerAdapter(Context context) {
         this.context=context;
-        this.projectdetail = temp;
         inflater=LayoutInflater.from(context);
     }
     @Override
@@ -35,8 +34,8 @@ public class ItemRecyclerAdapter extends  RecyclerView.Adapter<ItemRecylerViewHo
 
     @Override
     public void onBindViewHolder(ItemRecylerViewHolder holder, int position) {
-        holder.tv1.setText(projectdetail.taskCategoryList.get(position).CategoryName +
-        "\n" + projectdetail.taskCategoryList.get(position).FieldName);
+        holder.tv1.setText(ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(position).CategoryName +
+        "\n" + ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(position).FieldName);
         //holder.tv1.setTextColor(Color.RED);
         holder.itemView.setOnClickListener(clickListener);
         holder.itemView.setTag(holder);
@@ -49,7 +48,8 @@ public class ItemRecyclerAdapter extends  RecyclerView.Adapter<ItemRecylerViewHo
             int position = vholder.getPosition();
 
             Intent intent=new Intent();
-            intent.putExtra("projectitems", new Gson().toJson(projectdetail.taskCategoryList.get(position)));
+            intent.putExtra("projectitems", new Gson().toJson(ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(position)));
+            ProjectItemActivity.categorypotion = position;
             intent.setClass(context, QuestionActivity.class);
             context.startActivity(intent);
 
@@ -60,6 +60,6 @@ public class ItemRecyclerAdapter extends  RecyclerView.Adapter<ItemRecylerViewHo
 
     @Override
     public int getItemCount() {
-        return projectdetail.taskCategoryList.size();
+        return ProjectDetailActivity.taskdetailresponse.taskCategoryList.size();
     }
 }

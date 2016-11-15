@@ -37,6 +37,7 @@ public class QuestionActivity extends AppCompatActivity {
     public static List<Question> questions = new ArrayList<>();
     public static String catogoryid;
     public static LinkedHashMap<String,TaskItem> readfromlocal = new LinkedHashMap<>();;
+    QuestionAdapter questionAdapter;
     Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,11 +115,16 @@ public class QuestionActivity extends AppCompatActivity {
             questions.add(question);
         }
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        questionAdapter.notifyDataSetChanged();
+        //Toast.makeText(this,"ahouojdfio",Toast.LENGTH_SHORT).show();
+    }
 
     private void initQuestionsAdapter() {
-
         recyclerViewQuestions.setLayoutManager(new LinearLayoutManager(this));
-        QuestionAdapter questionAdapter = new QuestionAdapter(this,ProjectDetailActivity.taskid + taskcategorydetail.CategoryId, taskcategorydetail);
+        questionAdapter = new QuestionAdapter(this,ProjectDetailActivity.taskid + taskcategorydetail.CategoryId, taskcategorydetail);
         recyclerViewQuestions.setAdapter(questionAdapter);
     }
 

@@ -29,8 +29,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProjectItemActivity extends AppCompatActivity {
     RecyclerView recyclerView;
@@ -39,17 +41,18 @@ public class ProjectItemActivity extends AppCompatActivity {
     String status = "";
     PictureUpload picupload;
     TaskItemUpload taskupload;
-    TaskDetailResponse temp;
+    //TaskDetailResponse temp;
     LinkedHashMap<String,TaskItem> uploadmap = new LinkedHashMap<>();
     public static List<Integer> categorycolor = new ArrayList<>();
+    public static int categorypotion = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_itemrecylerview);
         Intent intent = getIntent();
-        temp = new Gson().fromJson(intent.getStringExtra("projectdetail"),TaskDetailResponse.class);
+       //temp = new Gson().fromJson(intent.getStringExtra("projectdetail"),TaskDetailResponse.class);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("" + temp.taskSiteid);
+        toolbar.setTitle("" + ProjectDetailActivity.taskdetailresponse.taskSiteid);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.back);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -62,7 +65,7 @@ public class ProjectItemActivity extends AppCompatActivity {
 
         categorycolor.clear();
 
-        adapter = new ItemRecyclerAdapter(this,temp);
+        adapter = new ItemRecyclerAdapter(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -130,21 +133,25 @@ public class ProjectItemActivity extends AppCompatActivity {
     private void uploadtask() throws IOException {
         List<TaskItem> templist = new ArrayList<>();
         int number = 0;
-        for(int i = 0 ; i < temp.taskCategoryList.size(); i++)
+        for(int i = 0 ; i < ProjectDetailActivity.taskdetailresponse.taskCategoryList.size(); i++)
         {
             templist.clear();
             uploadmap.clear();
-            if(readfromlocalmap(ProjectDetailActivity.taskid + temp.taskCategoryList.get(i).CategoryId))
+            if(readfromlocalmap(ProjectDetailActivity.taskid + ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(i).CategoryId))
             {
-                number++;
-                for(int j = 0 ; j < temp.taskCategoryList.get(i).taskItemList.size(); j++) {
-                    if(uploadmap.containsKey(temp.taskCategoryList.get(i).taskItemList.get(j).getItemId()))
-                        templist.add(uploadmap.get(temp.taskCategoryList.get(i).taskItemList.get(j).getItemId()));
+
+                for(Map.Entry<String,TaskItem>entry:uploadmap.entrySet())
+                {
+                    templist.add(entry.getValue());
                 }
-                taskupload = new TaskItemUpload(temp.taskCategoryList.get(i).CategoryId,templist);
+                //for(int j = 0 ; j < temp.taskCategoryList.get(i).taskItemList.size(); j++) {
+                //    if(uploadmap.containsKey(temp.taskCategoryList.get(i).taskItemList.get(j).getItemId()))
+                //        templist.add(uploadmap.get(temp.taskCategoryList.get(i).taskItemList.get(j).getItemId()));
+               // }
+                taskupload = new TaskItemUpload(ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(i).CategoryId,templist);
                 taskupload.execute((Void) null);
             }
-            Log.v("upload Task" + temp.taskCategoryList.get(i).CategoryName, status);
+            Log.v("upload Task" + ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(i).CategoryName, status);
         }
 
     }

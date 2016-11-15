@@ -281,6 +281,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
             if (success.getStatus() == UserLoginStatus.Success) {
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                intent.putExtra("username",mEmail);
                 startActivity(intent);
                 finish();
             }
@@ -292,7 +293,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             {
                 Toast.makeText(getBaseContext(),"密码错误",Toast.LENGTH_SHORT).show();
             }
-
+            else if(success.getStatus() == UserLoginStatus.NetWorkError)
+            {
+                Toast.makeText(getBaseContext(),"网络无法联通",Toast.LENGTH_SHORT).show();
+            }
         }
 
         @Override

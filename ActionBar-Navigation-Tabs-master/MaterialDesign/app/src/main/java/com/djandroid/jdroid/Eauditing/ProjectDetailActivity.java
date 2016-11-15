@@ -34,7 +34,7 @@ public class ProjectDetailActivity extends AppCompatActivity
    {
 
     private CharSequence mTitle;
-    private TaskDetailResponse taskdetailresponse;
+    public  static TaskDetailResponse taskdetailresponse;
     private List<String> needdownloadpicture;
     private int needdownloadpicturenumber;
     public static String taskid;
@@ -144,7 +144,7 @@ public class ProjectDetailActivity extends AppCompatActivity
        private void GotoCategoryActivity()
        {
            Intent intent = new Intent(ProjectDetailActivity.this, ProjectItemActivity.class);
-           intent.putExtra("projectdetail", new Gson().toJson(taskdetailresponse));
+           //intent.putExtra("projectdetail", new Gson().toJson(taskdetailresponse));
            startActivity(intent);
        }
        private void getAllPictureName()
@@ -174,7 +174,7 @@ public class ProjectDetailActivity extends AppCompatActivity
                outputStream.flush();
                outputStream.close();
                savepicturenum++;
-               Log.v("SAVEPICTURE","保存图片成功" + String.valueOf(savepicturenum));
+               Log.v("SAVEPICTURE","下载图片"+String.valueOf(savepicturenum)+"成功" + String.valueOf(savepicturenum));
                if(savepicturenum == needdownloadpicturenumber) {
                    GotoCategoryActivity();
                }
