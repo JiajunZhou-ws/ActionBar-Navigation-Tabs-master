@@ -124,7 +124,7 @@ public class ProjectDetailActivity extends AppCompatActivity
            @Override
            protected void onPostExecute(final TaskDetailResponse success) {
 
-               //getprojectdetail = new GetProjectDetail(temp.idTask);
+               //getprojectdetail = new GetProjectDetail(taskcategorydetail.idTask);
                //getprojectdetail.execute((Void) null);
                taskdetailresponse = success;
                getAllPictureName();
@@ -223,7 +223,7 @@ public class ProjectDetailActivity extends AppCompatActivity
                    res = EncodingUtils.getString(buffer, "UTF-8");
                    newpicid = new Gson().fromJson(res, List.class);
                    Log.d("PictureListSize:",String.valueOf(newpicid.size()));
-                   //Toast.makeText(this, String.valueOf(temp.get(2)), Toast.LENGTH_SHORT).show();
+                   //Toast.makeText(this, String.valueOf(taskcategorydetail.get(2)), Toast.LENGTH_SHORT).show();
                    fin.close();
                }
                else {

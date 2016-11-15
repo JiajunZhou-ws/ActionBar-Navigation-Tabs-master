@@ -89,16 +89,16 @@ public class ProjectItemActivity extends AppCompatActivity {
              } catch (IOException e) {
                  e.printStackTrace();
              }
-             //Toast.makeText(this,"upload succeed!",Toast.LENGTH_SHORT).show();
+             Toast.makeText(this,"上传服务器成功！",Toast.LENGTH_SHORT).show();
+
              ProjectDetailActivity.newpicid.clear();
-             savePictureNewList();
+             savePictureNewList();  //clear local cache of picturenewlist
+
              return true;
          }
 
         return super.onOptionsItemSelected(item);
     }
-
-    //private void prepare
 
     private void savePictureNewList() {
         try {
@@ -123,7 +123,7 @@ public class ProjectItemActivity extends AppCompatActivity {
             String piccontent = readfromlocalpicture(picname);
             picupload = new PictureUpload(picname,piccontent);
             picupload.execute((Void) null);
-            Log.d("Main",status);
+            Log.d("Main","上传图片" + picname + status);
         }
     }
 
@@ -158,7 +158,7 @@ public class ProjectItemActivity extends AppCompatActivity {
                 byte[] buffer = new byte[length];
                 fin.read(buffer);
                 res = EncodingUtils.getString(buffer, "UTF-8");
-                //List<String> temp = new Gson().fromJson(res, List.class);
+                //List<String> taskcategorydetail = new Gson().fromJson(res, List.class);
                 Type listType = new TypeToken<LinkedHashMap<String,TaskItem>>(){}.getType();
                 uploadmap = new Gson().fromJson(res,listType);
                 Toast.makeText(this,"yijingduqudao"+fileName,Toast.LENGTH_SHORT).show();
@@ -186,7 +186,7 @@ public class ProjectItemActivity extends AppCompatActivity {
                 byte[] buffer = new byte[length];
                 fin.read(buffer);
                 res = EncodingUtils.getString(buffer, "UTF-8");
-                //List<String> temp = new Gson().fromJson(res, List.class);
+                //List<String> taskcategorydetail = new Gson().fromJson(res, List.class);
                 //readfromlocal = new Gson().fromJson(res,listType);
                 //Toast.makeText(this,"yijingduqudao"+fileName,Toast.LENGTH_SHORT).show();
                 //Log.d("Main",res.toString());

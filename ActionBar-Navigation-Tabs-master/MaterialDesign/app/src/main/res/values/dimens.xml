@@ -35,6 +35,7 @@
     <dimen name="keyline_1">16dp</dimen>
     <dimen name="text_size_medium">14sp</dimen>
     <dimen name="text_size_large">18sp</dimen>
+    <dimen name="menu_textsize">20sp</dimen>
     <dimen name="navdrawer_profile_image_size">45dp</dimen>
     <dimen name="session_details_extra_space_bottom">48dp</dimen>
     <dimen name="keyline_2">72dp</dimen>

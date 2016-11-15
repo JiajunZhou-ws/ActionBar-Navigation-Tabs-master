@@ -33,7 +33,7 @@ import java.util.List;
 public class QuestionActivity extends AppCompatActivity {
 
     private RecyclerView recyclerViewQuestions;
-    TaskCategoryDetail temp;
+    TaskCategoryDetail taskcategorydetail;
     public List<Question> questions = new ArrayList<>();
     public static String catogoryid;
     public static LinkedHashMap<String,TaskItem> readfromlocal = new LinkedHashMap<>();;
@@ -51,18 +51,17 @@ public class QuestionActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 saveMaptofile();
-                finish();
             }
         });
 
         Intent intent = getIntent();
-        temp = new Gson().fromJson(intent.getStringExtra("projectitems"),TaskCategoryDetail.class);
-        catogoryid = temp.CategoryId;
+        taskcategorydetail = new Gson().fromJson(intent.getStringExtra("projectitems"),TaskCategoryDetail.class);
+        catogoryid = taskcategorydetail.CategoryId;
 
 
         readfromlocal.clear(); //clear the static cache
         try {
-            readfromlocalmap(ProjectDetailActivity.taskid + temp.CategoryId);
+            readfromlocalmap(ProjectDetailActivity.taskid + taskcategorydetail.CategoryId);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -73,12 +72,13 @@ public class QuestionActivity extends AppCompatActivity {
 
     private void saveMaptofile() {
         try {
-            FileOutputStream outputStream = openFileOutput(ProjectDetailActivity.taskid + temp.CategoryId, Activity.MODE_PRIVATE);
+            FileOutputStream outputStream = openFileOutput(ProjectDetailActivity.taskid + taskcategorydetail.CategoryId, Activity.MODE_PRIVATE);
             outputStream.write(new GsonBuilder().serializeNulls().create().toJson(QuestionActivity.readfromlocal).getBytes());
             outputStream.flush();
             outputStream.close();
             QuestionActivity.readfromlocal.clear();
-            //Toast.makeText(this, ProjectDetailActivity.taskid + temp.CategoryId+"保存成功", Toast.LENGTH_SHORT).show();
+            finish();
+            Toast.makeText(this, taskcategorydetail.CategoryName + " 保存成功", Toast.LENGTH_SHORT).show();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -88,27 +88,27 @@ public class QuestionActivity extends AppCompatActivity {
 
     private void prepareQuestions() {
 
-        for (int i = 0; i < temp.taskItemList .size(); i++) {
+        for (int i = 0; i < taskcategorydetail.taskItemList .size(); i++) {
             Question question = new Question();
             question.id = i;
-            question.itemid = temp.taskItemList.get(i).getItemId();
-            question.question = "#" + (i + 1) + ":" + temp.taskItemList.get(i).getItem();
-            question.description = temp.taskItemList.get(i).getExplanation();
+            question.itemid = taskcategorydetail.taskItemList.get(i).getItemId();
+            question.question = "#" + (i + 1) + ":" + taskcategorydetail.taskItemList.get(i).getItem();
+            question.description = taskcategorydetail.taskItemList.get(i).getExplanation();
 
-            if(readfromlocal.containsKey(temp.taskItemList.get(i).getItemId()))
+            if(readfromlocal.containsKey(taskcategorydetail.taskItemList.get(i).getItemId()))
             {
-                if(readfromlocal.get(temp.taskItemList.get(i).getItemId()).getRemark() != null)
-                    question.comment = readfromlocal.get(temp.taskItemList.get(i).getItemId()).getRemark();
+                if(readfromlocal.get(taskcategorydetail.taskItemList.get(i).getItemId()).getRemark() != null)
+                    question.comment = readfromlocal.get(taskcategorydetail.taskItemList.get(i).getItemId()).getRemark();
                 else
-                    question.comment = temp.taskItemList.get(i).getRemark();
-                if(readfromlocal.get(temp.taskItemList.get(i).getItemId()).getScore() != null)
-                    question.score = readfromlocal.get(temp.taskItemList.get(i).getItemId()).getScore();
+                    question.comment = taskcategorydetail.taskItemList.get(i).getRemark();
+                if(readfromlocal.get(taskcategorydetail.taskItemList.get(i).getItemId()).getScore() != null)
+                    question.score = readfromlocal.get(taskcategorydetail.taskItemList.get(i).getItemId()).getScore();
                 else
-                    question.score = temp.taskItemList.get(i).getScore();
+                    question.score = taskcategorydetail.taskItemList.get(i).getScore();
             }
             else {
-                question.comment = temp.taskItemList.get(i).getRemark();
-                question.score = temp.taskItemList.get(i).getScore();
+                question.comment = taskcategorydetail.taskItemList.get(i).getRemark();
+                question.score = taskcategorydetail.taskItemList.get(i).getScore();
             }
             questions.add(question);
         }
@@ -117,7 +117,7 @@ public class QuestionActivity extends AppCompatActivity {
     private void initQuestionsAdapter() {
 
         recyclerViewQuestions.setLayoutManager(new LinearLayoutManager(this));
-        QuestionAdapter questionAdapter = new QuestionAdapter(this, questions, ProjectDetailActivity.taskid + temp.CategoryId,temp);
+        QuestionAdapter questionAdapter = new QuestionAdapter(this, questions, ProjectDetailActivity.taskid + taskcategorydetail.CategoryId, taskcategorydetail);
         recyclerViewQuestions.setAdapter(questionAdapter);
     }
 
@@ -154,7 +154,7 @@ public class QuestionActivity extends AppCompatActivity {
                 byte[] buffer = new byte[length];
                 fin.read(buffer);
                 res = EncodingUtils.getString(buffer, "UTF-8");
-                //List<String> temp = new Gson().fromJson(res, List.class);
+                //List<String> taskcategorydetail = new Gson().fromJson(res, List.class);
                 Type listType = new TypeToken<LinkedHashMap<String,TaskItem>>(){}.getType();
                 readfromlocal = new Gson().fromJson(res,listType);
                 //Toast.makeText(this,"yijingduqudao"+fileName,Toast.LENGTH_SHORT).show();

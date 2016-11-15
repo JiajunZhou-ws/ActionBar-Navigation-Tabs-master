@@ -161,7 +161,7 @@ public class PhotoActivity extends AppCompatActivity {
                 byte[] buffer = new byte[length];
                 fin.read(buffer);
                 res = EncodingUtils.getString(buffer, "UTF-8");
-                //List<String> temp = new Gson().fromJson(res, List.class);
+                //List<String> taskcategorydetail = new Gson().fromJson(res, List.class);
                 temp.setimage(i,Base64Util.base64ToBitmap(res));
                 //readfromlocal = new Gson().fromJson(res,listType);
                 //Toast.makeText(this,"yijingduqudao"+fileName,Toast.LENGTH_SHORT).show();
@@ -238,7 +238,7 @@ public class PhotoActivity extends AppCompatActivity {
     public static File getTempImage() {
         if (android.os.Environment.getExternalStorageState().equals(
                 android.os.Environment.MEDIA_MOUNTED)) {
-            File tempFile = new File(Environment.getExternalStorageDirectory(), "temp.jpg");
+            File tempFile = new File(Environment.getExternalStorageDirectory(), "taskcategorydetail.jpg");
             Log.v("photo",String.valueOf(Environment.getExternalStorageDirectory().getUsableSpace()));
             try {
                 tempFile.createNewFile();

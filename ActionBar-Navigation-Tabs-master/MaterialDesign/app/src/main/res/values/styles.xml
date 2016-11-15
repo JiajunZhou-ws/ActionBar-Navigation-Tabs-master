@@ -10,6 +10,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>
+        <item name="android:actionMenuTextAppearance">@style/MenuTextStyle</item>
     </style>
 
     <style name="Header.TitleText" parent="android:TextAppearance.Holo">
@@ -17,7 +18,7 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">32sp</item>
         <item name="android:shadowColor">#8000</item>
-        <item name="android:shadowRadius">5</item>
+        <item name="android:shadowRadius">6</item>
         <item name="android:shadowDx">2</item>
         <item name="android:shadowDy">2</item>
     </style>
@@ -59,7 +60,12 @@
 
     <style name="ActionBar.TitleText" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textColor">#fff</item>
+        <item name="android:textSize">28sp</item>
+    </style>
+
+    <style name="MenuTextStyle">
         <item name="android:textSize">18sp</item>
+        <item name="android:layout_marginBottom">10dp</item>
     </style>
 
     <!-- Empty views -->

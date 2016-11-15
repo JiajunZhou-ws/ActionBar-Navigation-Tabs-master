@@ -94,7 +94,7 @@ public class ProjectRecycleFragment extends Fragment {
                 int position = vholder.getPosition();
                  //Toast.makeText(context,"This is position "+position,Toast.LENGTH_SHORT ).show();
                 Intent intent = new Intent();
-                //String temp = new Gson().toJson(projectlist.get(position));
+                //String taskcategorydetail = new Gson().toJson(projectlist.get(position));
                 intent.putExtra("TaskInfomation", new Gson().toJson(projectlist.get(position)));
                 intent.setClass(context,ProjectDetailActivity.class);
                 context.startActivity(intent);

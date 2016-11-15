@@ -1,10 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    app:theme="@style/ActionBar.TitleText"
     tools:context=".MainActivity">
     <item
         android:id="@+id/uploadfile"
-        android:icon="@drawable/uploadfile"
-        android:title="@string/action_example"
-        app:showAsAction="ifRoom" />
+        android:title="上传"
+        app:showAsAction="ifRoom|withText" />
 </menu>
