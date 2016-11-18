@@ -37,6 +37,7 @@ public class NavigationDrawFragment extends Fragment {
     protected static final int WAITAUDIT = 1;
     protected static final int HAVEPASS = 2;
     protected static final int SETTING = 3;
+    protected static final int QUIT = 4;
 
 
     private ViewGroup mDrawerItemsListContainer;
@@ -48,6 +49,8 @@ public class NavigationDrawFragment extends Fragment {
             R.string.title_section2,
             R.string.title_section3,
             R.string.title_section4,
+            R.string.title_section5
+
 
     };
 
@@ -57,6 +60,7 @@ public class NavigationDrawFragment extends Fragment {
             R.drawable.ic_drawer_people_met,  // about
             R.drawable.ic_drawer_experts, // dj
             R.drawable.ic_drawer_explore,// about
+            R.drawable.ic_drawer_explore,// quit
     };
 
     private View mFragmentContainerView;
@@ -327,6 +331,7 @@ public class NavigationDrawFragment extends Fragment {
 
         mNavDrawerItems.add(SETTING);
 
+        mNavDrawerItems.add(QUIT);
 
         //createNavDrawerItems();
     }

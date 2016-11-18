@@ -3,10 +3,13 @@ package com.djandroid.jdroid.Eauditing;
 import com.djandroid.jdroid.Eauditing.ClientLibrary.*;
 import com.djandroid.jdroid.Eauditing.ClientLibrary.HttpModel.UserService.UserLoginResponse;
 import com.djandroid.jdroid.Eauditing.ClientLibrary.HttpModel.UserService.UserLoginStatus;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -19,6 +22,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -29,6 +33,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.util.EncodingUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,18 +84,40 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    try {
+                        attemptLogin();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     return true;
                 }
                 return false;
             }
         });
 
+        if(fileIsExists(getString(R.string.UserCache)))
+        {
+            String tempusername = null;
+            try {
+                tempusername = readfromusercache(getString(R.string.UserCache));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            intent.putExtra("username",tempusername);
+            startActivity(intent);
+            finish();
+        }
+
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                try {
+                    attemptLogin();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -97,7 +130,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptLogin() {
+    private void attemptLogin() throws IOException {
         if (mAuthTask != null) {
             return;
         }
@@ -140,14 +173,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             // perform the user login attempt.
             //showProgress(true);
 
-            //if (rtn.getStatus() == UserLoginStatus.Success) {
-            //}
-         //   else if (rtn.getStatus() == UserLoginStatus.WrongPassword)
-          //  {
-         //       Toast.makeText(this, "wrong password", Toast.LENGTH_SHORT).show();
-          //  }
-             mAuthTask = new UserLoginTask(email, password);
-             mAuthTask.execute((Void) null);
+            if(!fileIsExists(getString(R.string.UserCache))) {
+                saveUsertofile(email);
+                mAuthTask = new UserLoginTask(email, password);
+                mAuthTask.execute((Void) null);
+            }
+
         }
     }
 
@@ -240,6 +271,51 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         mEmailView.setAdapter(adapter);
     }
 
+    public String readfromusercache(String fileName) throws IOException {
+        String res="";
+        try{
+                FileInputStream fin = openFileInput(fileName);
+                int length = fin.available();
+                byte[] buffer = new byte[length];
+                fin.read(buffer);
+                res = EncodingUtils.getString(buffer, "UTF-8");
+                fin.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    private void saveUsertofile(String username) {
+        try {
+            FileOutputStream outputStream = openFileOutput(getString(R.string.UserCache), Activity.MODE_PRIVATE);
+            outputStream.write(new Gson().toJson(username).getBytes());
+            outputStream.flush();
+            outputStream.close();
+            finish();
+            //Toast.makeText(this, taskcategorydetail.CategoryName + " 保存成功", Toast.LENGTH_SHORT).show();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean fileIsExists(String strFile)
+    {
+        try
+        {
+            File f=new File(this.getFilesDir().getPath() + "/" + strFile);
+            Log.v("LoginActivity",String.valueOf(this.getFilesDir().getFreeSpace()));
+            if(!f.exists()) return false;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+        return true;
+    }
 
     private interface ProfileQuery {
         String[] PROJECTION = {

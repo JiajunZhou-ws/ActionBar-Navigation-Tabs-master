@@ -6,7 +6,7 @@
     <string name="title_section2">已提交</string>
     <string name="title_section3">已完成</string>
     <string name="title_section4">设定</string>
-    <string name="title_section5">Social</string>
+    <string name="title_section5">登出</string>
     <string name="title_section6"></string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -19,6 +19,7 @@
     <string name="header_subtitle">Test subtitle text</string>
 
     <string name="PictureNewList">picturenewlist</string>
+    <string name="UserCache">usercache</string>
 
 
     <string name="prompt_email">用户名</string>

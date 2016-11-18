@@ -41,7 +41,6 @@ public class ProjectItemActivity extends AppCompatActivity {
     String status = "";
     PictureUpload picupload;
     TaskItemUpload taskupload;
-    //TaskDetailResponse temp;
     LinkedHashMap<String,TaskItem> uploadmap = new LinkedHashMap<>();
     public static List<Integer> categorycolor = new ArrayList<>();
     public static int categorypotion = 0;
@@ -50,7 +49,6 @@ public class ProjectItemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_itemrecylerview);
         Intent intent = getIntent();
-       //temp = new Gson().fromJson(intent.getStringExtra("projectdetail"),TaskDetailResponse.class);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("" + ProjectDetailActivity.taskdetailresponse.taskSiteid);
         setSupportActionBar(toolbar);
@@ -92,7 +90,7 @@ public class ProjectItemActivity extends AppCompatActivity {
              } catch (IOException e) {
                  e.printStackTrace();
              }
-             Toast.makeText(this,"上传服务器成功！",Toast.LENGTH_SHORT).show();
+
 
              ProjectDetailActivity.newpicid.clear();
              savePictureNewList();  //clear local cache of picturenewlist
@@ -144,10 +142,7 @@ public class ProjectItemActivity extends AppCompatActivity {
                 {
                     templist.add(entry.getValue());
                 }
-                //for(int j = 0 ; j < temp.taskCategoryList.get(i).taskItemList.size(); j++) {
-                //    if(uploadmap.containsKey(temp.taskCategoryList.get(i).taskItemList.get(j).getItemId()))
-                //        templist.add(uploadmap.get(temp.taskCategoryList.get(i).taskItemList.get(j).getItemId()));
-               // }
+
                 taskupload = new TaskItemUpload(ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(i).CategoryId,templist);
                 taskupload.execute((Void) null);
             }
@@ -165,12 +160,10 @@ public class ProjectItemActivity extends AppCompatActivity {
                 byte[] buffer = new byte[length];
                 fin.read(buffer);
                 res = EncodingUtils.getString(buffer, "UTF-8");
-                //List<String> taskcategorydetail = new Gson().fromJson(res, List.class);
                 Type listType = new TypeToken<LinkedHashMap<String,TaskItem>>(){}.getType();
                 uploadmap = new Gson().fromJson(res,listType);
-                //Toast.makeText(this,"yijingduqudao"+fileName,Toast.LENGTH_SHORT).show();
-                //Log.d("Main",res.toString());
                 fin.close();
+                Log.d("ProjectitemActivy","read from local map" + fileName + "succeed!");
                 return true;
             }
             else {
@@ -193,10 +186,7 @@ public class ProjectItemActivity extends AppCompatActivity {
                 byte[] buffer = new byte[length];
                 fin.read(buffer);
                 res = EncodingUtils.getString(buffer, "UTF-8");
-                //List<String> taskcategorydetail = new Gson().fromJson(res, List.class);
-                //readfromlocal = new Gson().fromJson(res,listType);
-                //Toast.makeText(this,"yijingduqudao"+fileName,Toast.LENGTH_SHORT).show();
-                //Log.d("Main",res.toString());
+                Log.d("ProjectitemActivy","read from local picture" + fileName + "succeed!");
                 fin.close();
             }
             else {
@@ -246,6 +236,9 @@ public class ProjectItemActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(final String success) {
                 status = success;
+                if(status != "success")
+                    Toast.makeText(getBaseContext(),"上传图片" + success,Toast.LENGTH_LONG).show();
+
         }
         @Override
         protected void onCancelled() {
@@ -272,8 +265,11 @@ public class ProjectItemActivity extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(final String success) {
-            //status = success;
-            //Toast.makeText(getBaseContext(),"upload" + success,Toast.LENGTH_SHORT).show();
+            status = success;
+            if(status == "success")
+                Toast.makeText(getBaseContext(),"upload" + success,Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(getBaseContext(),"upload" + success,Toast.LENGTH_LONG).show();
         }
         @Override
         protected void onCancelled() {
