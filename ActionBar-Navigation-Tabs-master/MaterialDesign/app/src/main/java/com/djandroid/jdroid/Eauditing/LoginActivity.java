@@ -95,6 +95,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             }
         });
 
+
         if(fileIsExists(getString(R.string.UserCache)))
         {
             String tempusername = null;
@@ -106,7 +107,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             intent.putExtra("username",tempusername);
             startActivity(intent);
-            finish();
         }
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
@@ -123,7 +123,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
     }
+
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -290,7 +292,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     private void saveUsertofile(String username) {
         try {
             FileOutputStream outputStream = openFileOutput(getString(R.string.UserCache), Activity.MODE_PRIVATE);
-            outputStream.write(new Gson().toJson(username).getBytes());
+            outputStream.write(username.getBytes());
             outputStream.flush();
             outputStream.close();
             finish();
