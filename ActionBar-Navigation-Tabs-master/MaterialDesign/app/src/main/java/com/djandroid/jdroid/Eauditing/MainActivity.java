@@ -26,6 +26,7 @@ import com.djandroid.jdroid.Eauditing.ClientLibrary.EauditingClient;
 import com.djandroid.jdroid.Eauditing.ClientLibrary.HttpModel.AndroidTaskService.TaskInformation;
 import com.djandroid.jdroid.Eauditing.ClientLibrary.Parameter.AuditStatus;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -160,11 +161,31 @@ public class MainActivity extends AppCompatActivity
                 //onSectionAttached(4);
                 Toast.makeText(this,"未来这里会是设定",Toast.LENGTH_SHORT).show();
                 break;
-
+            case NavigationDrawFragment.QUIT:
+                //onSectionAttached(4);
+                filedelete(getString(R.string.UserCache));
+                Toast.makeText(this,"登出成功",Toast.LENGTH_SHORT).show();
+                finish();
+                break;
             default:
                 break;
         }
     }
+
+    public boolean filedelete(String strFile)
+    {
+        try
+        {
+            File f=new File(this.getFilesDir().getPath() + "/" + strFile);
+            if(f.exists()) f.delete();
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+        return true;
+    }
+
 
     public void onSectionAttached(int number) {
         Log.e("number", "--->" + number);

@@ -1,14 +1,17 @@
 package com.djandroid.jdroid.Eauditing;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,6 +37,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.djandroid.jdroid.Eauditing.R.id.dialog;
+
 public class ProjectItemActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     Toolbar toolbar;
@@ -42,6 +47,7 @@ public class ProjectItemActivity extends AppCompatActivity {
     PictureUpload picupload;
     TaskItemUpload taskupload;
     LinkedHashMap<String,TaskItem> uploadmap = new LinkedHashMap<>();
+    private int uploadpicturenumber = 0;
     public static List<Integer> categorycolor = new ArrayList<>();
     public static int categorypotion = 0;
     @Override
@@ -85,20 +91,57 @@ public class ProjectItemActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
          if (id == R.id.uploadfile) {
              try {
+                 uploadpicturenumber = 0;
                  uploadpicture();
                  uploadtask();
              } catch (IOException e) {
                  e.printStackTrace();
              }
-
-
-             ProjectDetailActivity.newpicid.clear();
+             //ProjectDetailActivity.newpicid.clear();
              savePictureNewList();  //clear local cache of picturenewlist
 
              return true;
          }
+        else if(id == R.id.uploadallfile)
+         {
+             dialog();
+             //recyclerView.setVisibility(View.INVISIBLE);
+         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    protected void dialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("确认强制上传吗，这会使用的大量的流量，建议不要轻易使用，除非数据不够同步？");
+
+        builder.setTitle("提示");
+
+        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                try {
+                    prepareallpicture();
+                    uploadpicturenumber = 0;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    uploadpicture();
+                    uploadtask();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 
     private void savePictureNewList() {
@@ -113,6 +156,28 @@ public class ProjectItemActivity extends AppCompatActivity {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void prepareallpicture() throws IOException
+    {
+        ProjectDetailActivity.newpicid.clear();
+        for(int i = 0 ; i < ProjectDetailActivity.taskdetailresponse.taskCategoryList.size(); i++)
+        {
+            if(readfromlocalmap(ProjectDetailActivity.taskid + ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(i).CategoryId))
+            {
+                for(Map.Entry<String,TaskItem>entry:uploadmap.entrySet())
+                {
+                    TaskItem tempitem = entry.getValue();
+                    if(null != tempitem.getPicturePathList() && tempitem.getPicturePathList().size() != 0)
+                    {
+                        for(int j = 0 ; j < tempitem.getPicturePathList().size(); j++)
+                        {
+                            ProjectDetailActivity.newpicid.add(tempitem.getPicturePathList().get(j));
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -137,16 +202,15 @@ public class ProjectItemActivity extends AppCompatActivity {
             uploadmap.clear();
             if(readfromlocalmap(ProjectDetailActivity.taskid + ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(i).CategoryId))
             {
-
                 for(Map.Entry<String,TaskItem>entry:uploadmap.entrySet())
                 {
                     templist.add(entry.getValue());
                 }
-
                 taskupload = new TaskItemUpload(ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(i).CategoryId,templist);
                 taskupload.execute((Void) null);
+                Log.v("upload Task" + ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(i).CategoryName, status);
             }
-            Log.v("upload Task" + ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(i).CategoryName, status);
+
         }
 
     }
@@ -236,8 +300,15 @@ public class ProjectItemActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(final String success) {
                 status = success;
-                if(status != "success")
-                    Toast.makeText(getBaseContext(),"上传图片" + success,Toast.LENGTH_LONG).show();
+                if(!status.equals("Success"))
+                    Toast.makeText(getBaseContext(),"上传图片" + "失败",Toast.LENGTH_LONG).show();
+                else
+                    uploadpicturenumber++;
+                if( uploadpicturenumber == ProjectDetailActivity.newpicid.size())
+                {
+                    Toast.makeText(getApplicationContext(), "所有图片上传成功", Toast.LENGTH_SHORT).show();
+                    ProjectDetailActivity.newpicid.clear();
+                }
 
         }
         @Override
@@ -266,7 +337,7 @@ public class ProjectItemActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(final String success) {
             status = success;
-            if(status == "success")
+            if(status.equals("Success"))
                 Toast.makeText(getBaseContext(),"upload" + success,Toast.LENGTH_SHORT).show();
             else
                 Toast.makeText(getBaseContext(),"upload" + success,Toast.LENGTH_LONG).show();

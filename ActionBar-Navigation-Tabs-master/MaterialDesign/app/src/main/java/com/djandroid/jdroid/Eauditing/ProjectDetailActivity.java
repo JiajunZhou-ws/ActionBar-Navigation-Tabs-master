@@ -10,7 +10,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +43,8 @@ public class ProjectDetailActivity extends AppCompatActivity
     public static int savepicturenum;
     public static List<String> newpicid = new ArrayList<String>();  //read from file in this activity
     Toolbar toolbar;
-    TextView projecttitle,projectname,projectarea,projectsiteid,projectsitename,projectsiteaddress,projectsitecontractor,projectcatagory;
+    ProgressBar progressBar;
+    TextView progresstext,projecttitle,projectname,projectarea,projectsiteid,projectsitename,projectsiteaddress,projectsitecontractor,projectcatagory;
     Button detailbutton;
 
     GetProjectDetail getprojectdetail;
@@ -49,6 +52,8 @@ public class ProjectDetailActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //requestWindowFeature(Window.FEATURE_PROGRESS);
+        //requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_projectdetail);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("" + getResources().getString(R.string.app_name));
@@ -69,7 +74,10 @@ public class ProjectDetailActivity extends AppCompatActivity
         projectsiteaddress = (TextView) findViewById(R.id.textView6);
         projectsitecontractor = (TextView) findViewById(R.id.textView7);
         projectcatagory = (TextView) findViewById(R.id.textView8);
-
+        progresstext = (TextView) findViewById(R.id.progresstext);
+        progressBar = (ProgressBar) findViewById(R.id.progressbar); //progressbar
+        progressBar.setVisibility(View.INVISIBLE);
+        progresstext.setVisibility(View.INVISIBLE);
         detailbutton = (Button) findViewById(R.id.detailbutton);
         Intent intent = getIntent();
         final TaskInformation temp = new Gson().fromJson(intent.getStringExtra("TaskInfomation"),TaskInformation.class);
@@ -98,6 +106,12 @@ public class ProjectDetailActivity extends AppCompatActivity
         detailbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Toast.makeText(getApplicationContext(),"正在下载图片和任务，请耐心等待，下载完成后会进入下一个界面",Toast.LENGTH_LONG).show();
+                progressBar.setVisibility(View.VISIBLE);
+                progresstext.setVisibility(View.VISIBLE);
+                setProgressBarVisibility(true);
+                //setProgressBarIndeterminate(true);
+                setProgress(0);
                 getprojectdetail = new GetProjectDetail(temp.idTask);
                 getprojectdetail.execute((Void) null);
                 //save();
@@ -174,6 +188,8 @@ public class ProjectDetailActivity extends AppCompatActivity
                outputStream.flush();
                outputStream.close();
                savepicturenum++;
+               progressBar.setProgress(savepicturenum * 100 / needdownloadpicturenumber);
+               progresstext.setText("已经下载："+String.valueOf(savepicturenum * 100 / needdownloadpicturenumber)+"%");
                Log.v("SAVEPICTURE","下载图片"+String.valueOf(savepicturenum)+"成功" + String.valueOf(savepicturenum));
                if(savepicturenum == needdownloadpicturenumber) {
                    GotoCategoryActivity();
@@ -211,6 +227,12 @@ public class ProjectDetailActivity extends AppCompatActivity
            }
        }
 
+       @Override
+       protected void onResume() {
+           super.onResume();
+           progressBar.setVisibility(View.INVISIBLE);
+           progresstext.setVisibility(View.INVISIBLE);
+       }
 
        public void readPictureNewList() throws IOException{
            String res="";
@@ -227,8 +249,7 @@ public class ProjectDetailActivity extends AppCompatActivity
                    fin.close();
                }
                else {
-                        //Toast.makeText(this, "未读取到缓存文件", Toast.LENGTH_SHORT).show();
-                   Log.d("ProjectDetail","未读取到新图片列表缓存文件");
+                        Log.d("ProjectDetail","未读取到新图片列表缓存文件");
                }
            }
            catch(Exception e){

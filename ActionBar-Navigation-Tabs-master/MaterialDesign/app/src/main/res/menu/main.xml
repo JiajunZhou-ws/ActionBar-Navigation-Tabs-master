@@ -4,6 +4,10 @@
     app:theme="@style/ActionBar.TitleText"
     tools:context=".MainActivity">
     <item
+        android:id="@+id/uploadallfile"
+        android:title="强制上传"
+        app:showAsAction="ifRoom|withText" />
+    <item
         android:id="@+id/uploadfile"
         android:title="上传"
         app:showAsAction="ifRoom|withText" />

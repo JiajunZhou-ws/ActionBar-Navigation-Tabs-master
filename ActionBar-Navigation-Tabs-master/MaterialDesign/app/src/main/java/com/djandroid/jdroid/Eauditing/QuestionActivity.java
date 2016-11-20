@@ -52,6 +52,8 @@ public class QuestionActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 saveMaptofile();
+                QuestionActivity.readfromlocal.clear();
+                finish();
             }
         });
 
@@ -78,13 +80,13 @@ public class QuestionActivity extends AppCompatActivity {
             outputStream.write(new GsonBuilder().serializeNulls().create().toJson(QuestionActivity.readfromlocal).getBytes());
             outputStream.flush();
             outputStream.close();
-            QuestionActivity.readfromlocal.clear();
-            finish();
             Toast.makeText(this, taskcategorydetail.CategoryName + " 保存成功", Toast.LENGTH_SHORT).show();
         } catch (FileNotFoundException e) {
+            Toast.makeText(this, taskcategorydetail.CategoryName + " 保存成功", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+            Toast.makeText(this, taskcategorydetail.CategoryName + " 保存失败", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -107,6 +109,11 @@ public class QuestionActivity extends AppCompatActivity {
                     question.score = readfromlocal.get(taskcategorydetail.taskItemList.get(i).getItemId()).getScore();
                 else
                     question.score = taskcategorydetail.taskItemList.get(i).getScore();
+                if(readfromlocal.get(taskcategorydetail.taskItemList.get(i).getItemId()).getPicturePathList() == null)
+                    readfromlocal.get(taskcategorydetail.taskItemList.get(i).getItemId()).setPicturePathList(taskcategorydetail.taskItemList.get(i).getPicturePathList());
+                else if(readfromlocal.get(taskcategorydetail.taskItemList.get(i).getItemId()).getPicturePathList().size() == 0)
+                    readfromlocal.get(taskcategorydetail.taskItemList.get(i).getItemId()).setPicturePathList(taskcategorydetail.taskItemList.get(i).getPicturePathList());
+
             }
             else {
                 question.comment = taskcategorydetail.taskItemList.get(i).getRemark();

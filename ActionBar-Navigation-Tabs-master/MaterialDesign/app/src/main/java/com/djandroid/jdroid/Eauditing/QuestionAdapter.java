@@ -20,11 +20,13 @@ import com.djandroid.jdroid.Eauditing.ClientLibrary.HttpModel.AndroidTaskService
 import com.djandroid.jdroid.Eauditing.ClientLibrary.Parameter.Task.TaskItem;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.djandroid.jdroid.Eauditing.QuestionActivity.questions;
+import static com.djandroid.jdroid.Eauditing.QuestionActivity.readfromlocal;
 
 /**
  * Created by krishna on 9/1/16.
@@ -116,7 +118,14 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                     Log.v("zhoujiajun", String.valueOf(position));
                     //Toast.makeText(itemView.getContext(),"click picture" + String.valueOf(position),Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(context,PhotoActivity.class);
-                    intent.putExtra("imagelist",new Gson().toJson(QuestionActivity.readfromlocal.get(questions.get(position).itemid).getPicturePathList()));
+                    if(null != readfromlocal.get(questions.get(position).itemid).getPicturePathList()
+                            && QuestionActivity.readfromlocal.get(questions.get(position).itemid).getPicturePathList().size() > 0)
+                        intent.putExtra("imagelist",new Gson().toJson(QuestionActivity.readfromlocal.get(questions.get(position).itemid).getPicturePathList()));
+                    else if(QuestionActivity.readfromlocal.get(questions.get(position).itemid).getPicturePathList() == null)
+                    {
+                        List<String> temp = new ArrayList<String>();
+                        intent.putExtra("imagelist",new Gson().toJson(temp));
+                    }
                     intent.putExtra("itemid",questions.get(position).itemid);
                     context.startActivity(intent);
                     //Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -179,9 +188,9 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
             questions.get(position).comment = charSequence.toString();
-            if(QuestionActivity.readfromlocal.containsKey(questions.get(position).itemid))
+            if(readfromlocal.containsKey(questions.get(position).itemid))
             {
-                QuestionActivity.readfromlocal.get(questions.get(position).itemid).setRemark(questions.get(position).comment);
+                readfromlocal.get(questions.get(position).itemid).setRemark(questions.get(position).comment);
             }
             else {
                 TaskItem temp;
@@ -195,7 +204,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                 }
                 temp = taskcategorydetail.taskItemList.get(itemindex);
                 temp.setRemark(questions.get(position).comment);
-                QuestionActivity.readfromlocal.put(questions.get(position).itemid, temp);
+                readfromlocal.put(questions.get(position).itemid, temp);
             }
             Log.v("zhoujiajun", questions.get(position).toString());
         }
@@ -222,9 +231,9 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             if(m.matches() && !charSequence.toString().equals(""))
             {
                 questions.get(position).score = Integer.valueOf(charSequence.toString());
-                if(QuestionActivity.readfromlocal.containsKey(questions.get(position).itemid))
+                if(readfromlocal.containsKey(questions.get(position).itemid))
                 {
-                    QuestionActivity.readfromlocal.get(questions.get(position).itemid).setScore(questions.get(position).score);
+                    readfromlocal.get(questions.get(position).itemid).setScore(questions.get(position).score);
                 }
                 else {
                     TaskItem temp;
@@ -239,7 +248,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
 
                     temp = taskcategorydetail.taskItemList.get(itemindex);
                     temp.setScore(questions.get(position).score);
-                    QuestionActivity.readfromlocal.put(questions.get(position).itemid, temp);
+                    readfromlocal.put(questions.get(position).itemid, temp);
                 }
             }
 
