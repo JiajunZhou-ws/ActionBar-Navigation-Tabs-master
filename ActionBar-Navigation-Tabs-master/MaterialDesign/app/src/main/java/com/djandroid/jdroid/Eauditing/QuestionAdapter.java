@@ -1,6 +1,8 @@
 package com.djandroid.jdroid.Eauditing;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -40,6 +42,8 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
     TaskCategoryDetail taskcategorydetail;
     //private String[] mDataset;
     private Context context;
+    public static boolean onbind;
+    public static boolean needfocus;
     public QuestionAdapter(Context context, String mapfilename, TaskCategoryDetail temp) {
         this.inflater = LayoutInflater.from(context);
         this.context = context;
@@ -61,11 +65,17 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         holder.textDescription.setText(current.description);
         //holder.textcomment.setTag(position);
         holder.imagetest.setTag(position);
-        holder.commentlistener.updatePosition(holder.getAdapterPosition());
+       // onbind = true;
+        holder.commentlistener.updatePosition(holder.getAdapterPosition(),holder.textcomment);
         holder.textcomment.setText(questions.get(holder.getAdapterPosition()).comment);
+       // if(needfocus) {
+        //    holder.textcomment.requestFocus();
+      //      holder.textcomment.setSelection(1);
+      //  }
+       // onbind = false;
         holder.auditlistener.updatePosition(holder.getAdapterPosition());
         holder.auditscore.setText(String.valueOf(questions.get(holder.getAdapterPosition()).score));
-        //holder.setOptions(current, position);
+        holder.setOptions(current, position);
         Log.e(TAG, position + " :onBindViewHolder: " + current.toString());
     }
 
@@ -86,7 +96,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         private EditText textcomment,auditscore;
         private RadioGroup radioGroupOptions;
         private RadioButton radioButtonOption1, radioButtonOption2;
-        private RadioButton radioButtonOption3;
+        private RadioButton radioButtonOption3, radioButtonOption4;
         private ImageView imagetest;
         Context  context;
         public MyCustomEditTextListener commentlistener;
@@ -105,10 +115,12 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             this.auditlistener = auditlistener;
             auditscore.addTextChangedListener(auditlistener);
 
-            //radioGroupOptions = (RadioGroup) itemView.findViewById(R.id.radio_group_options);
-            //radioButtonOption1 = (RadioButton) itemView.findViewById(R.id.radio_button_option_1);
-            //radioButtonOption2 = (RadioButton) itemView.findViewById(R.id.radio_button_option_2);
-            //radioButtonOption3 = (RadioButton) itemView.findViewById(R.id.radio_button_option_3);
+            radioGroupOptions = (RadioGroup) itemView.findViewById(R.id.radioGroup);
+            radioButtonOption1 = (RadioButton) itemView.findViewById(R.id.radioButton1);
+            radioButtonOption2 = (RadioButton) itemView.findViewById(R.id.radioButton2);
+            radioButtonOption3 = (RadioButton) itemView.findViewById(R.id.radioButton3);
+            radioButtonOption4 = (RadioButton) itemView.findViewById(R.id.radioButton4);
+
             imagetest = (ImageView)itemView.findViewById(R.id.camera);
             this.context = maincontext;
             imagetest.setOnClickListener(new View.OnClickListener() {
@@ -152,34 +164,42 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             textViewQuestion.setText(question);
         }
 
-     /*   public void setOptions(Question question, int position) {
+        public void setOptions(Question question, int position) {
             radioGroupOptions.setTag(position);
             //radioButtonOption1.setText(question.option1);
             //radioButtonOption2.setText(question.option2);
             //radioButtonOption3.setText(question.option3);
             Log.e(TAG, position + " :setOptions: " + question.toString());
-
-            if(question.isAnswered) {
-                radioGroupOptions.check(question.checkedId);
-            } else {
-                radioGroupOptions.check(-1);
-            }
+            radioGroupOptions.check(question.checkedId);
             radioGroupOptions.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
                     int pos = (int) group.getTag();
                     Question que = questions.get(pos);
-                    que.isAnswered = true;
                     que.checkedId = checkedId;
                     Log.e(TAG, pos + " :onCheckedChanged: " + que.toString());
                 }
             });
-        }*/
+        }
     }
+
+
+
     private class MyCustomEditTextListener implements TextWatcher {
         private int position;
-        public void updatePosition(int position) {
+        private EditText textcomment;
+        private boolean ischanged;
+        public void updatePosition(int position, EditText textcomment) {
+            this.textcomment = textcomment;
             this.position = position;
+        }
+        public void updateui(final int position)
+        {
+            if(!onbind && !ischanged) {
+                notifyItemChanged(position);
+                //textcomment.setText("aa");
+                needfocus = true;
+            }
         }
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
@@ -206,11 +226,17 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                 temp.setRemark(questions.get(position).comment);
                 readfromlocal.put(questions.get(position).itemid, temp);
             }
+          //  if (!charSequence.equals(""))
+          //  {
+            //    ischanged = false;
+              //  updateui(position);
+             //   ischanged = true;
+          //  }
             Log.v("zhoujiajun", questions.get(position).toString());
         }
         @Override
         public void afterTextChanged(Editable editable) {
-            // no op
+
         }
     }
 

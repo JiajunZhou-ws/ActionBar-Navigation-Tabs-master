@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Contacts;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -36,6 +37,7 @@ public class PhotoActivity extends AppCompatActivity {
     Toolbar toolbar;
     ImageAdapter temp;
     Integer numofpic;
+    String itemid;
     private List<String> imagelist = new ArrayList<>();
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,9 @@ public class PhotoActivity extends AppCompatActivity {
         numofpic = 0;
         temp = new ImageAdapter(this);
 
+        Intent intent = getIntent();
+        itemid = intent.getStringExtra("itemid");
+
         try {
             PreparePicture();
         } catch (IOException e) {
@@ -67,7 +72,10 @@ public class PhotoActivity extends AppCompatActivity {
         gridview.setAdapter(temp);
         gridview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-               // Toast.makeText(PhotoActivity.this, "" + String.valueOf(position), Toast.LENGTH_SHORT).show();
+                Toast.makeText(PhotoActivity.this, "" + String.valueOf(position), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(PhotoActivity.this,PreviewActivity.class);
+                intent.putExtra("picturename",QuestionActivity.readfromlocal.get(itemid).getPicturePathList().get(position));
+                PhotoActivity.this.startActivity(intent);
             }
         });
     }
@@ -161,11 +169,7 @@ public class PhotoActivity extends AppCompatActivity {
                 byte[] buffer = new byte[length];
                 fin.read(buffer);
                 res = EncodingUtils.getString(buffer, "UTF-8");
-                //List<String> taskcategorydetail = new Gson().fromJson(res, List.class);
                 temp.setimage(i,Base64Util.base64ToBitmap(res));
-                //readfromlocal = new Gson().fromJson(res,listType);
-                //Toast.makeText(this,"yijingduqudao"+fileName,Toast.LENGTH_SHORT).show();
-                //Log.d("Main",res.toString());
                 fin.close();
             }
             else
@@ -206,8 +210,7 @@ public class PhotoActivity extends AppCompatActivity {
                         String tempid = UUID.randomUUID().toString();
                         savePicture(tempid,bmp);
                         ProjectDetailActivity.newpicid.add(tempid);
-                        Intent intent = getIntent();
-                        String itemid = intent.getStringExtra("itemid");
+
                         if (QuestionActivity.readfromlocal.containsKey(itemid))
                         {
                             if(QuestionActivity.readfromlocal.get(itemid).getPicturePathList() == null) {

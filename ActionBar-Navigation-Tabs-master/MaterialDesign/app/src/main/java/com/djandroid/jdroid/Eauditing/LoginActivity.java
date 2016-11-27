@@ -44,6 +44,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
+//自动登录功能
 /**
  * A login screen that offers login via email/password.
  */
@@ -96,7 +98,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         });
 
 
-        if(fileIsExists(getString(R.string.UserCache)))
+        if(fileIsExists(getString(R.string.UserCache))) //判断有没有usercache自动登录功能
         {
             String tempusername = null;
             try {
@@ -273,7 +275,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         mEmailView.setAdapter(adapter);
     }
 
-    public String readfromusercache(String fileName) throws IOException {
+    public String readfromusercache(String fileName) throws IOException {  //read usercache to do the auto login
         String res="";
         try{
                 FileInputStream fin = openFileInput(fileName);
