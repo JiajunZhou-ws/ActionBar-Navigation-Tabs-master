@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/layout_main1"
@@ -13,16 +14,18 @@
             android:id="@+id/toolbar"
             layout="@layout/toolbar" />
     </LinearLayout>
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+         android:layout_height="match_parent" >
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_marginTop="60dp"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
     <GridView
         android:id="@+id/gridview"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="354dp"
         android:columnWidth="100dp"
         android:numColumns="auto_fit"
         android:verticalSpacing="10dp"
@@ -30,12 +33,90 @@
         android:stretchMode="columnWidth"
         android:gravity="center"
         />
-        <android.support.v4.view.ViewPager
-            android:id="@+id/detail_view"
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#eeeeee"
-            android:visibility="invisible"
-            android:contentDescription="用来展示图片的viewpager"/>
-</RelativeLayout>>
-</FrameLayout>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_view_answer"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="18dp"
+                android:layout_gravity="bottom"
+                android:layout_height="match_parent"
+                android:text="检查结果："/>
+            <EditText
+                android:id="@+id/editcomment"
+                android:layout_width="0dp"
+                android:layout_weight="8"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:inputType="textCapSentences|textMultiLine"
+                android:minLines="3"
+                android:gravity="left|top"
+                android:hint="此处输入备注或者评论"
+                android:textSize="14dp"
+                android:scrollHorizontally="false"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_view_answer2"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="18dp"
+                android:layout_gravity="bottom"
+                android:layout_height="match_parent"
+                android:text="检查结果："/>
+            <EditText
+                android:id="@+id/editcomment2"
+                android:layout_width="0dp"
+                android:layout_weight="8"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:inputType="textCapSentences|textMultiLine"
+                android:minLines="3"
+                android:gravity="left|top"
+                android:hint="此处输入备注或者评论"
+                android:textSize="14dp"
+                android:scrollHorizontally="false"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_view_answer3"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="18dp"
+                android:layout_gravity="bottom"
+                android:layout_height="match_parent"
+                android:text="检查结果："/>
+            <EditText
+                android:id="@+id/editcomment3"
+                android:layout_width="0dp"
+                android:layout_weight="8"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:inputType="textCapSentences|textMultiLine"
+                android:minLines="3"
+                android:gravity="left|top"
+                android:hint="此处输入备注或者评论"
+                android:textSize="14dp"
+                android:scrollHorizontally="false"
+                />
+        </LinearLayout>
+</LinearLayout>
+    </ScrollView>
+</LinearLayout>

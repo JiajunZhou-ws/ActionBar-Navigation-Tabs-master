@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.djandroid.jdroid.Eauditing.googleio.ScrimInsetsScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.djandroid.jdroid.Eab.googleio.ScrimInsetsScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/navdrawer"
     android:layout_width="@dimen/navigation_drawer_width"
@@ -34,4 +34,4 @@
                 android:orientation="vertical" />
         </FrameLayout>
     </LinearLayout>
-</com.djandroid.jdroid.Eauditing.googleio.ScrimInsetsScrollView>
+</com.djandroid.jdroid.Eab.googleio.ScrimInsetsScrollView>
