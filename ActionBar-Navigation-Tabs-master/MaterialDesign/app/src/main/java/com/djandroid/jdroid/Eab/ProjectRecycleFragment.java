@@ -15,26 +15,31 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.djandroid.jdroid.Eab.ClientLibrary.HttpModel.AndroidTaskService.TaskInformation;
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.TaskService.Helper.TaskInformation;
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.AuditStatus;
 import com.google.gson.Gson;
 
 import java.util.List;
 
+import static com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.AuditStatus.*;
+
 
 /**
- * Created by dhawal sodha parmar on 5/4/2015.
+ * Created by Tonny Zhou on 12/11/2016.
  */
 @SuppressLint("ValidFragment")
 public class ProjectRecycleFragment extends Fragment {
 
     RecyclerView recList;
+    AuditStatus taskstatus;
     Boolean isget;
     List<TaskInformation> listfromserver;
     public ProjectRecycleFragment()
     {}
-    public ProjectRecycleFragment(List<TaskInformation> temp)
+    public ProjectRecycleFragment(List<TaskInformation> temp, AuditStatus tempstatus)
     {
         listfromserver = temp;
+        taskstatus = tempstatus;
     }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,10 +68,6 @@ public class ProjectRecycleFragment extends Fragment {
     }
 
     public class MyAdapter extends RecyclerView.Adapter<RecylerViewHolder> {
-       // String [] project_name={"AX001-项目1","AX002-项目2","AX003-项目3","AX004-项目4",
-      //          "AX005-项目5","AX006-项目6","AX007-项目7","AX008-项目8","AX009-项目9","AX010-项目10","AX011-项目11"};
-       // String [] customer_name={"华为审计","华为审计","ABB审计","平安审计",
-      //          "XX审计","XX审计","XX审计","XX审计","XX审计","XX审计","XX审计"};
         List<TaskInformation> projectlist;
         Context context;
         // Provide a suitable constructor (depends on the kind of dataset)
@@ -94,7 +95,6 @@ public class ProjectRecycleFragment extends Fragment {
                 int position = vholder.getPosition();
                  //Toast.makeText(context,"This is position "+position,Toast.LENGTH_SHORT ).show();
                 Intent intent = new Intent();
-                //String taskcategorydetail = new Gson().toJson(projectlist.get(position));
                 intent.putExtra("TaskInfomation", new Gson().toJson(projectlist.get(position)));
                 intent.setClass(context,ProjectDetailActivity.class);
                 context.startActivity(intent);
@@ -105,8 +105,8 @@ public class ProjectRecycleFragment extends Fragment {
         @Override
         public void onBindViewHolder(final RecylerViewHolder holder, int position) {
             String textstatus = "";
-            holder.tv1.setText(projectlist.get(position).siteid + "\n" + projectlist.get(position).projectName);
-            switch (projectlist.get(position).status)
+            holder.tv1.setText(projectlist.get(position).taskSiteId+ "\n" + projectlist.get(position).projectName);
+            switch (taskstatus)
             {
                 case None:
                     textstatus = "未完成";

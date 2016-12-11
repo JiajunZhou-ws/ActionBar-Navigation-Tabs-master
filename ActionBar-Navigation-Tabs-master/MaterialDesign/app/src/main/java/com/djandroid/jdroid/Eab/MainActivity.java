@@ -21,9 +21,12 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.djandroid.jdroid.Eab.ClientLibrary.Common.NetworkException;
 import com.djandroid.jdroid.Eab.ClientLibrary.EauditingClient;
-import com.djandroid.jdroid.Eab.ClientLibrary.HttpModel.AndroidTaskService.TaskInformation;
-import com.djandroid.jdroid.Eab.ClientLibrary.Parameter.AuditStatus;
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.TaskService.Helper.TaskInformation;
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.TaskOtherInformation;
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.TaskService.Response.TaskListForAuditorResponse;
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.AuditStatus;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -89,7 +92,7 @@ public class MainActivity extends AppCompatActivity
         mDrawerToggle.setDrawerIndicatorEnabled(true);
         drawer_layout.setDrawerListener(mDrawerToggle);
     }
-    public class GetProjectTask extends AsyncTask<Void, Void, List<TaskInformation>> {
+    public class GetProjectTask extends AsyncTask<Void, Void, TaskListForAuditorResponse> {
         AuditStatus status;
         GetProjectTask(AuditStatus temp) {
             this.status = temp;
@@ -98,39 +101,29 @@ public class MainActivity extends AppCompatActivity
         protected void onPreExecute() {
         }
         @Override
-        protected List<TaskInformation> doInBackground(Void... params) {
+        protected TaskListForAuditorResponse doInBackground(Void... params) {
             // TODO: attempt authentication against projectdetail network service.
             // Simulate network access.
-            return EauditingClient.GetTaskList(username, status);
+            try {
+                return EauditingClient.GetTaskList(username, status);
+            } catch (NetworkException e) {
+                e.printStackTrace();
+                return null;
+            }
         }
         @Override
-        protected void onPostExecute(final List<TaskInformation> success) {
+        protected void onPostExecute(final TaskListForAuditorResponse success) {
             listfromserver.clear();
             Log.d("MainActivity","Get the Task List succeed!");
             if(success != null)
             {
-                for(int i=0; i < success.size();i++)
+                for(int i=0; i < success.taskList.size();i++)
                 {
-                    listfromserver.add(success.get(i));
-                    //Log.d("projecttasklist",listfromserver.get(i).projectName);
-                    //Log.d("projecttasklist",listfromserver.get(i).subcontractor);
-                    //Log.d("projecttasklist",listfromserver.get(i).idTask);
-                    //Log.d("projecttasklist",listfromserver.get(i).siteid);
-                    //Log.d("projecttasklist",listfromserver.get(i).sitename);
-                    //Log.d("projecttasklist",listfromserver.get(i).siteaddress);
-                    //Log.d("projecttasklist",listfromserver.get(i).region);
-                    //Log.d("projecttasklist",listfromserver.get(i).Categories);
+                    listfromserver.add(success.taskList.get(i));
                 }
-                //android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                //getSupportFragmentManager().beginTransaction()
-                //       .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                //      .commit();
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container, new ProjectRecycleFragment(listfromserver))
+                        .replace(R.id.container, new ProjectRecycleFragment(listfromserver,status))
                         .commit();
-                //transaction.addToBackStack(null);
-                //transaction.commit();
-                //onSectionAttached(1);
             }
         }
         @Override

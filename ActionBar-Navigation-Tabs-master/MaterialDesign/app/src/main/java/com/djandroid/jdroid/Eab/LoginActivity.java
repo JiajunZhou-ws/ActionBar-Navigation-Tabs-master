@@ -1,8 +1,8 @@
 package com.djandroid.jdroid.Eab;
 
 import com.djandroid.jdroid.Eab.ClientLibrary.*;
-import com.djandroid.jdroid.Eab.ClientLibrary.HttpModel.UserService.UserLoginResponse;
-import com.djandroid.jdroid.Eab.ClientLibrary.HttpModel.UserService.UserLoginStatus;
+import com.djandroid.jdroid.Eab.ClientLibrary.Common.NetworkException;
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.AuditorService.Response.AuditorLoginResponse;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -333,7 +333,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, UserLoginResponse> {
+    public class UserLoginTask extends AsyncTask<Void, Void, AuditorLoginResponse> {
 
         private final String mEmail;
         private final String mPassword;
@@ -344,34 +344,39 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         }
 
         @Override
-        protected UserLoginResponse doInBackground(Void... params) {
+        protected AuditorLoginResponse doInBackground(Void... params) {
             // TODO: attempt authentication against projectdetail network service.
                 // Simulate network access.
-                UserLoginResponse rtn = EauditingClient.UserLogin(mEmail,mPassword);
-                return rtn;
+            AuditorLoginResponse rtn = null;
+            try {
+                rtn = EauditingClient.UserLogin(mEmail,mPassword);
+            } catch (NetworkException e) {
+                e.printStackTrace();
+            }
+            return rtn;
 
         }
 
         @Override
-        protected void onPostExecute(final UserLoginResponse success) {
+        protected void onPostExecute(final AuditorLoginResponse success) {
             mAuthTask = null;
             showProgress(false);
 
-            if (success.getStatus() == UserLoginStatus.Success) {
+            if (success == AuditorLoginResponse.Success) {
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 intent.putExtra("username",mEmail);
                 startActivity(intent);
                 finish();
             }
-            else if(success.getStatus() == UserLoginStatus.VersionTooOld)
+            else if(success == AuditorLoginResponse.VersionTooOld)
             {
                 Toast.makeText(getBaseContext(),"版本过旧，请升级APP后使用",Toast.LENGTH_SHORT).show();
             }
-            else if(success.getStatus() == UserLoginStatus.UserNotFound)
+            else if(success == AuditorLoginResponse.WrongUserOrWrongPassword)
             {
                 Toast.makeText(getBaseContext(),"密码错误",Toast.LENGTH_SHORT).show();
             }
-            else if(success.getStatus() == UserLoginStatus.NetWorkError)
+            else if(success == AuditorLoginResponse.NetWorkError)
             {
                 Toast.makeText(getBaseContext(),"网络无法联通",Toast.LENGTH_SHORT).show();
             }

@@ -43,7 +43,7 @@ public class ProjectDetailActivity extends AppCompatActivity
     ProgressBar progressBar;
     TextView progresstext,projecttitle,projectname,projectarea,projectsiteid,projectsitename,projectsiteaddress,projectsitecontractor,projectcatagory;
     Button detailbutton;
-
+ 
     GetProjectDetail getprojectdetail;
     GetPicture getpicture;
     @Override
