@@ -18,7 +18,8 @@ import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import android.support.v7.widget.Toolbar;
 
-import com.djandroid.jdroid.Eab.ClientLibrary.Parameter.Task.TaskItem;
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.ItemDetail;
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.PictureDetail;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -39,7 +40,7 @@ public class PhotoActivity extends AppCompatActivity {
     ImageAdapter temp;
     Integer numofpic;
     String itemid;
-    private List<String> imagelist = new ArrayList<>();
+    private List<PictureDetail> imagelist = new ArrayList<>();
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +76,7 @@ public class PhotoActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 Toast.makeText(PhotoActivity.this, "short click" + String.valueOf(position), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(PhotoActivity.this,PreviewActivity.class);
-                intent.putExtra("picturename",QuestionActivity.readfromlocal.get(itemid).getPicturePathList().get(position));
+                intent.putExtra("picturename",QuestionActivity.readfromlocal.get(itemid).goodPictureList.get(position).pictureName);
                 PhotoActivity.this.startActivity(intent);
             }
         });
@@ -96,7 +97,7 @@ public class PhotoActivity extends AppCompatActivity {
         builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                QuestionActivity.readfromlocal.get(itemid).getPicturePathList().remove(n);
+                QuestionActivity.readfromlocal.get(itemid).goodPictureList.remove(n);
                 temp.clearpicture();
                 try {
                     PreparePicture();
@@ -155,13 +156,13 @@ public class PhotoActivity extends AppCompatActivity {
 
     private void PreparePicture() throws IOException {
         Intent intent = getIntent();
-        imagelist = QuestionActivity.readfromlocal.get(itemid).getPicturePathList();
+        imagelist = QuestionActivity.readfromlocal.get(itemid).goodPictureList;
         if(imagelist != null && imagelist.size() > 0)
         {
             numofpic = imagelist.size();
             for(int i = 0 ; i < imagelist.size() ; i++)
             {
-                readfromlocalmap(imagelist.get(i) , i);
+                readfromlocalmap(imagelist.get(i).pictureName , i);
             }
         }
 
@@ -245,23 +246,24 @@ public class PhotoActivity extends AppCompatActivity {
                         String tempid = UUID.randomUUID().toString();
                         savePicture(tempid,bmp);
                         ProjectDetailActivity.newpicid.add(tempid);
-
+                        PictureDetail temppicture = new PictureDetail();
+                        temppicture.pictureName = tempid;
                         if (QuestionActivity.readfromlocal.containsKey(itemid))
                         {
-                            if(QuestionActivity.readfromlocal.get(itemid).getPicturePathList() == null) {
-                                List<String> templist = new ArrayList<>();
-                                templist.add(tempid); //add uuid
-                                QuestionActivity.readfromlocal.get(itemid).setPicturePathList(templist); //add uuid}
+                            if(QuestionActivity.readfromlocal.get(itemid).goodPictureList == null) {
+                                List<PictureDetail> templist = new ArrayList<>();
+                                templist.add(temppicture); //add uuid
+                                QuestionActivity.readfromlocal.get(itemid).goodPictureList = templist; //add uuid}
                             }
                             else
                             {
-                                QuestionActivity.readfromlocal.get(itemid).getPicturePathList().add(tempid);
+                                QuestionActivity.readfromlocal.get(itemid).goodPictureList.add(temppicture);
                             }
                         }
                         else
                         {
-                            TaskItem temp = new TaskItem();
-                            temp.getPicturePathList().add(tempid);
+                            ItemDetail temp = new ItemDetail();
+                            temp.goodPictureList.add(temppicture);
                             QuestionActivity.readfromlocal.put(itemid, temp);
                         }
                     }

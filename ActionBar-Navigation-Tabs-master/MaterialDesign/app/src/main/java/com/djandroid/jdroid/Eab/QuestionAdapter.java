@@ -15,9 +15,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-
-import com.djandroid.jdroid.Eab.ClientLibrary.HttpModel.AndroidTaskService.TaskCategoryDetail;
-import com.djandroid.jdroid.Eab.ClientLibrary.Parameter.Task.TaskItem;
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.TaskService.Helper.TaskCategoryDetail;
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.ItemDetail;
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.ScoreType;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -38,10 +38,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
     //private List<Question> questions;
     private String mapfilename;
     TaskCategoryDetail taskcategorydetail;
-    //private String[] mDataset;
     private Context context;
-    public static boolean onbind;
-    public static boolean needfocus;
     public QuestionAdapter(Context context, String mapfilename, TaskCategoryDetail temp) {
         this.inflater = LayoutInflater.from(context);
         this.context = context;
@@ -61,16 +58,9 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         Question current = questions.get(position);
         holder.setQuestion(current.question);
         holder.textDescription.setText(current.description);
-        //holder.textcomment.setTag(position);
         holder.imagetest.setTag(position);
-       // onbind = true;
         holder.commentlistener.updatePosition(holder.getAdapterPosition(),holder.textcomment);
         holder.textcomment.setText(questions.get(holder.getAdapterPosition()).comment);
-       // if(needfocus) {
-        //    holder.textcomment.requestFocus();
-      //      holder.textcomment.setSelection(1);
-      //  }
-       // onbind = false;
         holder.auditlistener.updatePosition(holder.getAdapterPosition());
         holder.auditscore.setText(String.valueOf(questions.get(holder.getAdapterPosition()).score));
         holder.setOptions(current, position);
@@ -126,37 +116,20 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                 public void onClick(View view) {
                     int position =(int) imagetest.getTag();
                     Log.v("zhoujiajun", String.valueOf(position));
-                    //Toast.makeText(itemView.getContext(),"click picture" + String.valueOf(position),Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(context,PhotoActivity.class);
-                    if(null != readfromlocal.get(questions.get(position).itemid).getPicturePathList()
-                            && QuestionActivity.readfromlocal.get(questions.get(position).itemid).getPicturePathList().size() > 0)
-                        intent.putExtra("imagelist",new Gson().toJson(QuestionActivity.readfromlocal.get(questions.get(position).itemid).getPicturePathList()));
-                    else if(QuestionActivity.readfromlocal.get(questions.get(position).itemid).getPicturePathList() == null)
+                    if(null != readfromlocal.get(questions.get(position).itemid).goodPictureList
+                            && QuestionActivity.readfromlocal.get(questions.get(position).itemid).goodPictureList.size() > 0)
+                        intent.putExtra("imagelist",new Gson().toJson(QuestionActivity.readfromlocal.get(questions.get(position).itemid).goodPictureList));
+                    else if(QuestionActivity.readfromlocal.get(questions.get(position).itemid).goodPictureList == null)
                     {
                         List<String> temp = new ArrayList<String>();
                         intent.putExtra("imagelist",new Gson().toJson(temp));
                     }
                     intent.putExtra("itemid",questions.get(position).itemid);
                     context.startActivity(intent);
-                    //Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    //((Activity) context).startActivityForResult(intent,1);
                 }
             });
-
-
-            //textcomment.addTextChangedListener(new TextWatcher() {
-            //     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-            //     public void afterTextChanged(Editable editable) {}
-            //      public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            //           if(textcomment.getTag()!=null){
-            //               questions.get((int)textcomment.getTag()).comment =charSequence.toString();
-            //notifyDataSetChanged();
-            //                Log.v("zhoujiajun", questions.get((int)textcomment.getTag()).toString());
-            //           }
-            //        }
-            //    });
         }
-
 
         public void setQuestion(String question) {
             textViewQuestion.setText(question);
@@ -164,20 +137,80 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
 
         public void setOptions(Question question, int position) {
             radioGroupOptions.setTag(position);
-            //radioButtonOption1.setText(question.option1);
-            //radioButtonOption2.setText(question.option2);
-            //radioButtonOption3.setText(question.option3);
             Log.e(TAG, position + " :setOptions: " + question.toString());
-            radioGroupOptions.check(question.checkedId);
+            radioGroupOptions.check(checkIDtoRealid(question.checkedId));
             radioGroupOptions.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
                     int pos = (int) group.getTag();
                     Question que = questions.get(pos);
-                    que.checkedId = checkedId;
+                    que.checkedId = RealidtocheckID(checkedId);
+                    if(readfromlocal.containsKey(questions.get(pos).itemid))
+                    {
+                        readfromlocal.get(questions.get(pos).itemid).scoreType = RealidtoScoretype(que.checkedId);
+                    }
+                    else {
+                        ItemDetail temp;
+                        int itemindex = 0; //find the index from taskcategorydetail
+                        for(int j = 0 ; j < taskcategorydetail.taskItemList.size() ; j++)
+                        {
+                            if (taskcategorydetail.taskItemList.get(j).itemId.equals(questions.get(pos).itemid)) {
+                                itemindex = j;
+                                break;
+                            }
+                        }
+                        temp = taskcategorydetail.taskItemList.get(itemindex);
+                        temp.scoreType = RealidtoScoretype(questions.get(pos).checkedId);
+                        readfromlocal.put(questions.get(pos).itemid, temp);
+                    }
                     Log.e(TAG, pos + " :onCheckedChanged: " + que.toString());
                 }
             });
+        }
+        public int checkIDtoRealid(int num)
+        {
+            switch (num)
+            {
+                case 0:
+                    return -1;
+                case 1:
+                    return radioButtonOption1.getId();
+                case 2:
+                    return radioButtonOption2.getId();
+                case 3:
+                    return radioButtonOption3.getId();
+                case 4:
+                    return radioButtonOption4.getId();
+                default:
+                    return -1;
+            }
+        }
+        public int RealidtocheckID(int num)
+        {
+            if(num == radioButtonOption1.getId())
+                return 1;
+            else if(num == radioButtonOption2.getId())
+                return 2;
+            else if(num == radioButtonOption3.getId())
+                return 3;
+            else if(num == radioButtonOption4.getId())
+                return 4;
+            return -1;
+        }
+        public ScoreType RealidtoScoretype(int num)
+        {
+            switch (num)
+            {
+                case 1:
+                    return ScoreType.Pass;
+                case 2:
+                    return ScoreType.NoPass;
+                case 3:
+                    return ScoreType.NA;
+                case 4:
+                    return ScoreType.Score;
+            }
+            return ScoreType.None;
         }
     }
 
@@ -200,21 +233,21 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             questions.get(position).comment = charSequence.toString();
             if(readfromlocal.containsKey(questions.get(position).itemid))
             {
-                readfromlocal.get(questions.get(position).itemid).setRemark(questions.get(position).comment);
+                //readfromlocal.get(questions.get(position).itemid).setRemark(questions.get(position).comment);
             }
             else {
-                TaskItem temp;
-                int itemindex = 0; //find the index from taskcategorydetail
-                for(int j = 0 ; j < taskcategorydetail.taskItemList.size() ; j++)
-                {
-                    if (taskcategorydetail.taskItemList.get(j).getItemId().equals(questions.get(position).itemid)) {
-                        itemindex = j;
-                        break;
-                    }
-                }
-                temp = taskcategorydetail.taskItemList.get(itemindex);
-                temp.setRemark(questions.get(position).comment);
-                readfromlocal.put(questions.get(position).itemid, temp);
+                //TaskItem temp;
+                //int itemindex = 0; //find the index from taskcategorydetail
+                //for(int j = 0 ; j < taskcategorydetail.taskItemList.size() ; j++)
+               // {
+                //    if (taskcategorydetail.taskItemList.get(j).getItemId().equals(questions.get(position).itemid)) {
+                 //       itemindex = j;
+                  //      break;
+                   // }
+               // }
+                //temp = taskcategorydetail.taskItemList.get(itemindex);
+                //temp.setRemark(questions.get(position).comment);
+                //readfromlocal.put(questions.get(position).itemid, temp);
             }
             Log.v("zhoujiajun", questions.get(position).toString());
         }
@@ -235,33 +268,25 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         }
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-            Pattern p = Pattern.compile("[0-9]*");
-            Matcher m = p.matcher(charSequence.toString());
-            if(m.matches() && !charSequence.toString().equals(""))
+            questions.get(position).score = Integer.valueOf(charSequence.toString());
+            if(readfromlocal.containsKey(questions.get(position).itemid))
             {
-                questions.get(position).score = Integer.valueOf(charSequence.toString());
-                if(readfromlocal.containsKey(questions.get(position).itemid))
-                {
-                    readfromlocal.get(questions.get(position).itemid).setScore(questions.get(position).score);
-                }
-                else {
-                    TaskItem temp;
-                    int itemindex = 0; //find the index from taskcategorydetail
-                    for(int j = 0 ; j < taskcategorydetail.taskItemList.size() ; j++)
-                    {
-                        if (taskcategorydetail.taskItemList.get(j).getItemId().equals(questions.get(position).itemid)) {
-                            itemindex = j;
-                            break;
-                        }
-                    }
-
-                    temp = taskcategorydetail.taskItemList.get(itemindex);
-                    temp.setScore(questions.get(position).score);
-                    readfromlocal.put(questions.get(position).itemid, temp);
-                }
+                readfromlocal.get(questions.get(position).itemid).scoreValue = questions.get(position).score;
             }
-
+            else {
+                ItemDetail temp;
+                int itemindex = 0; //find the index from taskcategorydetail
+                for(int j = 0 ; j < taskcategorydetail.taskItemList.size() ; j++)
+                {
+                    if (taskcategorydetail.taskItemList.get(j).itemId.equals(questions.get(position).itemid)) {
+                        itemindex = j;
+                        break;
+                    }
+                }
+                temp = taskcategorydetail.taskItemList.get(itemindex);
+                temp.scoreValue = questions.get(position).score;
+                readfromlocal.put(questions.get(position).itemid, temp);
+            }
             Log.v("auditscore", charSequence.toString());
         }
         @Override

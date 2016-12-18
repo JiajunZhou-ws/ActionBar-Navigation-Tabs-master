@@ -32,8 +32,8 @@ public class ItemRecyclerAdapter extends  RecyclerView.Adapter<ItemRecylerViewHo
 
     @Override
     public void onBindViewHolder(ItemRecylerViewHolder holder, int position) {
-        holder.tv1.setText(ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(position).CategoryName +
-        "\n" + ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(position).FieldName);
+        holder.tv1.setText(ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(position).categoryName +
+        "\n" + ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(position).tabName);
         //holder.tv1.setTextColor(Color.RED);
         holder.itemView.setOnClickListener(clickListener);
         holder.itemView.setTag(holder);

@@ -12,8 +12,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.djandroid.jdroid.Eab.ClientLibrary.HttpModel.AndroidTaskService.TaskCategoryDetail;
-import com.djandroid.jdroid.Eab.ClientLibrary.Parameter.Task.TaskItem;
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.TaskService.Helper.TaskCategoryDetail;
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.ItemDetail;
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.ScoreType;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -36,7 +37,7 @@ public class QuestionActivity extends AppCompatActivity {
     TaskCategoryDetail taskcategorydetail;
     public static List<Question> questions = new ArrayList<>();
     public static String catogoryid;
-    public static LinkedHashMap<String,TaskItem> readfromlocal = new LinkedHashMap<>();;
+    public static LinkedHashMap<String,ItemDetail> readfromlocal = new LinkedHashMap<>();;
     QuestionAdapter questionAdapter;
     Toolbar toolbar;
     @Override
@@ -59,12 +60,12 @@ public class QuestionActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         taskcategorydetail = new Gson().fromJson(intent.getStringExtra("projectitems"),TaskCategoryDetail.class);
-        catogoryid = taskcategorydetail.CategoryId;
+        catogoryid = taskcategorydetail.categoryId;
 
 
         readfromlocal.clear(); //clear the static cache
         try {
-            readfromlocalmap(ProjectDetailActivity.taskid + taskcategorydetail.CategoryId);
+            readfromlocalmap(ProjectDetailActivity.taskid + taskcategorydetail.categoryId);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -76,17 +77,17 @@ public class QuestionActivity extends AppCompatActivity {
 
     private void saveMaptofile() {
         try {
-            FileOutputStream outputStream = openFileOutput(ProjectDetailActivity.taskid + taskcategorydetail.CategoryId, Activity.MODE_PRIVATE);
+            FileOutputStream outputStream = openFileOutput(ProjectDetailActivity.taskid + taskcategorydetail.categoryId, Activity.MODE_PRIVATE);
             outputStream.write(new GsonBuilder().serializeNulls().create().toJson(QuestionActivity.readfromlocal).getBytes());
             outputStream.flush();
             outputStream.close();
-            Toast.makeText(this, taskcategorydetail.CategoryName + " 保存成功", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, taskcategorydetail.categoryName + " 保存成功", Toast.LENGTH_SHORT).show();
         } catch (FileNotFoundException e) {
-            Toast.makeText(this, taskcategorydetail.CategoryName + " 保存成功", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, taskcategorydetail.categoryName + " 保存成功", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(this, taskcategorydetail.CategoryName + " 保存失败", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, taskcategorydetail.categoryName + " 保存失败", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -95,28 +96,30 @@ public class QuestionActivity extends AppCompatActivity {
         for (int i = 0; i < taskcategorydetail.taskItemList .size(); i++) {
             Question question = new Question();
             question.id = i;
-            question.itemid = taskcategorydetail.taskItemList.get(i).getItemId();
-            question.question = "#" + (i + 1) + ":" + taskcategorydetail.taskItemList.get(i).getItem();
-            question.description = taskcategorydetail.taskItemList.get(i).getExplanation();
+            question.itemid = taskcategorydetail.taskItemList.get(i).itemId;
+            question.question = "#" + (i + 1) + ":" + taskcategorydetail.taskItemList.get(i).itemDetail;
+            question.description = taskcategorydetail.taskItemList.get(i).itemExplanation;
 
-            if(readfromlocal.containsKey(taskcategorydetail.taskItemList.get(i).getItemId()))
+            if(readfromlocal.containsKey(taskcategorydetail.taskItemList.get(i).itemId))
             {
-                if(readfromlocal.get(taskcategorydetail.taskItemList.get(i).getItemId()).getRemark() != null)
-                    question.comment = readfromlocal.get(taskcategorydetail.taskItemList.get(i).getItemId()).getRemark();
+                //if(readfromlocal.get(taskcategorydetail.taskItemList.get(i).itemId). != null)
+                 //   question.comment = readfromlocal.get(taskcategorydetail.taskItemList.get(i).getItemId()).getRemark();
+                //else
+                //    question.comment = taskcategorydetail.taskItemList.get(i).getRemark();
+                if(readfromlocal.get(taskcategorydetail.taskItemList.get(i).itemId).scoreValue > 0)
+                    question.score = readfromlocal.get(taskcategorydetail.taskItemList.get(i).itemId).scoreValue;
                 else
-                    question.comment = taskcategorydetail.taskItemList.get(i).getRemark();
-                if(readfromlocal.get(taskcategorydetail.taskItemList.get(i).getItemId()).getScore() != null)
-                    question.score = readfromlocal.get(taskcategorydetail.taskItemList.get(i).getItemId()).getScore();
-                else
-                    question.score = taskcategorydetail.taskItemList.get(i).getScore();
-                if(readfromlocal.get(taskcategorydetail.taskItemList.get(i).getItemId()).getPicturePathList() == null)
-                    readfromlocal.get(taskcategorydetail.taskItemList.get(i).getItemId()).setPicturePathList(taskcategorydetail.taskItemList.get(i).getPicturePathList());
-                else if(readfromlocal.get(taskcategorydetail.taskItemList.get(i).getItemId()).getPicturePathList().size() == 0)
-                    readfromlocal.get(taskcategorydetail.taskItemList.get(i).getItemId()).setPicturePathList(taskcategorydetail.taskItemList.get(i).getPicturePathList());
+                    question.score = taskcategorydetail.taskItemList.get(i).scoreValue;
+
+                question.checkedId = readfromlocal.get(taskcategorydetail.taskItemList.get(i).itemId).scoreType.ordinal();
+
+                if(readfromlocal.get(taskcategorydetail.taskItemList.get(i).itemId).goodPictureList == null)
+                    readfromlocal.get(taskcategorydetail.taskItemList.get(i).itemId).goodPictureList = taskcategorydetail.taskItemList.get(i).goodPictureList;
+               // else if(readfromlocal.get(taskcategorydetail.taskItemList.get(i).itemId).goodPictureList.size() == 0)
             }
             else {
-                question.comment = taskcategorydetail.taskItemList.get(i).getRemark();
-                question.score = taskcategorydetail.taskItemList.get(i).getScore();
+                if(taskcategorydetail.taskItemList.get(i).scoreType == ScoreType.Score)
+                    question.score = taskcategorydetail.taskItemList.get(i).scoreValue;
             }
             questions.add(question);
         }
@@ -128,9 +131,10 @@ public class QuestionActivity extends AppCompatActivity {
         //Toast.makeText(this,"ahouojdfio",Toast.LENGTH_SHORT).show();
     }
 
+
     private void initQuestionsAdapter() {
         recyclerViewQuestions.setLayoutManager(new LinearLayoutManager(this));
-        questionAdapter = new QuestionAdapter(this,ProjectDetailActivity.taskid + taskcategorydetail.CategoryId, taskcategorydetail);
+        questionAdapter = new QuestionAdapter(this,ProjectDetailActivity.taskid + taskcategorydetail.categoryId, taskcategorydetail);
         recyclerViewQuestions.setAdapter(questionAdapter);
     }
 
@@ -174,7 +178,7 @@ public class QuestionActivity extends AppCompatActivity {
                 fin.read(buffer);
                 res = EncodingUtils.getString(buffer, "UTF-8");
                 //List<String> taskcategorydetail = new Gson().fromJson(res, List.class);
-                Type listType = new TypeToken<LinkedHashMap<String,TaskItem>>(){}.getType();
+                Type listType = new TypeToken<LinkedHashMap<String,ItemDetail>>(){}.getType();
                 readfromlocal = new Gson().fromJson(res,listType);
                 //Toast.makeText(this,"yijingduqudao"+fileName,Toast.LENGTH_SHORT).show();
                 //Log.d("Main",res.toString());

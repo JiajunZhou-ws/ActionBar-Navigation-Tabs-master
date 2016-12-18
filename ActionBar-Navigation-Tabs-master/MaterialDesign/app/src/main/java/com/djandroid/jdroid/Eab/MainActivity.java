@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity
      */
     List<TaskInformation> listfromserver;
     private CharSequence mTitle;
-    private String username;
+    public static String username;
     private ActionBarDrawerToggle mDrawerToggle;
     DrawerLayout drawer_layout;
     ActionBar actionBar;

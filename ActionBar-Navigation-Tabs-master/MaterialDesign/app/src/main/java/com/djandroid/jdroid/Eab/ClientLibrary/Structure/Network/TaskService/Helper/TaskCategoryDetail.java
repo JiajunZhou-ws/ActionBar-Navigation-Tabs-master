@@ -8,10 +8,10 @@ import java.util.List;
  * Created by Jimmy on 2016/12/8.
  */
 public class TaskCategoryDetail {
-    public String CategoryId;
-    public String CategoryName;
-    public String TabId;
-    public String TabName;
+    public String categoryId;
+    public String categoryName;
+    public String tabId;
+    public String tabName;
     public List<ItemDetail> taskItemList;
 }
 

@@ -1,6 +1,7 @@
 package com.djandroid.jdroid.Eab;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -16,8 +17,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.djandroid.jdroid.Eab.ClientLibrary.Common.NetworkException;
 import com.djandroid.jdroid.Eab.ClientLibrary.EauditingClient;
-import com.djandroid.jdroid.Eab.ClientLibrary.Parameter.Task.TaskItem;
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.PictureService.Response.SavePictureResponse;
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.TaskService.Response.TaskItemSaveForAuditorResponse;
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.ItemDetail;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -41,7 +45,7 @@ public class ProjectItemActivity extends AppCompatActivity {
     String status = "";
     PictureUpload picupload;
     TaskItemUpload taskupload;
-    LinkedHashMap<String,TaskItem> uploadmap = new LinkedHashMap<>();
+    LinkedHashMap<String,ItemDetail> uploadmap = new LinkedHashMap<>();
     private int uploadpicturenumber = 0;
     public static List<Integer> categorycolor = new ArrayList<>();
     public static int categorypotion = 0;
@@ -158,16 +162,23 @@ public class ProjectItemActivity extends AppCompatActivity {
         ProjectDetailActivity.newpicid.clear();
         for(int i = 0 ; i < ProjectDetailActivity.taskdetailresponse.taskCategoryList.size(); i++)
         {
-            if(readfromlocalmap(ProjectDetailActivity.taskid + ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(i).CategoryId))
+            if(readfromlocalmap(ProjectDetailActivity.taskid + ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(i).categoryId))
             {
-                for(Map.Entry<String,TaskItem>entry:uploadmap.entrySet())
+                for(Map.Entry<String,ItemDetail>entry:uploadmap.entrySet())
                 {
-                    TaskItem tempitem = entry.getValue();
-                    if(null != tempitem.getPicturePathList() && tempitem.getPicturePathList().size() != 0)
+                    ItemDetail tempitem = entry.getValue();
+                    if(null != tempitem.goodPictureList && tempitem.goodPictureList.size() != 0)
                     {
-                        for(int j = 0 ; j < tempitem.getPicturePathList().size(); j++)
+                        for(int j = 0 ; j < tempitem.goodPictureList.size(); j++)
                         {
-                            ProjectDetailActivity.newpicid.add(tempitem.getPicturePathList().get(j));
+                            ProjectDetailActivity.newpicid.add(tempitem.goodPictureList.get(j).pictureName);
+                        }
+                    }
+                    if(null != tempitem.badPictureList && tempitem.badPictureList.size() != 0)
+                    {
+                        for(int j = 0 ; j < tempitem.badPictureList.size(); j++)
+                        {
+                            ProjectDetailActivity.newpicid.add(tempitem.badPictureList.get(j).pictureName);
                         }
                     }
                 }
@@ -188,21 +199,21 @@ public class ProjectItemActivity extends AppCompatActivity {
     }
 
     private void uploadtask() throws IOException {
-        List<TaskItem> templist = new ArrayList<>();
+        List<ItemDetail> templist = new ArrayList<>();
         int number = 0;
         for(int i = 0 ; i < ProjectDetailActivity.taskdetailresponse.taskCategoryList.size(); i++)
         {
             templist.clear();
             uploadmap.clear();
-            if(readfromlocalmap(ProjectDetailActivity.taskid + ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(i).CategoryId))
+            if(readfromlocalmap(ProjectDetailActivity.taskid + ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(i).categoryId))
             {
-                for(Map.Entry<String,TaskItem>entry:uploadmap.entrySet())
+                for(Map.Entry<String,ItemDetail>entry:uploadmap.entrySet())
                 {
                     templist.add(entry.getValue());
                 }
-                taskupload = new TaskItemUpload(ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(i).CategoryId,templist);
+                taskupload = new TaskItemUpload(ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(i).categoryId,templist);
                 taskupload.execute((Void) null);
-                Log.v("upload Task" + ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(i).CategoryName, status);
+                Log.v("upload Task" + ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(i).categoryName, status);
             }
 
         }
@@ -218,7 +229,7 @@ public class ProjectItemActivity extends AppCompatActivity {
                 byte[] buffer = new byte[length];
                 fin.read(buffer);
                 res = EncodingUtils.getString(buffer, "UTF-8");
-                Type listType = new TypeToken<LinkedHashMap<String,TaskItem>>(){}.getType();
+                Type listType = new TypeToken<LinkedHashMap<String,ItemDetail>>(){}.getType();
                 uploadmap = new Gson().fromJson(res,listType);
                 fin.close();
                 Log.d("ProjectitemActivy","read from local map" + fileName + "succeed!");
@@ -275,7 +286,7 @@ public class ProjectItemActivity extends AppCompatActivity {
         return true;
     }
 
-    public class PictureUpload extends AsyncTask<Void, Void, String> {
+    public class PictureUpload extends AsyncTask<Void, Void, SavePictureResponse> {
         String picture;
         String picturecontent;
         PictureUpload(String temp, String tempcontent) {
@@ -286,15 +297,19 @@ public class ProjectItemActivity extends AppCompatActivity {
         protected void onPreExecute() {
         }
         @Override
-        protected String doInBackground(Void... params) {
+        protected SavePictureResponse doInBackground(Void... params) {
             // TODO: attempt authentication against projectdetail network service.
             // Simulate network access.
-            return EauditingClient.PictureSave(picture,picturecontent);
+            try {
+                return EauditingClient.PictureSave(picture,ProjectDetailActivity.taskid,picturecontent);
+            } catch (NetworkException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
         @Override
-        protected void onPostExecute(final String success) {
-                status = success;
-                if(!status.equals("Success"))
+        protected void onPostExecute(final SavePictureResponse success) {
+                if(success == SavePictureResponse.Failed)
                     Toast.makeText(getBaseContext(),"上传图片" + "失败",Toast.LENGTH_LONG).show();
                 else
                     uploadpicturenumber++;
@@ -311,10 +326,11 @@ public class ProjectItemActivity extends AppCompatActivity {
     }
 
 
-    public class TaskItemUpload extends AsyncTask<Void, Void, String> {
+    public class TaskItemUpload extends AsyncTask<Void, Void, TaskItemSaveForAuditorResponse> {
         String categoryid;
-        List<TaskItem> itemList = new ArrayList<>();
-        TaskItemUpload(String categoryid, List<TaskItem> itemlist) {
+        String tabid;
+        List<ItemDetail> itemList = new ArrayList<>();
+        TaskItemUpload(String categoryid, List<ItemDetail> itemlist) {
             this.categoryid = categoryid;
             for(int i = 0 ; i < itemlist.size() ; i++)
                 this.itemList.add(itemlist.get(i));
@@ -323,15 +339,19 @@ public class ProjectItemActivity extends AppCompatActivity {
         protected void onPreExecute() {
         }
         @Override
-        protected String doInBackground(Void... params) {
+        protected TaskItemSaveForAuditorResponse doInBackground(Void... params) {
             // TODO: attempt authentication against projectdetail network service.
             // Simulate network access.
-            return EauditingClient.TaskSave(ProjectDetailActivity.taskid,categoryid,itemList);
+            try {
+                return EauditingClient.SaveTaskDetail(MainActivity.username,tabid,categoryid,itemList);
+            } catch (NetworkException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
         @Override
-        protected void onPostExecute(final String success) {
-            status = success;
-            if(status.equals("Success"))
+        protected void onPostExecute(final TaskItemSaveForAuditorResponse success) {
+            if(success == TaskItemSaveForAuditorResponse.Success)
                 Toast.makeText(getBaseContext(),"upload" + success,Toast.LENGTH_SHORT).show();
             else
                 Toast.makeText(getBaseContext(),"upload" + success,Toast.LENGTH_LONG).show();

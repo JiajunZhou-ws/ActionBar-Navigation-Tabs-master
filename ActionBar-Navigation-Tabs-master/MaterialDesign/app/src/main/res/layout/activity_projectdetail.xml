@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/layout_main1"
@@ -13,11 +14,14 @@
             android:id="@+id/toolbar"
             layout="@layout/toolbar" />
     </LinearLayout>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="60dp"
     android:paddingTop="10dp"
     android:orientation="vertical"
     android:padding="10dp">
@@ -103,6 +107,56 @@
         android:textSize="18dp"
         android:text="模块："
         />
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:maxLines="2"
+        android:textSize="18dp"
+        android:text="代表处："
+        />
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:maxLines="2"
+        android:textSize="18dp"
+        android:text="建筑面积："
+        />
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:maxLines="2"
+        android:textSize="18dp"
+        android:text="园区类型："
+        />
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:maxLines="2"
+        android:textSize="18dp"
+        android:text="PMO代表："
+        />
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:maxLines="2"
+        android:textSize="18dp"
+        android:text="审核日期："
+        />
     <Button
         android:id="@+id/detailbutton"
         android:layout_width="match_parent"
@@ -137,5 +191,5 @@
         android:text="进度："
         />
 </LinearLayout>
-
-</FrameLayout>
+</ScrollView>
+</LinearLayout>

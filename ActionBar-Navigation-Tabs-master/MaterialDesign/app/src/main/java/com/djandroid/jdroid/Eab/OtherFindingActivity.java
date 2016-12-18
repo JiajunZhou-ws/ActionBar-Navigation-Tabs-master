@@ -10,7 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.djandroid.jdroid.Eab.ClientLibrary.Parameter.Task.TaskItem;
+
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.ItemDetail;
 
 import java.util.UUID;
 
@@ -42,15 +43,15 @@ public class OtherFindingActivity extends ActionBarActivity {
                 Toast.makeText(getApplicationContext(),question.getText().toString()+questiondescription.getText().toString(),Toast.LENGTH_SHORT).show();
                 if(question.getText()!=null && !question.getText().equals("")) {
                     Question questiontemp = new Question();
-                    TaskItem temp = new TaskItem();
+                    ItemDetail temp = new ItemDetail();
                     questiontemp.id = QuestionActivity.questions.size() + 1;
                     questiontemp.itemid = UUID.randomUUID().toString();
-                    temp.setItemId(questiontemp.itemid);
+                    temp.itemId = questiontemp.itemid;
                     questiontemp.question ="#" + (questiontemp.id) + ":" + question.getText().toString();
-                    temp.setItem(question.getText().toString());
+                    temp.itemDetail = question.getText().toString();
                     if(questiondescription.getText().toString().length() !=0 ) {
                         questiontemp.description = questiondescription.getText().toString();
-                        temp.setExplanation(questiontemp.description);
+                        temp.itemExplanation = questiontemp.description;
                     }
                     else
                         questiontemp.description = "";
@@ -58,7 +59,7 @@ public class OtherFindingActivity extends ActionBarActivity {
                     if(questionscore.getText().toString().length() != 0) {
                         questiontemp.score = Integer.valueOf(questionscore.getText().toString());
                     }
-                    temp.setScore(questiontemp.score);
+                    temp.scoreValue = questiontemp.score;
                     QuestionActivity.questions.add(questiontemp);
                     QuestionActivity.readfromlocal.put(questiontemp.itemid,temp);
 
