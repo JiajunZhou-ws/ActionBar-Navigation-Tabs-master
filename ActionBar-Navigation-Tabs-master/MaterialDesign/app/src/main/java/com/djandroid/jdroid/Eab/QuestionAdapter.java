@@ -1,6 +1,7 @@
 package com.djandroid.jdroid.Eab;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -63,7 +64,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         holder.textcomment.setText(questions.get(holder.getAdapterPosition()).comment);
         holder.auditlistener.updatePosition(holder.getAdapterPosition());
         holder.auditscore.setText(String.valueOf(questions.get(holder.getAdapterPosition()).score));
-        holder.setOptions(current, position);
+        holder.setOptions(holder,current, position);
         Log.e(TAG, position + " :onBindViewHolder: " + current.toString());
     }
 
@@ -80,7 +81,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
     class ViewHolder extends RecyclerView.ViewHolder {
 
         private LinearLayout linearLayoutContainer;
-        private TextView textViewQuestion, textDescription;
+        private TextView textViewQuestion, textDescription, textScore;
         private EditText textcomment,auditscore;
         private RadioGroup radioGroupOptions;
         private RadioButton radioButtonOption1, radioButtonOption2;
@@ -94,20 +95,21 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             linearLayoutContainer = (LinearLayout) itemView.findViewById(R.id.linear_layout_container);
             textViewQuestion = (TextView) itemView.findViewById(R.id.text_view_question);
             textDescription = (TextView) itemView.findViewById(R.id.text_view_explanation);
+            textScore = (TextView) itemView.findViewById(R.id.text_view_score);
 
             textcomment = (EditText) itemView.findViewById(R.id.editcomment);
             this.commentlistener = commentlistner;
             textcomment.addTextChangedListener(commentlistner);
-
-            auditscore = (EditText) itemView.findViewById(R.id.auditscore);
-            this.auditlistener = auditlistener;
-            auditscore.addTextChangedListener(auditlistener);
 
             radioGroupOptions = (RadioGroup) itemView.findViewById(R.id.radioGroup);
             radioButtonOption1 = (RadioButton) itemView.findViewById(R.id.radioButton1);
             radioButtonOption2 = (RadioButton) itemView.findViewById(R.id.radioButton2);
             radioButtonOption3 = (RadioButton) itemView.findViewById(R.id.radioButton3);
             radioButtonOption4 = (RadioButton) itemView.findViewById(R.id.radioButton4);
+
+            auditscore = (EditText) itemView.findViewById(R.id.auditscore);
+            this.auditlistener = auditlistener;
+            auditscore.addTextChangedListener(auditlistener);
 
             imagetest = (ImageView)itemView.findViewById(R.id.camera);
             this.context = maincontext;
@@ -135,16 +137,34 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             textViewQuestion.setText(question);
         }
 
-        public void setOptions(Question question, int position) {
+        public void setOptions(final ViewHolder viewholder, Question question, int position) {
             radioGroupOptions.setTag(position);
             Log.e(TAG, position + " :setOptions: " + question.toString());
             radioGroupOptions.check(checkIDtoRealid(question.checkedId));
+            if(question.checkedId == 4) {
+                viewholder.auditscore.setFocusableInTouchMode(true);
+                viewholder.textScore.setTextColor(Color.BLACK);
+            }
+            else {
+                viewholder.auditscore.clearFocus();
+                viewholder.auditscore.setFocusableInTouchMode(false);
+                viewholder.textScore.setTextColor(Color.RED);
+            }
             radioGroupOptions.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
                     int pos = (int) group.getTag();
                     Question que = questions.get(pos);
                     que.checkedId = RealidtocheckID(checkedId);
+                    if(que.checkedId == 4) {
+                        viewholder.auditscore.setFocusableInTouchMode(true);
+                        viewholder.textScore.setTextColor(Color.BLACK);
+                    }
+                    else {
+                        viewholder.auditscore.clearFocus();
+                        viewholder.auditscore.setFocusableInTouchMode(false);
+                        viewholder.textScore.setTextColor(Color.RED);
+                    }
                     if(readfromlocal.containsKey(questions.get(pos).itemid))
                     {
                         readfromlocal.get(questions.get(pos).itemid).scoreType = RealidtoScoretype(que.checkedId);
@@ -268,26 +288,27 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         }
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-            questions.get(position).score = Integer.valueOf(charSequence.toString());
-            if(readfromlocal.containsKey(questions.get(position).itemid))
-            {
-                readfromlocal.get(questions.get(position).itemid).scoreValue = questions.get(position).score;
-            }
-            else {
-                ItemDetail temp;
-                int itemindex = 0; //find the index from taskcategorydetail
-                for(int j = 0 ; j < taskcategorydetail.taskItemList.size() ; j++)
-                {
-                    if (taskcategorydetail.taskItemList.get(j).itemId.equals(questions.get(position).itemid)) {
-                        itemindex = j;
-                        break;
+            Pattern p = Pattern.compile("[0-9]*");
+            Matcher m = p.matcher(charSequence.toString());
+            if(!charSequence.toString().equals("") && m.matches()) {
+                questions.get(position).score = Integer.valueOf(charSequence.toString());
+                if (readfromlocal.containsKey(questions.get(position).itemid)) {
+                    readfromlocal.get(questions.get(position).itemid).scoreValue = questions.get(position).score;
+                } else {
+                    ItemDetail temp;
+                    int itemindex = 0; //find the index from taskcategorydetail
+                    for (int j = 0; j < taskcategorydetail.taskItemList.size(); j++) {
+                        if (taskcategorydetail.taskItemList.get(j).itemId.equals(questions.get(position).itemid)) {
+                            itemindex = j;
+                            break;
+                        }
                     }
+                    temp = taskcategorydetail.taskItemList.get(itemindex);
+                    temp.scoreValue = questions.get(position).score;
+                    readfromlocal.put(questions.get(position).itemid, temp);
                 }
-                temp = taskcategorydetail.taskItemList.get(itemindex);
-                temp.scoreValue = questions.get(position).score;
-                readfromlocal.put(questions.get(position).itemid, temp);
+                Log.v("auditscore", charSequence.toString());
             }
-            Log.v("auditscore", charSequence.toString());
         }
         @Override
         public void afterTextChanged(Editable editable) {

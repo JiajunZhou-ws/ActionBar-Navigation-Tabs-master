@@ -55,7 +55,7 @@ public class ProjectItemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_itemrecylerview);
         Intent intent = getIntent();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("" + ProjectDetailActivity.taskdetailresponse.taskSiteid);
+        toolbar.setTitle("" + ProjectDetailActivity.taskdetailresponse.taskSiteName);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.back);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {

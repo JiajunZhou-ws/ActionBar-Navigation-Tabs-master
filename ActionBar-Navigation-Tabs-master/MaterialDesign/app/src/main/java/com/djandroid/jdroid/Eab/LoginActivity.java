@@ -176,7 +176,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             //showProgress(true);
 
             if(!fileIsExists(getString(R.string.UserCache))) {
-                saveUsertofile(email);
                 mAuthTask = new UserLoginTask(email, password);
                 mAuthTask.execute((Void) null);
             }
@@ -361,8 +360,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         protected void onPostExecute(final AuditorLoginResponse success) {
             mAuthTask = null;
             showProgress(false);
-
             if (success == AuditorLoginResponse.Success) {
+                saveUsertofile(mEmail);
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 intent.putExtra("username",mEmail);
                 startActivity(intent);
