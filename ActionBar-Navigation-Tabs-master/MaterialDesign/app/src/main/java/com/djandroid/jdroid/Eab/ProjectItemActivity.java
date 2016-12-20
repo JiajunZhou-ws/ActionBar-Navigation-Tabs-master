@@ -211,7 +211,8 @@ public class ProjectItemActivity extends AppCompatActivity {
                 {
                     templist.add(entry.getValue());
                 }
-                taskupload = new TaskItemUpload(ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(i).categoryId,templist);
+                taskupload = new TaskItemUpload(ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(i).categoryId,
+                        ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(i).tabId,templist);
                 taskupload.execute((Void) null);
                 Log.v("upload Task" + ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(i).categoryName, status);
             }
@@ -330,8 +331,9 @@ public class ProjectItemActivity extends AppCompatActivity {
         String categoryid;
         String tabid;
         List<ItemDetail> itemList = new ArrayList<>();
-        TaskItemUpload(String categoryid, List<ItemDetail> itemlist) {
+        TaskItemUpload(String categoryid,String tabid, List<ItemDetail> itemlist) {
             this.categoryid = categoryid;
+            this.tabid = tabid;
             for(int i = 0 ; i < itemlist.size() ; i++)
                 this.itemList.add(itemlist.get(i));
         }
