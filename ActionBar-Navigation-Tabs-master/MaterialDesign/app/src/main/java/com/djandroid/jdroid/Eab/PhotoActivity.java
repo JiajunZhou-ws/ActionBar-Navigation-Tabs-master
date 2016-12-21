@@ -12,6 +12,8 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
@@ -40,6 +42,9 @@ public class PhotoActivity extends AppCompatActivity {
     ImageAdapter temp;
     Integer numofpic;
     String itemid;
+    String cameratype;
+    TextView[] textcommentview = new TextView[10];
+    EditText[] editcomment = new EditText[10];
     private List<PictureDetail> imagelist = new ArrayList<>();
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,7 +59,7 @@ public class PhotoActivity extends AppCompatActivity {
             public void onClick(View view) {
                 savePictureNewList();
                 saveMaptofile();
-               // Toast.makeText(view.getContext(),"picturelistsaved",Toast.LENGTH_SHORT).show();
+                // Toast.makeText(view.getContext(),"picturelistsaved",Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
@@ -63,7 +68,13 @@ public class PhotoActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         itemid = intent.getStringExtra("itemid");
+        cameratype = intent.getStringExtra("cameratype");
+        if(cameratype.equals("good"))
+            imagelist = QuestionActivity.readfromlocal.get(itemid).goodPictureList; //get the picturelist
+        else
+            imagelist = QuestionActivity.readfromlocal.get(itemid).badPictureList; //get the picturelist
 
+        initializetextview();
         try {
             PreparePicture();
         } catch (IOException e) {
@@ -76,7 +87,10 @@ public class PhotoActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 Toast.makeText(PhotoActivity.this, "short click" + String.valueOf(position), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(PhotoActivity.this,PreviewActivity.class);
-                intent.putExtra("picturename",QuestionActivity.readfromlocal.get(itemid).goodPictureList.get(position).pictureName);
+                if(cameratype.equals("good"))
+                    intent.putExtra("picturename",QuestionActivity.readfromlocal.get(itemid).goodPictureList.get(position).pictureName);
+                else
+                    intent.putExtra("picturename",QuestionActivity.readfromlocal.get(itemid).badPictureList.get(position).pictureName);
                 PhotoActivity.this.startActivity(intent);
             }
         });
@@ -90,6 +104,70 @@ public class PhotoActivity extends AppCompatActivity {
         });
     }
 
+    private class MyCustomEditTextListener implements TextWatcher{
+        int position;
+        MyCustomEditTextListener(int position)
+        {
+            this.position = position;
+        }
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            // no op
+        }
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            //Toast.makeText(getBaseContext(),String.valueOf(position),Toast.LENGTH_SHORT).show();
+            if(cameratype.equals("good"))
+                QuestionActivity.readfromlocal.get(itemid).goodPictureList.get(position - 1).pictureExplanation = charSequence.toString();
+            else
+                QuestionActivity.readfromlocal.get(itemid).badPictureList.get(position - 1).pictureExplanation = charSequence.toString();
+        }
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+        }
+    }
+
+
+    public void initializetextview()
+    {
+        textcommentview[1] = (TextView) findViewById(R.id.text_view_answer1);
+        textcommentview[2] = (TextView) findViewById(R.id.text_view_answer2);
+        textcommentview[3] = (TextView) findViewById(R.id.text_view_answer3);
+        textcommentview[4] = (TextView) findViewById(R.id.text_view_answer4);
+        textcommentview[5] = (TextView) findViewById(R.id.text_view_answer5);
+        textcommentview[6] = (TextView) findViewById(R.id.text_view_answer6);
+        textcommentview[7] = (TextView) findViewById(R.id.text_view_answer7);
+        textcommentview[8] = (TextView) findViewById(R.id.text_view_answer8);
+        textcommentview[9] = (TextView) findViewById(R.id.text_view_answer9);
+        editcomment[1] = (EditText) findViewById(R.id.editcomment1);
+        editcomment[2] = (EditText) findViewById(R.id.editcomment2);
+        editcomment[3] = (EditText) findViewById(R.id.editcomment3);
+        editcomment[4] = (EditText) findViewById(R.id.editcomment4);
+        editcomment[5] = (EditText) findViewById(R.id.editcomment5);
+        editcomment[6] = (EditText) findViewById(R.id.editcomment6);
+        editcomment[7] = (EditText) findViewById(R.id.editcomment7);
+        editcomment[8] = (EditText) findViewById(R.id.editcomment8);
+        editcomment[9] = (EditText) findViewById(R.id.editcomment9);
+    }
+
+    public void showcomment(int num)
+    {
+        for(int i = 1 ; i <= num ; i++)
+        {
+            textcommentview[i].setVisibility(View.VISIBLE);
+            editcomment[i].setVisibility(View.VISIBLE);
+            editcomment[i].setText(imagelist.get(i-1).pictureExplanation);
+            editcomment[i].setTag(i);
+            editcomment[i].addTextChangedListener(new MyCustomEditTextListener(i));
+        }
+        for(int i = num + 1; i <= 9 ; i++)
+        {
+            textcommentview[i].setVisibility(View.GONE);
+            editcomment[i].setVisibility(View.GONE);
+        }
+    }
+
     protected void dialog(final int n) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("是否要删除照片" + String.valueOf(n + 1));
@@ -97,7 +175,10 @@ public class PhotoActivity extends AppCompatActivity {
         builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                QuestionActivity.readfromlocal.get(itemid).goodPictureList.remove(n);
+                if(cameratype.equals("good"))
+                    QuestionActivity.readfromlocal.get(itemid).goodPictureList.remove(n);
+                else
+                    QuestionActivity.readfromlocal.get(itemid).badPictureList.remove(n);
                 temp.clearpicture();
                 try {
                     PreparePicture();
@@ -122,7 +203,7 @@ public class PhotoActivity extends AppCompatActivity {
             outputStream.write(new GsonBuilder().serializeNulls().create().toJson(QuestionActivity.readfromlocal).getBytes());
             outputStream.flush();
             outputStream.close();
-           // Toast.makeText(this, ProjectDetailActivity.taskid + QuestionActivity.catogoryid +"保存成功", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(this, ProjectDetailActivity.taskid + QuestionActivity.catogoryid +"保存成功", Toast.LENGTH_SHORT).show();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -144,7 +225,7 @@ public class PhotoActivity extends AppCompatActivity {
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
         if (id == R.id.addphoto) {
-           // Toast.makeText(this,"addphoto",Toast.LENGTH_SHORT).show();
+            // Toast.makeText(this,"addphoto",Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             Uri imageUri = Uri.fromFile(getTempImage());
             intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
@@ -156,7 +237,6 @@ public class PhotoActivity extends AppCompatActivity {
 
     private void PreparePicture() throws IOException {
         Intent intent = getIntent();
-        imagelist = QuestionActivity.readfromlocal.get(itemid).goodPictureList;
         if(imagelist != null && imagelist.size() > 0)
         {
             numofpic = imagelist.size();
@@ -165,8 +245,7 @@ public class PhotoActivity extends AppCompatActivity {
                 readfromlocalmap(imagelist.get(i).pictureName , i);
             }
         }
-
-
+        showcomment(imagelist.size());
     }
     private void savePictureNewList() {
         try {
@@ -245,26 +324,46 @@ public class PhotoActivity extends AppCompatActivity {
                         temp.notifyDataSetChanged();
                         String tempid = UUID.randomUUID().toString();
                         savePicture(tempid,bmp);
-                        ProjectDetailActivity.newpicid.add(tempid);
+                        ProjectDetailActivity.newpicid.add(tempid);  //更新新图片列表
                         PictureDetail temppicture = new PictureDetail();
                         temppicture.pictureName = tempid;
                         if (QuestionActivity.readfromlocal.containsKey(itemid))
                         {
-                            if(QuestionActivity.readfromlocal.get(itemid).goodPictureList == null) {
-                                List<PictureDetail> templist = new ArrayList<>();
-                                templist.add(temppicture); //add uuid
-                                QuestionActivity.readfromlocal.get(itemid).goodPictureList = templist; //add uuid}
+                            if(cameratype.equals("good")) {
+                                if (QuestionActivity.readfromlocal.get(itemid).goodPictureList == null) {
+                                    List<PictureDetail> templist = new ArrayList<>();
+                                    templist.add(temppicture); //add uuid
+                                    QuestionActivity.readfromlocal.get(itemid).goodPictureList = templist; //add uuid}
+                                    imagelist = templist;
+                                } else {
+                                    QuestionActivity.readfromlocal.get(itemid).goodPictureList.add(temppicture);
+                                }
                             }
                             else
                             {
-                                QuestionActivity.readfromlocal.get(itemid).goodPictureList.add(temppicture);
+                                if (QuestionActivity.readfromlocal.get(itemid).badPictureList == null) {
+                                    List<PictureDetail> templist = new ArrayList<>();
+                                    templist.add(temppicture); //add uuid
+                                    QuestionActivity.readfromlocal.get(itemid).badPictureList = templist; //add uuid}
+                                    imagelist = templist;
+                                } else {
+                                    QuestionActivity.readfromlocal.get(itemid).badPictureList.add(temppicture);
+                                }
                             }
                         }
                         else
                         {
                             ItemDetail temp = new ItemDetail();
-                            temp.goodPictureList.add(temppicture);
+                            if(cameratype.equals("good")) {
+                                temp.goodPictureList.add(temppicture);
+                                imagelist = temp.goodPictureList;
+                            }
+                            else {
+                                temp.badPictureList.add(temppicture);
+                                imagelist = temp.badPictureList;
+                            }
                             QuestionActivity.readfromlocal.put(itemid, temp);
+
                         }
                     }
                     else
@@ -272,6 +371,7 @@ public class PhotoActivity extends AppCompatActivity {
                         Toast.makeText(this,"最多支持9张照片",Toast.LENGTH_SHORT).show();
                     }
                 }
+                showcomment(imagelist.size());
                 break;
         }
     }

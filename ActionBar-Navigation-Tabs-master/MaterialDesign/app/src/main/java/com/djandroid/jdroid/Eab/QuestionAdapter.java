@@ -19,10 +19,7 @@ import android.widget.TextView;
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.TaskService.Helper.TaskCategoryDetail;
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.ItemDetail;
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.ScoreType;
-import com.google.gson.Gson;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,7 +56,8 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         Question current = questions.get(position);
         holder.setQuestion(current.question);
         holder.textDescription.setText(current.description);
-        holder.imagetest.setTag(position);
+        holder.goodcamera.setTag(position);
+        holder.badcamera.setTag(position);
         holder.commentlistener.updatePosition(holder.getAdapterPosition(),holder.textcomment);
         holder.textcomment.setText(questions.get(holder.getAdapterPosition()).comment);
         holder.auditlistener.updatePosition(holder.getAdapterPosition());
@@ -86,7 +84,8 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         private RadioGroup radioGroupOptions;
         private RadioButton radioButtonOption1, radioButtonOption2;
         private RadioButton radioButtonOption3, radioButtonOption4;
-        private ImageView imagetest;
+        private ImageView goodcamera;
+        private ImageView badcamera;
         Context  context;
         public MyCustomEditTextListener commentlistener;
         public MyCustomAuditScoreListener auditlistener;
@@ -111,23 +110,29 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             this.auditlistener = auditlistener;
             auditscore.addTextChangedListener(auditlistener);
 
-            imagetest = (ImageView)itemView.findViewById(R.id.camera);
+            goodcamera = (ImageView)itemView.findViewById(R.id.camera);
             this.context = maincontext;
-            imagetest.setOnClickListener(new View.OnClickListener() {
+            goodcamera.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int position =(int) imagetest.getTag();
+                    int position =(int) goodcamera.getTag();
                     Log.v("zhoujiajun", String.valueOf(position));
                     Intent intent = new Intent(context,PhotoActivity.class);
-                    if(null != readfromlocal.get(questions.get(position).itemid).goodPictureList
-                            && QuestionActivity.readfromlocal.get(questions.get(position).itemid).goodPictureList.size() > 0)
-                        intent.putExtra("imagelist",new Gson().toJson(QuestionActivity.readfromlocal.get(questions.get(position).itemid).goodPictureList));
-                    else if(QuestionActivity.readfromlocal.get(questions.get(position).itemid).goodPictureList == null)
-                    {
-                        List<String> temp = new ArrayList<String>();
-                        intent.putExtra("imagelist",new Gson().toJson(temp));
-                    }
                     intent.putExtra("itemid",questions.get(position).itemid);
+                    intent.putExtra("cameratype","good");
+                    context.startActivity(intent);
+                }
+            });
+
+            badcamera = (ImageView)itemView.findViewById(R.id.camera1);
+            badcamera.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position =(int) badcamera.getTag();
+                    Log.v("zhoujiajun", String.valueOf(position));
+                    Intent intent = new Intent(context,PhotoActivity.class);
+                    intent.putExtra("itemid",questions.get(position).itemid);
+                    intent.putExtra("cameratype","bad");
                     context.startActivity(intent);
                 }
             });

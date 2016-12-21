@@ -287,13 +287,10 @@ public class ProjectDetailActivity extends AppCompatActivity
                savepicturenum++;
                progressBar.setProgress(savepicturenum * 100 / needdownloadpicturenumber);
                progresstext.setText("已经下载："+String.valueOf(savepicturenum * 100 / needdownloadpicturenumber)+"%");
-               Log.v("SAVEPICTURE","下载图片"+String.valueOf(savepicturenum)+"成功" + String.valueOf(savepicturenum));
                if(savepicturenum == needdownloadpicturenumber) {
                    GotoCategoryActivity();
                }
-               else {
-                   Toast.makeText(this, "图片下载失败", Toast.LENGTH_SHORT).show();
-               }
+               Log.v("SAVEPICTURE","下载图片"+String.valueOf(savepicturenum)+"成功" + String.valueOf(savepicturenum));
            } catch (FileNotFoundException e) {
                e.printStackTrace();
            } catch (IOException e) {

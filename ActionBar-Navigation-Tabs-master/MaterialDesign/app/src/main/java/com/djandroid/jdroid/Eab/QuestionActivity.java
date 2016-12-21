@@ -120,6 +120,7 @@ public class QuestionActivity extends AppCompatActivity {
             else {
                 if(taskcategorydetail.taskItemList.get(i).scoreType == ScoreType.Score)
                     question.score = taskcategorydetail.taskItemList.get(i).scoreValue;
+                question.checkedId = taskcategorydetail.taskItemList.get(i).scoreType.ordinal();
             }
             questions.add(question);
         }
