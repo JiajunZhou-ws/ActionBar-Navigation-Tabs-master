@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -271,7 +272,11 @@ public class NavigationDrawFragment extends Fragment {
         setSelectedNavDrawerItem(itemId);
 
         if (mCallbacks != null) {
-            mCallbacks.onNavigationDrawerItemSelected(itemId);
+            try {
+                mCallbacks.onNavigationDrawerItemSelected(itemId);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
 

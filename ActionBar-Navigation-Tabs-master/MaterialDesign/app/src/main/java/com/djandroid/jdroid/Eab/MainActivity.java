@@ -1,13 +1,18 @@
 package com.djandroid.jdroid.Eab;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -27,8 +32,17 @@ import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.TaskService.Help
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.TaskOtherInformation;
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.TaskService.Response.TaskListForAuditorResponse;
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.AuditStatus;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.apache.http.util.EncodingUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +61,7 @@ public class MainActivity extends AppCompatActivity
     List<TaskInformation> listfromserver;
     private CharSequence mTitle;
     public static String username;
+    public static int APPSTATUS; //0 is online, 1 is offline
     private ActionBarDrawerToggle mDrawerToggle;
     DrawerLayout drawer_layout;
     ActionBar actionBar;
@@ -56,7 +71,6 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -121,6 +135,7 @@ public class MainActivity extends AppCompatActivity
                 {
                     listfromserver.add(success.taskList.get(i));
                 }
+                saveTaskList();
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.container, new ProjectRecycleFragment(listfromserver,status))
                         .commit();
@@ -130,13 +145,46 @@ public class MainActivity extends AppCompatActivity
         protected void onCancelled() {
         }
     }
+
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivity = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null) {
+            NetworkInfo info = connectivity.getActiveNetworkInfo();
+            if (info != null && info.isConnected())
+            {
+                // 当前网络是连接的
+                if (info.getState() == NetworkInfo.State.CONNECTED)
+                {
+                    // 当前所连接的网络可用
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     @Override
-    public void onNavigationDrawerItemSelected(int position) {
+    public void onNavigationDrawerItemSelected(int position){
         // update the main content by replacing fragments
         switch (position) {
             case NavigationDrawFragment.NOTDONE:
-                getprojecttask = new GetProjectTask(AuditStatus.None);
-                getprojecttask.execute((Void) null);
+                if(isNetworkAvailable(getApplicationContext())) {
+                    getprojecttask = new GetProjectTask(AuditStatus.None);
+                    getprojecttask.execute((Void) null);
+                }
+                else
+                {
+                    try {
+                        readtaskList();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.container, new ProjectRecycleFragment(listfromserver,AuditStatus.None))
+                            .commit();
+                    Toast.makeText(this,"meiwang",Toast.LENGTH_SHORT).show();
+                }
                 onSectionAttached(1);
                 break;
             case NavigationDrawFragment.WAITAUDIT:
@@ -178,6 +226,63 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private void saveTaskList() {
+        try {
+            FileOutputStream outputStream = openFileOutput(MainActivity.username + "tasklist",
+                    Activity.MODE_PRIVATE);
+            outputStream.write(new Gson().toJson(listfromserver).getBytes());
+            outputStream.flush();
+            outputStream.close();
+            Toast.makeText(this, "tasklist保存成功", Toast.LENGTH_LONG).show();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void readtaskList() throws IOException{
+        String res="";
+        try{
+            if(fileIsExists(MainActivity.username+"tasklist")) {
+                FileInputStream fin = openFileInput(MainActivity.username+"tasklist");
+                int length = fin.available();
+                byte[] buffer = new byte[length];
+                fin.read(buffer);
+                res = EncodingUtils.getString(buffer, "UTF-8");
+                Type listType = new TypeToken<ArrayList<TaskInformation>>(){}.getType();
+                listfromserver = new Gson().fromJson(res, listType);
+                Log.d("readtasklist:",String.valueOf(listfromserver.size()));
+                //Toast.makeText(this, String.valueOf(taskcategorydetail.get(2)), Toast.LENGTH_SHORT).show();
+                fin.close();
+            }
+            else {
+                Log.d("ProjectDetail","未读取到新图片列表缓存文件");
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        // return res;
+    }
+    public boolean fileIsExists(String strFile)
+    {
+        try
+        {
+            File f=new File(this.getFilesDir().getPath() + "/" + strFile);
+            if(!f.exists())
+            {
+                return false;
+            }
+
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+
+        return true;
+    }
 
     public void onSectionAttached(int number) {
         Log.e("number", "--->" + number);

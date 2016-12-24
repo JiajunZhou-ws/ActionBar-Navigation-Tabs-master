@@ -194,14 +194,22 @@ public class ProjectDetailActivity extends AppCompatActivity
         detailbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(),"正在下载图片和任务，请耐心等待，下载完成后会进入下一个界面",Toast.LENGTH_LONG).show();
-                progressBar.setVisibility(View.VISIBLE);
-                progresstext.setVisibility(View.VISIBLE);
-                setProgressBarVisibility(true);
-                //setProgressBarIndeterminate(true);
-                setProgress(0);
-                getprojectdetail = new GetProjectDetail(temp.taskId);
-                getprojectdetail.execute((Void) null);
+                if(MainActivity.APPSTATUS == 0) {
+                    if(MainActivity.isNetworkAvailable(getApplicationContext())) {
+                        Toast.makeText(getApplicationContext(), "正在下载图片和任务，请耐心等待，下载完成后会进入下一个界面", Toast.LENGTH_LONG).show();
+                        progressBar.setVisibility(View.VISIBLE);
+                        progresstext.setVisibility(View.VISIBLE);
+                        setProgressBarVisibility(true);
+                        //setProgressBarIndeterminate(true);
+                        setProgress(0);
+                        getprojectdetail = new GetProjectDetail(temp.taskId);
+                        getprojectdetail.execute((Void) null);
+                    }
+                    else
+                    {
+                        Toast.makeText(getApplicationContext(), "目前没有网络，请使用脱机模式", Toast.LENGTH_LONG).show();
+                    }
+                }
                 //save();
 
                 //Intent intent = new Intent(ProjectDetailActivity.this,ProjectItemActivity.class);

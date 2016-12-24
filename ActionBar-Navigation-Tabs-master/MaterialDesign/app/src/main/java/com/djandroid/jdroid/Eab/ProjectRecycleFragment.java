@@ -2,10 +2,12 @@ package com.djandroid.jdroid.Eab;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -94,13 +96,31 @@ public class ProjectRecycleFragment extends Fragment {
                 RecylerViewHolder vholder = (RecylerViewHolder) v.getTag();
                 int position = vholder.getPosition();
                  //Toast.makeText(context,"This is position "+position,Toast.LENGTH_SHORT ).show();
-                Intent intent = new Intent();
-                intent.putExtra("TaskInfomation", new Gson().toJson(projectlist.get(position)));
-                intent.setClass(context,ProjectDetailActivity.class);
-                context.startActivity(intent);
+                dialog(position);
 
             }
         };
+        protected void dialog(final int n) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setMessage("是否使用脱机模式" + String.valueOf(n + 1));
+            builder.setTitle("提示");
+            builder.setPositiveButton("脱机", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+            builder.setNegativeButton("在线", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent();
+                    intent.putExtra("TaskInfomation", new Gson().toJson(projectlist.get(n)));
+                    intent.setClass(context,ProjectDetailActivity.class);
+                    context.startActivity(intent);
+                }
+            });
+            builder.create().show();
+        }
         // Replace the contents of a view (invoked by the layout manager)
         @Override
         public void onBindViewHolder(final RecylerViewHolder holder, int position) {
