@@ -8,6 +8,7 @@ public class Question {
     public int checkedId = -1;
     public int score;
     public boolean isScore;
+    public boolean isdescriptionvisible;
 
     @Override
     public String toString() {

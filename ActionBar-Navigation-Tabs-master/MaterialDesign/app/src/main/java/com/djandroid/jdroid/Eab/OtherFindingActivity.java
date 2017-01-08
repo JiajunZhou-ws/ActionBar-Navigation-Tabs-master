@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.ItemDetail;
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.ScoreType;
 
 import java.util.UUID;
 
@@ -36,6 +37,7 @@ public class OtherFindingActivity extends ActionBarActivity {
         question = (EditText)findViewById(R.id.editquestion);
         questiondescription = (EditText)findViewById(R.id.editdescription);
         questionscore = (EditText)findViewById(R.id.editscore);
+        questionscore.setVisibility(View.GONE);
         commitbutton = (Button)findViewById(R.id.otherfindingbutton);
         commitbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,17 +51,15 @@ public class OtherFindingActivity extends ActionBarActivity {
                     temp.itemId = questiontemp.itemid;
                     questiontemp.question ="#" + (questiontemp.id) + ":" + question.getText().toString();
                     temp.itemDetail = question.getText().toString();
+
                     if(questiondescription.getText().toString().length() !=0 ) {
                         questiontemp.description = questiondescription.getText().toString();
                         temp.itemExplanation = questiontemp.description;
                     }
                     else
                         questiontemp.description = "";
-                    questiontemp.score = -2;
-                    if(questionscore.getText().toString().length() != 0) {
-                        questiontemp.score = Integer.valueOf(questionscore.getText().toString());
-                    }
-                    temp.scoreValue = questiontemp.score;
+                    questiontemp.checkedId = 0;
+                    temp.scoreType = ScoreType.None;
                     QuestionActivity.questions.add(questiontemp);
                     QuestionActivity.readfromlocal.put(questiontemp.itemid,temp);
 

@@ -5,6 +5,6 @@ package com.djandroid.jdroid.Eab.ClientLibrary.Common;
  */
 public class ClientConfiguration {
     public static String ServiceUrl = "http://207.46.149.137:21101/android";
-    public static int Version = 1;
+    public static int Version = 6;
     //public static String ServiceUrl = "http://localhost:8080";
 }

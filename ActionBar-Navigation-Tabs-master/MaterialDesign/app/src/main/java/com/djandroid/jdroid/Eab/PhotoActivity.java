@@ -242,7 +242,7 @@ public class PhotoActivity extends AppCompatActivity {
             numofpic = imagelist.size();
             for(int i = 0 ; i < imagelist.size() ; i++)
             {
-                readfromlocalmap(imagelist.get(i).pictureName , i);
+                readfromlocalpictrue(imagelist.get(i).pictureName , i);
             }
         }
         showcomment(imagelist.size());
@@ -275,7 +275,7 @@ public class PhotoActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-    public void readfromlocalmap(String fileName, int i) throws IOException {
+    public void readfromlocalpictrue(String fileName, int i) throws IOException {
         String res="";
         try{
             if(fileIsExists(fileName)) {
@@ -300,7 +300,6 @@ public class PhotoActivity extends AppCompatActivity {
         try
         {
             File f=new File(this.getFilesDir().getPath() + "/" + strFile);
-            //Log.d("aaa",this.getFilesDir().getPath().toString());
             if(!f.exists())
             {
                 return false;
@@ -318,7 +317,6 @@ public class PhotoActivity extends AppCompatActivity {
             case 1:
                 if (resultCode == RESULT_OK) {
                     Bitmap bmp =  getScaleBitmap(this, getTempImage().getPath());
-
                     if(numofpic <= 8) {
                         temp.setimage(numofpic++, bmp);
                         temp.notifyDataSetChanged();
@@ -363,7 +361,6 @@ public class PhotoActivity extends AppCompatActivity {
                                 imagelist = temp.badPictureList;
                             }
                             QuestionActivity.readfromlocal.put(itemid, temp);
-
                         }
                     }
                     else
@@ -372,6 +369,7 @@ public class PhotoActivity extends AppCompatActivity {
                     }
                 }
                 showcomment(imagelist.size());
+                saveMaptofile();
                 break;
         }
     }
@@ -407,10 +405,10 @@ public class PhotoActivity extends AppCompatActivity {
         opt.inSampleSize = 1;
         if (bmpWidth > bmpHeght) {
             if (bmpWidth > screenWidth)
-                opt.inSampleSize = 3;//bmpWidth / screenWidth;
+                opt.inSampleSize = 4;//bmpWidth / screenWidth;
         } else {
             if (bmpHeght > screenHeight)
-                opt.inSampleSize = 3;
+                opt.inSampleSize = 4;
         }
         opt.inJustDecodeBounds = false;
 

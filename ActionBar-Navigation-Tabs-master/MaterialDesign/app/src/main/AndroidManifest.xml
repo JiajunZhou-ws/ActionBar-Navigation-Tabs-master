@@ -18,7 +18,7 @@
         android:name="com.djandroid.jdroid.Eab.MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/launcher"
-        android:label="@string/app_name"
+        android:label="eAuditing_Ver0.6"
         android:theme="@style/AppTheme_new">
         <activity
             android:name="com.djandroid.jdroid.Eab.LoginActivity"

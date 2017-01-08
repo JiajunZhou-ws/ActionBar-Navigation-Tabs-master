@@ -1,6 +1,7 @@
 package com.djandroid.jdroid.Eab;
 
 import com.djandroid.jdroid.Eab.ClientLibrary.*;
+import com.djandroid.jdroid.Eab.ClientLibrary.Common.ClientConfiguration;
 import com.djandroid.jdroid.Eab.ClientLibrary.Common.NetworkException;
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.AuditorService.Response.AuditorLoginResponse;
 
@@ -275,7 +276,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     public String readfromusercache(String fileName) throws IOException {  //read usercache to do the auto login
         String res="";
         try{
-                FileInputStream fin = openFileInput(fileName);
+                FileInputStream fin = openFileInput(fileName + String.valueOf(ClientConfiguration.Version));
                 int length = fin.available();
                 byte[] buffer = new byte[length];
                 fin.read(buffer);
@@ -290,7 +291,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
     private void saveUsertofile(String username) {
         try {
-            FileOutputStream outputStream = openFileOutput(getString(R.string.UserCache), Activity.MODE_PRIVATE);
+            FileOutputStream outputStream = openFileOutput(getString(R.string.UserCache) + String.valueOf(ClientConfiguration.Version), Activity.MODE_PRIVATE);
             outputStream.write(username.getBytes());
             outputStream.flush();
             outputStream.close();
@@ -307,7 +308,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     {
         try
         {
-            File f=new File(this.getFilesDir().getPath() + "/" + strFile);
+            File f=new File(this.getFilesDir().getPath() + "/" + strFile + String.valueOf(ClientConfiguration.Version));
             Log.v("LoginActivity",String.valueOf(this.getFilesDir().getFreeSpace()));
             if(!f.exists()) return false;
         }

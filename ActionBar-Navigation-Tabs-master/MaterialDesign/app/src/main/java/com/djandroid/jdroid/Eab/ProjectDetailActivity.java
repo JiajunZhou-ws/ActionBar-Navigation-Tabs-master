@@ -21,6 +21,7 @@ import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.TaskService.Help
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.TaskService.Response.TaskItemForAuditorResponse;
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.PictureDetail;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.apache.http.util.EncodingUtils;
 import org.w3c.dom.Text;
@@ -30,6 +31,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,6 +92,7 @@ public class ProjectDetailActivity extends AppCompatActivity
         detailbutton = (Button) findViewById(R.id.detailbutton);
         Intent intent = getIntent();
         final TaskInformation temp = new Gson().fromJson(intent.getStringExtra("TaskInfomation"), TaskInformation.class);
+
         taskid = temp.taskId;
         if (temp.projectName.length() == 0)
             projecttitle.setVisibility(View.GONE);
@@ -210,6 +213,28 @@ public class ProjectDetailActivity extends AppCompatActivity
                         Toast.makeText(getApplicationContext(), "目前没有网络，请使用脱机模式", Toast.LENGTH_LONG).show();
                     }
                 }
+                else
+                {
+                    if(MainActivity.isNetworkAvailable(getApplicationContext())) {
+                        Toast.makeText(getApplicationContext(), "正在下载脱机使用的图片和任务，请耐心等待，下载完成后会进入下一个界面", Toast.LENGTH_LONG).show();
+                        progressBar.setVisibility(View.VISIBLE);
+                        progresstext.setVisibility(View.VISIBLE);
+                        setProgressBarVisibility(true);
+                        //setProgressBarIndeterminate(true);
+                        setProgress(0);
+                        getprojectdetail = new GetProjectDetail(temp.taskId);
+                        getprojectdetail.execute((Void) null);
+                    }
+                    else
+                    {
+                        //get taskdetailreponse from the file
+                        try {
+                            readtask(temp.taskId);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
                 //save();
 
                 //Intent intent = new Intent(ProjectDetailActivity.this,ProjectItemActivity.class);
@@ -217,6 +242,46 @@ public class ProjectDetailActivity extends AppCompatActivity
             }
         });
     }
+
+       private void saveTask(String taskid) {
+           try {
+               FileOutputStream outputStream = openFileOutput(taskid+"task",
+                       Activity.MODE_PRIVATE);
+               outputStream.write(new Gson().toJson(taskdetailresponse).getBytes());
+               outputStream.flush();
+               outputStream.close();
+               Toast.makeText(this, "脱机任务保存成功", Toast.LENGTH_LONG).show();
+           } catch (FileNotFoundException e) {
+               e.printStackTrace();
+           } catch (IOException e) {
+               e.printStackTrace();
+           }
+       }
+
+       public void readtask(String taskid) throws IOException{
+           String res="";
+           try{
+               if(fileIsExists(taskid + "task")) {
+                   FileInputStream fin = openFileInput(taskid + "task");
+                   int length = fin.available();
+                   byte[] buffer = new byte[length];
+                   fin.read(buffer);
+                   res = EncodingUtils.getString(buffer, "UTF-8");
+                   taskdetailresponse = new Gson().fromJson(res, TaskItemForAuditorResponse.class);
+                   //Toast.makeText(this, String.valueOf(taskcategorydetail.get(2)), Toast.LENGTH_SHORT).show();
+                   fin.close();
+                   GotoCategoryActivity();
+               }
+               else {
+                   Toast.makeText(getApplicationContext(), "未下载脱机模式资料", Toast.LENGTH_LONG).show();
+               }
+           }
+           catch(Exception e){
+               e.printStackTrace();
+           }
+           // return res;
+       }
+
        public class GetProjectDetail extends AsyncTask<Void, Void, TaskItemForAuditorResponse> {
            String taskid;
            GetProjectDetail(String taskid) {
@@ -239,6 +304,8 @@ public class ProjectDetailActivity extends AppCompatActivity
            @Override
            protected void onPostExecute(final TaskItemForAuditorResponse success) {
                taskdetailresponse = success;
+               if(MainActivity.APPSTATUS == 1)
+                saveTask(taskid);
                getAllPictureName();
                if(needdownloadpicture.size() == 0)
                {

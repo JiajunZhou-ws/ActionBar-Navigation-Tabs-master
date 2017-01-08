@@ -21,6 +21,8 @@ import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.TaskService.Help
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.AuditStatus;
 import com.google.gson.Gson;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import static com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.AuditStatus.*;
@@ -107,12 +109,17 @@ public class ProjectRecycleFragment extends Fragment {
             builder.setPositiveButton("脱机", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-
+                    MainActivity.APPSTATUS = 1;
+                    Intent intent = new Intent();
+                    intent.putExtra("TaskInfomation", new Gson().toJson(projectlist.get(n)));
+                    intent.setClass(context,ProjectDetailActivity.class);
+                    context.startActivity(intent);
                 }
             });
             builder.setNegativeButton("在线", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    MainActivity.APPSTATUS = 0;
                     Intent intent = new Intent();
                     intent.putExtra("TaskInfomation", new Gson().toJson(projectlist.get(n)));
                     intent.setClass(context,ProjectDetailActivity.class);
@@ -125,6 +132,10 @@ public class ProjectRecycleFragment extends Fragment {
         @Override
         public void onBindViewHolder(final RecylerViewHolder holder, int position) {
             String textstatus = "";
+            //projectlist.get(position).projectName = "周周周周周1周周周周周2周周周周周3周周周周周";
+            //if(projectlist.get(position).projectName.length() >= 14)
+            //    holder.tv1.setText(projectlist.get(position).taskSiteId+ "\n" + projectlist.get(position).projectName.substring(0,14));
+           // else
             holder.tv1.setText(projectlist.get(position).taskSiteId+ "\n" + projectlist.get(position).projectName);
             switch (taskstatus)
             {
@@ -141,7 +152,10 @@ public class ProjectRecycleFragment extends Fragment {
                     textstatus = "待审核";
                     break;
             }
-            holder.tv2.setText(textstatus);
+            if(!taskiddate(projectlist.get(position).taskId + "task").equals(""))
+                 holder.tv2.setText(textstatus + " 脱机版本" + taskiddate(projectlist.get(position).taskId + "task"));
+            else
+                 holder.tv2.setText(textstatus + " 无脱机版本");
             holder.itemView.setOnClickListener(clickListener);
             holder.itemView.setTag(holder);
             Log.d("zhoujiajun",String.valueOf(projectlist.size()));
@@ -166,6 +180,26 @@ public class ProjectRecycleFragment extends Fragment {
             tv1= (TextView) itemView.findViewById(R.id.list_title);
             tv2= (TextView) itemView.findViewById(R.id.list_desc);
             imageView= (ImageView) itemView.findViewById(R.id.list_avatar);
+        }
+    }
+
+    public String taskiddate(String strFile)
+    {
+        try
+        {
+            File f=new File(getActivity().getFilesDir().getPath() + "/" + strFile);
+            if(!f.exists())
+            {
+                return "";
+            }
+            long time=f.lastModified();
+            SimpleDateFormat formatter = new
+                    SimpleDateFormat("yyyy-MM-dd");
+            return formatter.format(time);
+        }
+        catch (Exception e)
+        {
+            return "";
         }
     }
 

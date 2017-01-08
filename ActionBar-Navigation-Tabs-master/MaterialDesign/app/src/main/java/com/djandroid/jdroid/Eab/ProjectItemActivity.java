@@ -21,7 +21,9 @@ import com.djandroid.jdroid.Eab.ClientLibrary.Common.NetworkException;
 import com.djandroid.jdroid.Eab.ClientLibrary.EauditingClient;
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.PictureService.Response.SavePictureResponse;
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.TaskService.Response.TaskItemSaveForAuditorResponse;
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.TaskService.Response.TaskSubmitForAuditorResponse;
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.ItemDetail;
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.ScoreType;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -45,6 +47,7 @@ public class ProjectItemActivity extends AppCompatActivity {
     String status = "";
     PictureUpload picupload;
     TaskItemUpload taskupload;
+    TaskSubmit tasksubmit;
     LinkedHashMap<String,ItemDetail> uploadmap = new LinkedHashMap<>();
     private int uploadpicturenumber = 0;
     public static List<Integer> categorycolor = new ArrayList<>();
@@ -72,6 +75,12 @@ public class ProjectItemActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -105,8 +114,38 @@ public class ProjectItemActivity extends AppCompatActivity {
              dialog();
              //recyclerView.setVisibility(View.INVISIBLE);
          }
+        else if(id == R.id.submit_task)
+         {
 
+             try {
+                 if(submittask() == -1)
+                     Toast.makeText(this,"此任务还没有全部完成",Toast.LENGTH_SHORT);
+                 else
+                     Toast.makeText(this,"成功提交任务",Toast.LENGTH_SHORT);
+             } catch (IOException e) {
+                 e.printStackTrace();
+             }
+         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public int submittask() throws IOException {
+        for(int i = 0 ; i < ProjectDetailActivity.taskdetailresponse.taskCategoryList.size(); i++)
+        {
+            uploadmap.clear();
+            if(readfromlocalmap(ProjectDetailActivity.taskid + ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(i).categoryId))
+            {
+                for(Map.Entry<String,ItemDetail>entry:uploadmap.entrySet())
+                {
+                 if(entry.getValue().scoreType == ScoreType.None)
+                     return -1;
+                }
+            }
+
+        }
+        tasksubmit = new TaskSubmit();
+        tasksubmit.execute((Void)null);
+        return 1;
     }
 
     protected void dialog() {
@@ -142,6 +181,7 @@ public class ProjectItemActivity extends AppCompatActivity {
         builder.create().show();
     }
 
+    //delete the picture newlist after upload the picture to server
     private void savePictureNewList() {
         try {
             FileOutputStream outputStream = openFileOutput(ProjectDetailActivity.taskid,
@@ -310,10 +350,13 @@ public class ProjectItemActivity extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(final SavePictureResponse success) {
-                if(success == SavePictureResponse.Failed)
+                if(success == SavePictureResponse.Failed || success == SavePictureResponse.NetWorkError)
                     Toast.makeText(getBaseContext(),"上传图片" + "失败",Toast.LENGTH_LONG).show();
-                else
+                else if(success == SavePictureResponse.Success)
                     uploadpicturenumber++;
+                if(uploadpicturenumber%5 == 0)
+                    Toast.makeText(getBaseContext(),"上传" + String.valueOf(uploadpicturenumber) + "张图片，共"
+                            + String.valueOf(ProjectDetailActivity.newpicid.size())+ "张",Toast.LENGTH_SHORT).show();
                 if( uploadpicturenumber == ProjectDetailActivity.newpicid.size())
                 {
                     Toast.makeText(getApplicationContext(), "所有图片上传成功", Toast.LENGTH_SHORT).show();
@@ -357,6 +400,35 @@ public class ProjectItemActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(),"upload" + success,Toast.LENGTH_SHORT).show();
             else
                 Toast.makeText(getBaseContext(),"upload" + success,Toast.LENGTH_LONG).show();
+        }
+        @Override
+        protected void onCancelled() {
+        }
+    }
+
+    public class TaskSubmit extends AsyncTask<Void, Void, TaskSubmitForAuditorResponse> {
+        TaskSubmit() {
+        }
+        @Override
+        protected void onPreExecute() {
+        }
+        @Override
+        protected TaskSubmitForAuditorResponse doInBackground(Void... params) {
+            // TODO: attempt authentication against projectdetail network service.
+            // Simulate network access.
+            try {
+                return EauditingClient.SubmitTask(MainActivity.username, ProjectDetailActivity.taskid);
+            } catch (NetworkException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(final TaskSubmitForAuditorResponse success) {
+            if(success ==TaskSubmitForAuditorResponse.Success)
+                Toast.makeText(getBaseContext(),"submit" + success,Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(getBaseContext(),"submit" + success,Toast.LENGTH_LONG).show();
         }
         @Override
         protected void onCancelled() {

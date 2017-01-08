@@ -64,14 +64,6 @@
             android:hint="此处输入问题描述(选填)"
             android:textSize="13dp"
             />
-        <TextView
-            android:id="@+id/score"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:textSize="18dp"
-            android:text="问题分数："
-            />
         <EditText
             android:id="@+id/editscore"
             android:layout_width="match_parent"

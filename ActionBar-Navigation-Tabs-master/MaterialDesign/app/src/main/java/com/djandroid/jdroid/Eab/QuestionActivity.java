@@ -30,6 +30,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class QuestionActivity extends AppCompatActivity {
 
@@ -37,7 +38,7 @@ public class QuestionActivity extends AppCompatActivity {
     TaskCategoryDetail taskcategorydetail;
     public static List<Question> questions = new ArrayList<>();
     public static String catogoryid;
-    public static LinkedHashMap<String,ItemDetail> readfromlocal = new LinkedHashMap<>();;
+    public static LinkedHashMap<String,ItemDetail> readfromlocal = new LinkedHashMap<>();
     QuestionAdapter questionAdapter;
     Toolbar toolbar;
     @Override
@@ -99,13 +100,9 @@ public class QuestionActivity extends AppCompatActivity {
             question.itemid = taskcategorydetail.taskItemList.get(i).itemId;
             question.question = "#" + (i + 1) + ":" + taskcategorydetail.taskItemList.get(i).itemDetail;
             question.description = taskcategorydetail.taskItemList.get(i).itemExplanation;
-
+            question.isdescriptionvisible = false;
             if(readfromlocal.containsKey(taskcategorydetail.taskItemList.get(i).itemId))
             {
-                //if(readfromlocal.get(taskcategorydetail.taskItemList.get(i).itemId). != null)
-                 //   question.comment = readfromlocal.get(taskcategorydetail.taskItemList.get(i).getItemId()).getRemark();
-                //else
-                //    question.comment = taskcategorydetail.taskItemList.get(i).getRemark();
                 if(readfromlocal.get(taskcategorydetail.taskItemList.get(i).itemId).scoreValue > 0)
                     question.score = readfromlocal.get(taskcategorydetail.taskItemList.get(i).itemId).scoreValue;
                 else
@@ -115,6 +112,8 @@ public class QuestionActivity extends AppCompatActivity {
 
                 if(readfromlocal.get(taskcategorydetail.taskItemList.get(i).itemId).goodPictureList == null)
                     readfromlocal.get(taskcategorydetail.taskItemList.get(i).itemId).goodPictureList = taskcategorydetail.taskItemList.get(i).goodPictureList;
+                if(readfromlocal.get(taskcategorydetail.taskItemList.get(i).itemId).badPictureList == null)
+                    readfromlocal.get(taskcategorydetail.taskItemList.get(i).itemId).badPictureList = taskcategorydetail.taskItemList.get(i).badPictureList;
                // else if(readfromlocal.get(taskcategorydetail.taskItemList.get(i).itemId).goodPictureList.size() == 0)
             }
             else {
@@ -124,11 +123,39 @@ public class QuestionActivity extends AppCompatActivity {
             }
             questions.add(question);
         }
+        int idnumber = questions.size();
+        for(Map.Entry<String,ItemDetail>entry:readfromlocal.entrySet())
+        {
+            if(!IsinQuestion(entry.getValue().itemId))
+            {
+                Question question = new Question();
+                question.id = idnumber + 1;
+                question.itemid = entry.getValue().itemId;
+                question.question = "#" + question.id + ":" + entry.getValue().itemDetail;
+                question.description = entry.getValue().itemExplanation;
+                question.isdescriptionvisible = false;
+                question.score = entry.getValue().scoreValue;
+                question.checkedId =  entry.getValue().scoreType.ordinal();
+                questions.add(question);
+            }
+        }
+
+    }
+
+    public Boolean IsinQuestion(String id)
+    {
+        for(int i = 0 ; i < questions.size() ; i++)
+        {
+            if(id.equals(questions.get(i).itemid))
+                return true;
+        }
+        return false;
     }
     @Override
     protected void onResume() {
         super.onResume();
         questionAdapter.notifyDataSetChanged();
+        recyclerViewQuestions.setAdapter(questionAdapter);
         //Toast.makeText(this,"ahouojdfio",Toast.LENGTH_SHORT).show();
     }
 

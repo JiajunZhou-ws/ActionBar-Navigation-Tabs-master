@@ -26,6 +26,7 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.djandroid.jdroid.Eab.ClientLibrary.Common.ClientConfiguration;
 import com.djandroid.jdroid.Eab.ClientLibrary.Common.NetworkException;
 import com.djandroid.jdroid.Eab.ClientLibrary.EauditingClient;
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.TaskService.Helper.TaskInformation;
@@ -43,6 +44,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity
      */
     List<TaskInformation> listfromserver;
     private CharSequence mTitle;
+    private String lastmodifiedtime;
     public static String username;
     public static int APPSTATUS; //0 is online, 1 is offline
     private ActionBarDrawerToggle mDrawerToggle;
@@ -183,7 +186,7 @@ public class MainActivity extends AppCompatActivity
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.container, new ProjectRecycleFragment(listfromserver,AuditStatus.None))
                             .commit();
-                    Toast.makeText(this,"meiwang",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this,"无法使用网络,使用来自"+lastmodifiedtime+"更新的脱机版本",Toast.LENGTH_SHORT).show();
                 }
                 onSectionAttached(1);
                 break;
@@ -199,11 +202,11 @@ public class MainActivity extends AppCompatActivity
                 break;
             case NavigationDrawFragment.SETTING:
                 //onSectionAttached(4);
-                Toast.makeText(this,"未来这里会是设定",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,"当前版本是"+String.valueOf(ClientConfiguration.Version)+"2017/01/08",Toast.LENGTH_SHORT).show();
                 break;
             case NavigationDrawFragment.QUIT:
                 //onSectionAttached(4);
-                filedelete(getString(R.string.UserCache));
+                filedelete(getString(R.string.UserCache) + String.valueOf(ClientConfiguration.Version));
                 Toast.makeText(this,"登出成功",Toast.LENGTH_SHORT).show();
                 finish();
                 break;
@@ -226,6 +229,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    //保存任务列表
     private void saveTaskList() {
         try {
             FileOutputStream outputStream = openFileOutput(MainActivity.username + "tasklist",
@@ -241,6 +245,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    //读取任务列表
     public void readtaskList() throws IOException{
         String res="";
         try{
@@ -274,12 +279,16 @@ public class MainActivity extends AppCompatActivity
             {
                 return false;
             }
-
+            long time=f.lastModified();
+            SimpleDateFormat formatter = new
+                    SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            lastmodifiedtime=formatter.format(time);
         }
         catch (Exception e)
         {
             return false;
         }
+
 
         return true;
     }

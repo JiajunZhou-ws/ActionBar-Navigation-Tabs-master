@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.TaskService.Helper.TaskCategoryDetail;
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.ItemDetail;
@@ -55,7 +56,10 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         Question current = questions.get(position);
         holder.setQuestion(current.question);
-        holder.textDescription.setText(current.description);
+        holder.mysettext(current.isdescriptionvisible,holder.textDescription,current.description);
+        if(current.checkedId == 0)
+            holder.textViewQuestion.setTextColor(Color.RED);
+        holder.textViewQuestion.setTag(position);
         holder.goodcamera.setTag(position);
         holder.badcamera.setTag(position);
         holder.commentlistener.updatePosition(holder.getAdapterPosition(),holder.textcomment);
@@ -95,6 +99,19 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             textViewQuestion = (TextView) itemView.findViewById(R.id.text_view_question);
             textDescription = (TextView) itemView.findViewById(R.id.text_view_explanation);
             textScore = (TextView) itemView.findViewById(R.id.text_view_score);
+
+            textViewQuestion.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position = (int) textViewQuestion.getTag();
+                    if(QuestionActivity.questions.get(position).isdescriptionvisible == false)
+                        QuestionActivity.questions.get(position).isdescriptionvisible = true;
+                    else
+                        QuestionActivity.questions.get(position).isdescriptionvisible = false;
+                    mysettext(QuestionActivity.questions.get(position).isdescriptionvisible,textDescription,QuestionActivity.questions.get(position).description);
+                    //Toast.makeText(context,"zhegeshi::" + String.valueOf(position),Toast.LENGTH_SHORT).show();
+                }
+            });
 
             textcomment = (EditText) itemView.findViewById(R.id.editcomment);
             this.commentlistener = commentlistner;
@@ -142,6 +159,17 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             textViewQuestion.setText(question);
         }
 
+        public void mysettext(Boolean temp,TextView description, String content)
+        {
+            if(temp) {
+                description.setVisibility(View.VISIBLE);
+                description.setText(content);
+            }
+            else
+            {
+                description.setVisibility(View.GONE);
+            }
+        }
         public void setOptions(final ViewHolder viewholder, Question question, int position) {
             radioGroupOptions.setTag(position);
             Log.e(TAG, position + " :setOptions: " + question.toString());
@@ -161,6 +189,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                     int pos = (int) group.getTag();
                     Question que = questions.get(pos);
                     que.checkedId = RealidtocheckID(checkedId);
+                    viewholder.textViewQuestion.setTextColor(Color.BLACK);
                     if(que.checkedId == 4) {
                         viewholder.auditscore.setFocusableInTouchMode(true);
                         viewholder.textScore.setTextColor(Color.BLACK);
