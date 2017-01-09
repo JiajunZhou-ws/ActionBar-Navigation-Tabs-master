@@ -12,8 +12,10 @@ import android.widget.Toast;
 
 
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.ItemDetail;
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.PictureDetail;
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.ScoreType;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class OtherFindingActivity extends ActionBarActivity {

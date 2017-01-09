@@ -245,7 +245,10 @@ public class PhotoActivity extends AppCompatActivity {
                 readfromlocalpictrue(imagelist.get(i).pictureName , i);
             }
         }
-        showcomment(imagelist.size());
+        if(imagelist == null)
+            showcomment(0);
+        else
+            showcomment(imagelist.size());
     }
     private void savePictureNewList() {
         try {
