@@ -6,4 +6,5 @@ package com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail;
 public class PictureDetail {
     public String pictureName;
     public String pictureExplanation;
+    public ViolationLevel pictureViolation = ViolationLevel.None;
 }

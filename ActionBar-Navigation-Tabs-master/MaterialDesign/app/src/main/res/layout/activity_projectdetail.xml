@@ -157,20 +157,6 @@
         android:textSize="18dp"
         android:text="审核日期："
         />
-    <Button
-        android:id="@+id/detailbutton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center|center_horizontal|center_vertical"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/button"
-        android:paddingBottom="8dp"
-        android:paddingLeft="25dp"
-        android:paddingRight="25dp"
-        android:paddingTop="8dp"
-        android:text="详细信息"
-        android:textColor="@color/White"
-        android:textSize="18sp" />
     <ProgressBar
         android:id="@+id/progressbar"
         style="@android:style/Widget.ProgressBar.Horizontal"
@@ -190,6 +176,35 @@
         android:textSize="18dp"
         android:text="进度："
         />
+    <Button
+        android:id="@+id/updatebutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center|center_horizontal|center_vertical"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/button"
+        android:paddingBottom="8dp"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:paddingTop="8dp"
+        android:text="更新"
+        android:textColor="@color/White"
+        android:textSize="18sp" />
+    <Button
+        android:id="@+id/detailbutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center|center_horizontal|center_vertical"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/button"
+        android:paddingBottom="8dp"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:paddingTop="8dp"
+        android:text="详细信息"
+        android:textColor="@color/White"
+        android:textSize="18sp" />
+
 </LinearLayout>
 </ScrollView>
 </LinearLayout>

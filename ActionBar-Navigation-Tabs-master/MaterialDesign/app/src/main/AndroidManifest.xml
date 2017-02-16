@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.djandroid.jdroid.Eab">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -14,11 +15,11 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
 
-    <application
+    <application tools:replace="android:label"
         android:name="com.djandroid.jdroid.Eab.MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/launcher"
-        android:label="eAuditing_Ver0.6"
+        android:label="eAuditing"
         android:theme="@style/AppTheme_new">
         <activity
             android:name="com.djandroid.jdroid.Eab.LoginActivity"

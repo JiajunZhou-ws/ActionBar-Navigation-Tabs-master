@@ -22,6 +22,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.ItemDetail;
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.PictureDetail;
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.ViolationLevel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -45,6 +46,11 @@ public class PhotoActivity extends AppCompatActivity {
     String cameratype;
     TextView[] textcommentview = new TextView[10];
     EditText[] editcomment = new EditText[10];
+    RadioGroup[] radioGroupOptions = new RadioGroup[10];
+    RadioButton[] buttonhigh = new RadioButton[10];
+    RadioButton[] buttonmedium = new RadioButton[10];
+    RadioButton[] buttonlow = new RadioButton[10];
+    RadioButton[] buttonnone = new RadioButton[10];
     private List<PictureDetail> imagelist = new ArrayList<>();
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,7 +65,6 @@ public class PhotoActivity extends AppCompatActivity {
             public void onClick(View view) {
                 savePictureNewList();
                 saveMaptofile();
-                // Toast.makeText(view.getContext(),"picturelistsaved",Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
@@ -75,6 +80,7 @@ public class PhotoActivity extends AppCompatActivity {
             imagelist = QuestionActivity.readfromlocal.get(itemid).badPictureList; //get the picturelist
 
         initializetextview();
+
         try {
             PreparePicture();
         } catch (IOException e) {
@@ -85,7 +91,7 @@ public class PhotoActivity extends AppCompatActivity {
         gridview.setAdapter(temp);
         gridview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                Toast.makeText(PhotoActivity.this, "short click" + String.valueOf(position), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(PhotoActivity.this, "short click" + String.valueOf(position), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(PhotoActivity.this,PreviewActivity.class);
                 if(cameratype.equals("good"))
                     intent.putExtra("picturename",QuestionActivity.readfromlocal.get(itemid).goodPictureList.get(position).pictureName);
@@ -149,6 +155,56 @@ public class PhotoActivity extends AppCompatActivity {
         editcomment[7] = (EditText) findViewById(R.id.editcomment7);
         editcomment[8] = (EditText) findViewById(R.id.editcomment8);
         editcomment[9] = (EditText) findViewById(R.id.editcomment9);
+        radioGroupOptions[1] = (RadioGroup)findViewById(R.id.RiskRadioGroup1);
+        radioGroupOptions[2] = (RadioGroup)findViewById(R.id.RiskRadioGroup2);
+        radioGroupOptions[3] = (RadioGroup)findViewById(R.id.RiskRadioGroup3);
+        radioGroupOptions[4] = (RadioGroup)findViewById(R.id.RiskRadioGroup4);
+        radioGroupOptions[5] = (RadioGroup)findViewById(R.id.RiskRadioGroup5);
+        radioGroupOptions[6] = (RadioGroup)findViewById(R.id.RiskRadioGroup6);
+        radioGroupOptions[7] = (RadioGroup)findViewById(R.id.RiskRadioGroup7);
+        radioGroupOptions[8] = (RadioGroup)findViewById(R.id.RiskRadioGroup8);
+        radioGroupOptions[9] = (RadioGroup)findViewById(R.id.RiskRadioGroup9);
+
+        buttonhigh[1] = (RadioButton)findViewById(R.id.high1);
+        buttonhigh[2] = (RadioButton)findViewById(R.id.high2);
+        buttonhigh[3] = (RadioButton)findViewById(R.id.high3);
+        buttonhigh[4] = (RadioButton)findViewById(R.id.high4);
+        buttonhigh[5] = (RadioButton)findViewById(R.id.high5);
+        buttonhigh[6] = (RadioButton)findViewById(R.id.high6);
+        buttonhigh[7] = (RadioButton)findViewById(R.id.high7);
+        buttonhigh[8] = (RadioButton)findViewById(R.id.high8);
+        buttonhigh[9] = (RadioButton)findViewById(R.id.high9);
+        buttonmedium[1] = (RadioButton)findViewById(R.id.middle1);
+        buttonmedium[2] = (RadioButton)findViewById(R.id.middle2);
+        buttonmedium[3] = (RadioButton)findViewById(R.id.middle3);
+        buttonmedium[4] = (RadioButton)findViewById(R.id.middle4);
+        buttonmedium[5] = (RadioButton)findViewById(R.id.middle5);
+        buttonmedium[6] = (RadioButton)findViewById(R.id.middle6);
+        buttonmedium[7] = (RadioButton)findViewById(R.id.middle7);
+        buttonmedium[8] = (RadioButton)findViewById(R.id.middle8);
+        buttonmedium[9] = (RadioButton)findViewById(R.id.middle9);
+        buttonlow[1] = (RadioButton)findViewById(R.id.low1);
+        buttonlow[2] = (RadioButton)findViewById(R.id.low2);
+        buttonlow[3] = (RadioButton)findViewById(R.id.low3);
+        buttonlow[4] = (RadioButton)findViewById(R.id.low4);
+        buttonlow[5] = (RadioButton)findViewById(R.id.low5);
+        buttonlow[6] = (RadioButton)findViewById(R.id.low6);
+        buttonlow[7] = (RadioButton)findViewById(R.id.low7);
+        buttonlow[8] = (RadioButton)findViewById(R.id.low8);
+        buttonlow[9] = (RadioButton)findViewById(R.id.low9);
+        buttonnone[1] = (RadioButton)findViewById(R.id.norisk1);
+        buttonnone[2] = (RadioButton)findViewById(R.id.norisk2);
+        buttonnone[3] = (RadioButton)findViewById(R.id.norisk3);
+        buttonnone[4] = (RadioButton)findViewById(R.id.norisk4);
+        buttonnone[5] = (RadioButton)findViewById(R.id.norisk5);
+        buttonnone[6] = (RadioButton)findViewById(R.id.norisk6);
+        buttonnone[7] = (RadioButton)findViewById(R.id.norisk7);
+        buttonnone[8] = (RadioButton)findViewById(R.id.norisk8);
+        buttonnone[9] = (RadioButton)findViewById(R.id.norisk9);
+        if(cameratype.equals("good")) {
+            for(int i = 1; i<=9;i++)
+                radioGroupOptions[i].setVisibility(View.GONE);
+        }
     }
 
     public void showcomment(int num)
@@ -157,6 +213,28 @@ public class PhotoActivity extends AppCompatActivity {
         {
             textcommentview[i].setVisibility(View.VISIBLE);
             editcomment[i].setVisibility(View.VISIBLE);
+            if(cameratype.equals("bad")) {
+                radioGroupOptions[i].setVisibility(View.VISIBLE);
+                radioGroupOptions[i].setTag(i);
+                showradiobuttonchecked(num);
+                radioGroupOptions[i].setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup radioGroup, int checkid) {
+                        int position = (int)radioGroup.getTag();
+                        for(int i =1 ; i <= 9 ; i++)
+                        {
+                            if(checkid == buttonhigh[i].getId())
+                                QuestionActivity.readfromlocal.get(itemid).badPictureList.get(position-1).pictureViolation = ViolationLevel.Critical;
+                            else if(checkid == buttonmedium[i].getId())
+                                QuestionActivity.readfromlocal.get(itemid).badPictureList.get(position-1).pictureViolation = ViolationLevel.Major;
+                            else if(checkid == buttonlow[i].getId())
+                                QuestionActivity.readfromlocal.get(itemid).badPictureList.get(position-1).pictureViolation = ViolationLevel.Minor;
+                            else if(checkid == buttonnone[i].getId())
+                                QuestionActivity.readfromlocal.get(itemid).badPictureList.get(position-1).pictureViolation = ViolationLevel.None;
+                        }
+                    }
+                });
+            }
             editcomment[i].setText(imagelist.get(i-1).pictureExplanation);
             editcomment[i].setTag(i);
             editcomment[i].addTextChangedListener(new MyCustomEditTextListener(i));
@@ -165,8 +243,23 @@ public class PhotoActivity extends AppCompatActivity {
         {
             textcommentview[i].setVisibility(View.GONE);
             editcomment[i].setVisibility(View.GONE);
+            radioGroupOptions[i].setVisibility(View.GONE);
         }
     }
+    public void showradiobuttonchecked(int num)
+    {
+        for(int i = 1; i <= num; i++) {
+            if(QuestionActivity.readfromlocal.get(itemid).badPictureList.get(i-1).pictureViolation == ViolationLevel.Critical)
+                radioGroupOptions[i].check(buttonhigh[i].getId());
+            else if(QuestionActivity.readfromlocal.get(itemid).badPictureList.get(i-1).pictureViolation == ViolationLevel.Major)
+                radioGroupOptions[i].check(buttonmedium[i].getId());
+            else if(QuestionActivity.readfromlocal.get(itemid).badPictureList.get(i-1).pictureViolation == ViolationLevel.Minor)
+                radioGroupOptions[i].check(buttonlow[i].getId());
+            else if(QuestionActivity.readfromlocal.get(itemid).badPictureList.get(i-1).pictureViolation == ViolationLevel.None)
+                radioGroupOptions[i].check(buttonnone[i].getId());
+        }
+    }
+
 
     protected void dialog(final int n) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

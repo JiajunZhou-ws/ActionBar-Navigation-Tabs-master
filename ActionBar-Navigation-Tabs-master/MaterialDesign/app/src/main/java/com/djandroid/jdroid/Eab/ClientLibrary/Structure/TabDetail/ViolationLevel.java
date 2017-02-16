@@ -7,5 +7,6 @@ public enum ViolationLevel {
     Critical,
     Major,
     Minor,
-    Other
+    Other,
+    None
 }

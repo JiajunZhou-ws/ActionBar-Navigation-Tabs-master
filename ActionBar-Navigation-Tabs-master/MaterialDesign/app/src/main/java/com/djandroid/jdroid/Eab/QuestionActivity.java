@@ -94,7 +94,7 @@ public class QuestionActivity extends AppCompatActivity {
 
     private void prepareQuestions() {
 
-        for (int i = 0; i < taskcategorydetail.taskItemList .size(); i++) {
+        for (int i = 0; i < taskcategorydetail.taskItemList.size(); i++) {
             Question question = new Question();
             question.id = i;
             question.itemid = taskcategorydetail.taskItemList.get(i).itemId;

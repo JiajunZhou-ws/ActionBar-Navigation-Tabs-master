@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">eAuditingver0.7</string>
+    <string name="app_name">eAuditingver0.9</string>
     <string name="title_section1">新任务</string>
     <string name="title_section2">已提交</string>
     <string name="title_section3">已完成</string>

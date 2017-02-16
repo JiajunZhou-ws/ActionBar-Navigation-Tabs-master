@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity
     private CharSequence mTitle;
     private String lastmodifiedtime;
     public static String username;
-    public static int APPSTATUS; //0 is online, 1 is offline
+    //public static int APPSTATUS; //0 is online, 1 is offline
     private ActionBarDrawerToggle mDrawerToggle;
     DrawerLayout drawer_layout;
     ActionBar actionBar;
@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.container, new ProjectRecycleFragment(listfromserver,AuditStatus.None))
                             .commit();
-                    Toast.makeText(this,"无法使用网络,使用来自"+lastmodifiedtime+"更新的脱机版本",Toast.LENGTH_SHORT).show();
+
                 }
                 onSectionAttached(1);
                 break;
@@ -237,7 +237,7 @@ public class MainActivity extends AppCompatActivity
             outputStream.write(new Gson().toJson(listfromserver).getBytes());
             outputStream.flush();
             outputStream.close();
-            Toast.makeText(this, "tasklist保存成功", Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "tasklist保存成功", Toast.LENGTH_LONG).show();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

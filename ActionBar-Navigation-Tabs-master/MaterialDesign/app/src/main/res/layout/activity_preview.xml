@@ -12,9 +12,9 @@
     android:background="@color/Black"
     tools:context="com.djandroid.jdroid.Eab.PreviewActivity">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scaleType="matrix"
-        android:id="@+id/imageView" />
+    <me.kareluo.intensify.image.IntensifyImageView
+        android:id="@+id/imageview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:scaleType="fitAuto" />
 </RelativeLayout>

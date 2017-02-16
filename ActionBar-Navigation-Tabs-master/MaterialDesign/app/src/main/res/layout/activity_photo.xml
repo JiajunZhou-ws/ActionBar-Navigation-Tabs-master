@@ -61,6 +61,37 @@
                     android:scrollHorizontally="false"
                     />
             </LinearLayout>
+            <RadioGroup
+                android:id="@+id/RiskRadioGroup1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:text="风险高"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/high1"
+                    android:layout_weight="1" />
+
+                <RadioButton
+                    android:text="风险中"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/middle1"
+                    android:layout_weight="1" />
+                <RadioButton
+                    android:text="风险低"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/low1"
+                    android:layout_weight="1" />
+                <RadioButton
+                    android:text="无风险"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/norisk1"
+                    android:layout_weight="1" />
+            </RadioGroup>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -89,7 +120,37 @@
                     android:scrollHorizontally="false"
                     />
             </LinearLayout>
+            <RadioGroup
+                android:id="@+id/RiskRadioGroup2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:text="风险高"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/high2"
+                    android:layout_weight="1" />
 
+                <RadioButton
+                    android:text="风险中"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/middle2"
+                    android:layout_weight="1" />
+                <RadioButton
+                    android:text="风险低"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/low2"
+                    android:layout_weight="1" />
+                <RadioButton
+                    android:text="无风险"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/norisk2"
+                    android:layout_weight="1" />
+            </RadioGroup>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -117,6 +178,37 @@
                     android:scrollHorizontally="false"
                     />
             </LinearLayout>
+            <RadioGroup
+                android:id="@+id/RiskRadioGroup3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:text="风险高"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/high3"
+                    android:layout_weight="1" />
+
+                <RadioButton
+                    android:text="风险中"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/middle3"
+                    android:layout_weight="1" />
+                <RadioButton
+                    android:text="风险低"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/low3"
+                    android:layout_weight="1" />
+                <RadioButton
+                    android:text="无风险"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/norisk3"
+                    android:layout_weight="1" />
+            </RadioGroup>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -144,6 +236,37 @@
                     android:scrollHorizontally="false"
                     />
             </LinearLayout>
+            <RadioGroup
+                android:id="@+id/RiskRadioGroup4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:text="风险高"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/high4"
+                    android:layout_weight="1" />
+
+                <RadioButton
+                    android:text="风险中"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/middle4"
+                    android:layout_weight="1" />
+                <RadioButton
+                    android:text="风险低"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/low4"
+                    android:layout_weight="1" />
+                <RadioButton
+                    android:text="无风险"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/norisk4"
+                    android:layout_weight="1" />
+            </RadioGroup>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -171,6 +294,37 @@
                     android:scrollHorizontally="false"
                     />
             </LinearLayout>
+            <RadioGroup
+                android:id="@+id/RiskRadioGroup5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:text="风险高"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/high5"
+                    android:layout_weight="1" />
+
+                <RadioButton
+                    android:text="风险中"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/middle5"
+                    android:layout_weight="1" />
+                <RadioButton
+                    android:text="风险低"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/low5"
+                    android:layout_weight="1" />
+                <RadioButton
+                    android:text="无风险"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/norisk5"
+                    android:layout_weight="1" />
+            </RadioGroup>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -198,6 +352,37 @@
                     android:scrollHorizontally="false"
                     />
             </LinearLayout>
+            <RadioGroup
+                android:id="@+id/RiskRadioGroup6"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:text="风险高"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/high6"
+                    android:layout_weight="1" />
+
+                <RadioButton
+                    android:text="风险中"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/middle6"
+                    android:layout_weight="1" />
+                <RadioButton
+                    android:text="风险低"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/low6"
+                    android:layout_weight="1" />
+                <RadioButton
+                    android:text="无风险"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/norisk6"
+                    android:layout_weight="1" />
+            </RadioGroup>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -225,6 +410,37 @@
                     android:scrollHorizontally="false"
                     />
             </LinearLayout>
+            <RadioGroup
+                android:id="@+id/RiskRadioGroup7"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:text="风险高"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/high7"
+                    android:layout_weight="1" />
+
+                <RadioButton
+                    android:text="风险中"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/middle7"
+                    android:layout_weight="1" />
+                <RadioButton
+                    android:text="风险低"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/low7"
+                    android:layout_weight="1" />
+                <RadioButton
+                    android:text="无风险"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/norisk7"
+                    android:layout_weight="1" />
+            </RadioGroup>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -252,6 +468,37 @@
                     android:scrollHorizontally="false"
                     />
             </LinearLayout>
+            <RadioGroup
+                android:id="@+id/RiskRadioGroup8"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:text="风险高"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/high8"
+                    android:layout_weight="1" />
+
+                <RadioButton
+                    android:text="风险中"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/middle8"
+                    android:layout_weight="1" />
+                <RadioButton
+                    android:text="风险低"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/low8"
+                    android:layout_weight="1" />
+                <RadioButton
+                    android:text="无风险"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/norisk8"
+                    android:layout_weight="1" />
+            </RadioGroup>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -279,6 +526,37 @@
                     android:scrollHorizontally="false"
                     />
             </LinearLayout>
+            <RadioGroup
+                android:id="@+id/RiskRadioGroup9"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:text="风险高"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/high9"
+                    android:layout_weight="1" />
+
+                <RadioButton
+                    android:text="风险中"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/middle9"
+                    android:layout_weight="1" />
+                <RadioButton
+                    android:text="风险低"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/low9"
+                    android:layout_weight="1" />
+                <RadioButton
+                    android:text="无风险"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/norisk9"
+                    android:layout_weight="1" />
+            </RadioGroup>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

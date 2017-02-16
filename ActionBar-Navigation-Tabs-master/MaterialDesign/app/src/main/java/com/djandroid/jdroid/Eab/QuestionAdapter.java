@@ -175,13 +175,13 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             Log.e(TAG, position + " :setOptions: " + question.toString());
             radioGroupOptions.check(checkIDtoRealid(question.checkedId));
             if(question.checkedId == 4) {
-                viewholder.auditscore.setFocusableInTouchMode(true);
+                viewholder.auditscore.setFocusableInTouchMode(false);
                 viewholder.textScore.setTextColor(Color.BLACK);
             }
             else {
                 viewholder.auditscore.clearFocus();
                 viewholder.auditscore.setFocusableInTouchMode(false);
-                viewholder.textScore.setTextColor(Color.RED);
+                viewholder.textScore.setTextColor(Color.BLACK);
             }
             radioGroupOptions.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
@@ -191,13 +191,13 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                     que.checkedId = RealidtocheckID(checkedId);
                     viewholder.textViewQuestion.setTextColor(Color.BLACK);
                     if(que.checkedId == 4) {
-                        viewholder.auditscore.setFocusableInTouchMode(true);
+                        viewholder.auditscore.setFocusableInTouchMode(false);
                         viewholder.textScore.setTextColor(Color.BLACK);
                     }
                     else {
                         viewholder.auditscore.clearFocus();
                         viewholder.auditscore.setFocusableInTouchMode(false);
-                        viewholder.textScore.setTextColor(Color.RED);
+                        viewholder.textScore.setTextColor(Color.BLACK);
                     }
                     if(readfromlocal.containsKey(questions.get(pos).itemid))
                     {
@@ -285,24 +285,6 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
             questions.get(position).comment = charSequence.toString();
-            if(readfromlocal.containsKey(questions.get(position).itemid))
-            {
-                //readfromlocal.get(questions.get(position).itemid).setRemark(questions.get(position).comment);
-            }
-            else {
-                //TaskItem temp;
-                //int itemindex = 0; //find the index from taskcategorydetail
-                //for(int j = 0 ; j < taskcategorydetail.taskItemList.size() ; j++)
-               // {
-                //    if (taskcategorydetail.taskItemList.get(j).getItemId().equals(questions.get(position).itemid)) {
-                 //       itemindex = j;
-                  //      break;
-                   // }
-               // }
-                //temp = taskcategorydetail.taskItemList.get(itemindex);
-                //temp.setRemark(questions.get(position).comment);
-                //readfromlocal.put(questions.get(position).itemid, temp);
-            }
             Log.v("zhoujiajun", questions.get(position).toString());
         }
         @Override

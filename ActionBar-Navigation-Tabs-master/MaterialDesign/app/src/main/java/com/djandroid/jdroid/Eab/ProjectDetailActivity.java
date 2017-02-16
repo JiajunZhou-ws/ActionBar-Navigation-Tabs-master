@@ -32,6 +32,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +44,7 @@ public class ProjectDetailActivity extends AppCompatActivity
     public  static TaskItemForAuditorResponse taskdetailresponse;
     private List<String> needdownloadpicture;
     private int needdownloadpicturenumber;
+    private String lastmodifiedtime;
     public static String taskid;
     public static int savepicturenum;
     public static List<String> newpicid = new ArrayList<String>();  //read from file in this activity
@@ -50,7 +52,7 @@ public class ProjectDetailActivity extends AppCompatActivity
     ProgressBar progressBar;
     TextView progresstext,projecttitle,projectname,projectarea,projectsiteid,projectsitename,projectsiteaddress,projectsitecontractor,projectcatagory;
     TextView projectdelegate,areasize,areatype,pmodelegate,projecttaskdate;
-    Button detailbutton;
+    Button detailbutton,updatebutton;
 
     GetProjectDetail getprojectdetail;
     GetPicture getpicture;
@@ -87,9 +89,10 @@ public class ProjectDetailActivity extends AppCompatActivity
 
         progresstext = (TextView) findViewById(R.id.progresstext);
         progressBar = (ProgressBar) findViewById(R.id.progressbar); //progressbar
-        progressBar.setVisibility(View.INVISIBLE);
-        progresstext.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.GONE);
+        progresstext.setVisibility(View.GONE);
         detailbutton = (Button) findViewById(R.id.detailbutton);
+        updatebutton = (Button) findViewById(R.id.updatebutton);
         Intent intent = getIntent();
         final TaskInformation temp = new Gson().fromJson(intent.getStringExtra("TaskInfomation"), TaskInformation.class);
 
@@ -197,50 +200,27 @@ public class ProjectDetailActivity extends AppCompatActivity
         detailbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(MainActivity.APPSTATUS == 0) {
-                    if(MainActivity.isNetworkAvailable(getApplicationContext())) {
-                        Toast.makeText(getApplicationContext(), "正在下载图片和任务，请耐心等待，下载完成后会进入下一个界面", Toast.LENGTH_LONG).show();
-                        progressBar.setVisibility(View.VISIBLE);
-                        progresstext.setVisibility(View.VISIBLE);
-                        setProgressBarVisibility(true);
-                        //setProgressBarIndeterminate(true);
-                        setProgress(0);
-                        getprojectdetail = new GetProjectDetail(temp.taskId);
-                        getprojectdetail.execute((Void) null);
-                    }
-                    else
-                    {
-                        Toast.makeText(getApplicationContext(), "目前没有网络，请使用脱机模式", Toast.LENGTH_LONG).show();
-                    }
+                try {
+                    readtask(temp.taskId);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                else
-                {
-                    if(MainActivity.isNetworkAvailable(getApplicationContext())) {
-                        Toast.makeText(getApplicationContext(), "正在下载脱机使用的图片和任务，请耐心等待，下载完成后会进入下一个界面", Toast.LENGTH_LONG).show();
-                        progressBar.setVisibility(View.VISIBLE);
-                        progresstext.setVisibility(View.VISIBLE);
-                        setProgressBarVisibility(true);
-                        //setProgressBarIndeterminate(true);
-                        setProgress(0);
-                        getprojectdetail = new GetProjectDetail(temp.taskId);
-                        getprojectdetail.execute((Void) null);
-                    }
-                    else
-                    {
-                        //get taskdetailreponse from the file
-                        try {
-                            readtask(temp.taskId);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-                //save();
-
-                //Intent intent = new Intent(ProjectDetailActivity.this,ProjectItemActivity.class);
-               // startActivity(intent);
             }
         });
+        updatebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), "正在下载", Toast.LENGTH_LONG).show();
+                progressBar.setVisibility(View.VISIBLE);
+                progresstext.setVisibility(View.VISIBLE);
+                setProgressBarVisibility(true);
+                //setProgressBarIndeterminate(true);
+                setProgress(0);
+                getprojectdetail = new GetProjectDetail(temp.taskId);
+                getprojectdetail.execute((Void) null);
+            }
+        });
+
     }
 
        private void saveTask(String taskid) {
@@ -268,7 +248,7 @@ public class ProjectDetailActivity extends AppCompatActivity
                    fin.read(buffer);
                    res = EncodingUtils.getString(buffer, "UTF-8");
                    taskdetailresponse = new Gson().fromJson(res, TaskItemForAuditorResponse.class);
-                   //Toast.makeText(this, String.valueOf(taskcategorydetail.get(2)), Toast.LENGTH_SHORT).show();
+                   Toast.makeText(this,"使用来自"+lastmodifiedtime+"下载的脱机版本",Toast.LENGTH_SHORT).show();
                    fin.close();
                    GotoCategoryActivity();
                }
@@ -304,8 +284,7 @@ public class ProjectDetailActivity extends AppCompatActivity
            @Override
            protected void onPostExecute(final TaskItemForAuditorResponse success) {
                taskdetailresponse = success;
-               if(MainActivity.APPSTATUS == 1)
-                saveTask(taskid);
+               saveTask(taskid);
                getAllPictureName();
                if(needdownloadpicture.size() == 0)
                {
@@ -406,8 +385,8 @@ public class ProjectDetailActivity extends AppCompatActivity
        @Override
        protected void onResume() {
            super.onResume();
-           progressBar.setVisibility(View.INVISIBLE);
-           progresstext.setVisibility(View.INVISIBLE);
+           progressBar.setVisibility(View.GONE);
+           progresstext.setVisibility(View.GONE);
        }
 
        public void readPictureNewList() throws IOException{
@@ -442,6 +421,10 @@ public class ProjectDetailActivity extends AppCompatActivity
                {
                    return false;
                }
+               long time=f.lastModified();
+               SimpleDateFormat formatter = new
+                       SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+               lastmodifiedtime=formatter.format(time);
 
            }
            catch (Exception e)
