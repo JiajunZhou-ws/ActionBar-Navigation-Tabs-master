@@ -12,17 +12,22 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.*;
-import android.widget.*;
+import android.view.Display;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.support.v7.widget.Toolbar;
+import android.widget.GridView;
+import android.widget.Toast;
 
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.ItemDetail;
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.PictureDetail;
-import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.ViolationLevel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -40,17 +45,10 @@ import java.util.UUID;
 public class PhotoActivity extends AppCompatActivity {
     /** Called when the activity is first created. */
     Toolbar toolbar;
-    ImageAdapter temp;
+    ImageAdapter pictureadapter;
     Integer numofpic;
     String itemid;
     String cameratype;
-    TextView[] textcommentview = new TextView[10];
-    EditText[] editcomment = new EditText[10];
-    RadioGroup[] radioGroupOptions = new RadioGroup[10];
-    RadioButton[] buttonhigh = new RadioButton[10];
-    RadioButton[] buttonmedium = new RadioButton[10];
-    RadioButton[] buttonlow = new RadioButton[10];
-    RadioButton[] buttonnone = new RadioButton[10];
     private List<PictureDetail> imagelist = new ArrayList<>();
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,7 +67,7 @@ public class PhotoActivity extends AppCompatActivity {
             }
         });
         numofpic = 0;
-        temp = new ImageAdapter(this);
+        pictureadapter = new ImageAdapter(this);
 
         Intent intent = getIntent();
         itemid = intent.getStringExtra("itemid");
@@ -79,8 +77,6 @@ public class PhotoActivity extends AppCompatActivity {
         else
             imagelist = QuestionActivity.readfromlocal.get(itemid).badPictureList; //get the picturelist
 
-        initializetextview();
-
         try {
             PreparePicture();
         } catch (IOException e) {
@@ -88,15 +84,12 @@ public class PhotoActivity extends AppCompatActivity {
         }
 
         GridView gridview = (GridView) findViewById(R.id.gridview);
-        gridview.setAdapter(temp);
+        gridview.setAdapter(pictureadapter);
         gridview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 //Toast.makeText(PhotoActivity.this, "short click" + String.valueOf(position), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(PhotoActivity.this,PreviewActivity.class);
-                if(cameratype.equals("good"))
-                    intent.putExtra("picturename",QuestionActivity.readfromlocal.get(itemid).goodPictureList.get(position).pictureName);
-                else
-                    intent.putExtra("picturename",QuestionActivity.readfromlocal.get(itemid).badPictureList.get(position).pictureName);
+                intent.putExtra("picturename",imagelist.get(position).pictureName);
                 PhotoActivity.this.startActivity(intent);
             }
         });
@@ -134,154 +127,24 @@ public class PhotoActivity extends AppCompatActivity {
         }
     }
 
-
-    public void initializetextview()
-    {
-        textcommentview[1] = (TextView) findViewById(R.id.text_view_answer1);
-        textcommentview[2] = (TextView) findViewById(R.id.text_view_answer2);
-        textcommentview[3] = (TextView) findViewById(R.id.text_view_answer3);
-        textcommentview[4] = (TextView) findViewById(R.id.text_view_answer4);
-        textcommentview[5] = (TextView) findViewById(R.id.text_view_answer5);
-        textcommentview[6] = (TextView) findViewById(R.id.text_view_answer6);
-        textcommentview[7] = (TextView) findViewById(R.id.text_view_answer7);
-        textcommentview[8] = (TextView) findViewById(R.id.text_view_answer8);
-        textcommentview[9] = (TextView) findViewById(R.id.text_view_answer9);
-        editcomment[1] = (EditText) findViewById(R.id.editcomment1);
-        editcomment[2] = (EditText) findViewById(R.id.editcomment2);
-        editcomment[3] = (EditText) findViewById(R.id.editcomment3);
-        editcomment[4] = (EditText) findViewById(R.id.editcomment4);
-        editcomment[5] = (EditText) findViewById(R.id.editcomment5);
-        editcomment[6] = (EditText) findViewById(R.id.editcomment6);
-        editcomment[7] = (EditText) findViewById(R.id.editcomment7);
-        editcomment[8] = (EditText) findViewById(R.id.editcomment8);
-        editcomment[9] = (EditText) findViewById(R.id.editcomment9);
-        radioGroupOptions[1] = (RadioGroup)findViewById(R.id.RiskRadioGroup1);
-        radioGroupOptions[2] = (RadioGroup)findViewById(R.id.RiskRadioGroup2);
-        radioGroupOptions[3] = (RadioGroup)findViewById(R.id.RiskRadioGroup3);
-        radioGroupOptions[4] = (RadioGroup)findViewById(R.id.RiskRadioGroup4);
-        radioGroupOptions[5] = (RadioGroup)findViewById(R.id.RiskRadioGroup5);
-        radioGroupOptions[6] = (RadioGroup)findViewById(R.id.RiskRadioGroup6);
-        radioGroupOptions[7] = (RadioGroup)findViewById(R.id.RiskRadioGroup7);
-        radioGroupOptions[8] = (RadioGroup)findViewById(R.id.RiskRadioGroup8);
-        radioGroupOptions[9] = (RadioGroup)findViewById(R.id.RiskRadioGroup9);
-
-        buttonhigh[1] = (RadioButton)findViewById(R.id.high1);
-        buttonhigh[2] = (RadioButton)findViewById(R.id.high2);
-        buttonhigh[3] = (RadioButton)findViewById(R.id.high3);
-        buttonhigh[4] = (RadioButton)findViewById(R.id.high4);
-        buttonhigh[5] = (RadioButton)findViewById(R.id.high5);
-        buttonhigh[6] = (RadioButton)findViewById(R.id.high6);
-        buttonhigh[7] = (RadioButton)findViewById(R.id.high7);
-        buttonhigh[8] = (RadioButton)findViewById(R.id.high8);
-        buttonhigh[9] = (RadioButton)findViewById(R.id.high9);
-        buttonmedium[1] = (RadioButton)findViewById(R.id.middle1);
-        buttonmedium[2] = (RadioButton)findViewById(R.id.middle2);
-        buttonmedium[3] = (RadioButton)findViewById(R.id.middle3);
-        buttonmedium[4] = (RadioButton)findViewById(R.id.middle4);
-        buttonmedium[5] = (RadioButton)findViewById(R.id.middle5);
-        buttonmedium[6] = (RadioButton)findViewById(R.id.middle6);
-        buttonmedium[7] = (RadioButton)findViewById(R.id.middle7);
-        buttonmedium[8] = (RadioButton)findViewById(R.id.middle8);
-        buttonmedium[9] = (RadioButton)findViewById(R.id.middle9);
-        buttonlow[1] = (RadioButton)findViewById(R.id.low1);
-        buttonlow[2] = (RadioButton)findViewById(R.id.low2);
-        buttonlow[3] = (RadioButton)findViewById(R.id.low3);
-        buttonlow[4] = (RadioButton)findViewById(R.id.low4);
-        buttonlow[5] = (RadioButton)findViewById(R.id.low5);
-        buttonlow[6] = (RadioButton)findViewById(R.id.low6);
-        buttonlow[7] = (RadioButton)findViewById(R.id.low7);
-        buttonlow[8] = (RadioButton)findViewById(R.id.low8);
-        buttonlow[9] = (RadioButton)findViewById(R.id.low9);
-        buttonnone[1] = (RadioButton)findViewById(R.id.norisk1);
-        buttonnone[2] = (RadioButton)findViewById(R.id.norisk2);
-        buttonnone[3] = (RadioButton)findViewById(R.id.norisk3);
-        buttonnone[4] = (RadioButton)findViewById(R.id.norisk4);
-        buttonnone[5] = (RadioButton)findViewById(R.id.norisk5);
-        buttonnone[6] = (RadioButton)findViewById(R.id.norisk6);
-        buttonnone[7] = (RadioButton)findViewById(R.id.norisk7);
-        buttonnone[8] = (RadioButton)findViewById(R.id.norisk8);
-        buttonnone[9] = (RadioButton)findViewById(R.id.norisk9);
-        if(cameratype.equals("good")) {
-            for(int i = 1; i<=9;i++)
-                radioGroupOptions[i].setVisibility(View.GONE);
-        }
-    }
-
-    public void showcomment(int num)
-    {
-        for(int i = 1 ; i <= num ; i++)
-        {
-            textcommentview[i].setVisibility(View.VISIBLE);
-            editcomment[i].setVisibility(View.VISIBLE);
-            if(cameratype.equals("bad")) {
-                radioGroupOptions[i].setVisibility(View.VISIBLE);
-                radioGroupOptions[i].setTag(i);
-                showradiobuttonchecked(num);
-                radioGroupOptions[i].setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(RadioGroup radioGroup, int checkid) {
-                        int position = (int)radioGroup.getTag();
-                        for(int i =1 ; i <= 9 ; i++)
-                        {
-                            if(checkid == buttonhigh[i].getId())
-                                QuestionActivity.readfromlocal.get(itemid).badPictureList.get(position-1).pictureViolation = ViolationLevel.Critical;
-                            else if(checkid == buttonmedium[i].getId())
-                                QuestionActivity.readfromlocal.get(itemid).badPictureList.get(position-1).pictureViolation = ViolationLevel.Major;
-                            else if(checkid == buttonlow[i].getId())
-                                QuestionActivity.readfromlocal.get(itemid).badPictureList.get(position-1).pictureViolation = ViolationLevel.Minor;
-                            else if(checkid == buttonnone[i].getId())
-                                QuestionActivity.readfromlocal.get(itemid).badPictureList.get(position-1).pictureViolation = ViolationLevel.None;
-                        }
-                    }
-                });
-            }
-            editcomment[i].setText(imagelist.get(i-1).pictureExplanation);
-            editcomment[i].setTag(i);
-            editcomment[i].addTextChangedListener(new MyCustomEditTextListener(i));
-        }
-        for(int i = num + 1; i <= 9 ; i++)
-        {
-            textcommentview[i].setVisibility(View.GONE);
-            editcomment[i].setVisibility(View.GONE);
-            radioGroupOptions[i].setVisibility(View.GONE);
-        }
-    }
-    public void showradiobuttonchecked(int num)
-    {
-        for(int i = 1; i <= num; i++) {
-            if(QuestionActivity.readfromlocal.get(itemid).badPictureList.get(i-1).pictureViolation == ViolationLevel.Critical)
-                radioGroupOptions[i].check(buttonhigh[i].getId());
-            else if(QuestionActivity.readfromlocal.get(itemid).badPictureList.get(i-1).pictureViolation == ViolationLevel.Major)
-                radioGroupOptions[i].check(buttonmedium[i].getId());
-            else if(QuestionActivity.readfromlocal.get(itemid).badPictureList.get(i-1).pictureViolation == ViolationLevel.Minor)
-                radioGroupOptions[i].check(buttonlow[i].getId());
-            else if(QuestionActivity.readfromlocal.get(itemid).badPictureList.get(i-1).pictureViolation == ViolationLevel.None)
-                radioGroupOptions[i].check(buttonnone[i].getId());
-        }
-    }
-
-
     protected void dialog(final int n) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("是否要删除照片" + String.valueOf(n + 1));
-        builder.setTitle("提示");
-        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+        builder.setMessage("???????" + String.valueOf(n + 1));
+        builder.setTitle("??");
+        builder.setPositiveButton("??", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if(cameratype.equals("good"))
-                    QuestionActivity.readfromlocal.get(itemid).goodPictureList.remove(n);
-                else
-                    QuestionActivity.readfromlocal.get(itemid).badPictureList.remove(n);
-                temp.clearpicture();
+                imagelist.remove(n);
+                pictureadapter.clearpicture();
                 try {
                     PreparePicture();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                temp.notifyDataSetChanged();
+                pictureadapter.notifyDataSetChanged();
             }
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("??", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -296,7 +159,7 @@ public class PhotoActivity extends AppCompatActivity {
             outputStream.write(new GsonBuilder().serializeNulls().create().toJson(QuestionActivity.readfromlocal).getBytes());
             outputStream.flush();
             outputStream.close();
-            // Toast.makeText(this, ProjectDetailActivity.taskid + QuestionActivity.catogoryid +"保存成功", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(this, ProjectDetailActivity.taskid + QuestionActivity.catogoryid +"????", Toast.LENGTH_SHORT).show();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -333,16 +196,13 @@ public class PhotoActivity extends AppCompatActivity {
         if(imagelist != null && imagelist.size() > 0)
         {
             numofpic = imagelist.size();
-            for(int i = 0 ; i < imagelist.size() ; i++)
+            for(int i = 0 ; i < numofpic ; i++)
             {
                 readfromlocalpictrue(imagelist.get(i).pictureName , i);
             }
         }
-        if(imagelist == null)
-            showcomment(0);
-        else
-            showcomment(imagelist.size());
     }
+
     private void savePictureNewList() {
         try {
             FileOutputStream outputStream = openFileOutput(ProjectDetailActivity.taskid,
@@ -350,7 +210,7 @@ public class PhotoActivity extends AppCompatActivity {
             outputStream.write(new Gson().toJson(ProjectDetailActivity.newpicid).getBytes());
             outputStream.flush();
             outputStream.close();
-            //Toast.makeText(this, "保存成功", Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "????", Toast.LENGTH_LONG).show();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -364,27 +224,49 @@ public class PhotoActivity extends AppCompatActivity {
             outputStream.write(Base64Util.bitmapToBase64(bmp).getBytes());
             outputStream.flush();
             outputStream.close();
-            Toast.makeText(this, "保存图片成功", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "??????", Toast.LENGTH_SHORT).show();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+    private void savebitmap(String filename , Bitmap bmp) {
+        try {
+            FileOutputStream outbitmap =  openFileOutput(filename+"bitmap",
+                    Activity.MODE_PRIVATE);
+            bmp.compress(Bitmap.CompressFormat.PNG, 90, outbitmap);
+            outbitmap.flush();
+            outbitmap.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void readfromlocalpictrue(String fileName, int i) throws IOException {
         String res="";
         try{
-            if(fileIsExists(fileName)) {
+            if(fileIsExists(fileName+"bitmap"))
+            {
+                FileInputStream fis = new FileInputStream(fileName+"bitmap");
+                Bitmap bitmap  = BitmapFactory.decodeStream(fis);
+                pictureadapter.setimage(i,bitmap);
+                fis.close();
+            }
+            else if(fileIsExists(fileName))
+            {
                 FileInputStream fin = openFileInput(fileName);
                 int length = fin.available();
                 byte[] buffer = new byte[length];
                 fin.read(buffer);
                 res = EncodingUtils.getString(buffer, "UTF-8");
-                temp.setimage(i,Base64Util.base64ToBitmap(res));
+                pictureadapter.setimage(i,Base64Util.base64ToBitmap(res));
                 fin.close();
             }
             else
-                Toast.makeText(this,"未读取到"+fileName,Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,"????"+fileName,Toast.LENGTH_SHORT).show();
         }
         catch(Exception e){
             e.printStackTrace();
@@ -412,13 +294,11 @@ public class PhotoActivity extends AppCompatActivity {
         switch (requestCode) {
             case 1:
                 if (resultCode == RESULT_OK) {
-                    Bitmap bmp =  getScaleBitmap(this, getTempImage().getPath());
-                    if(numofpic <= 8) {
-                        temp.setimage(numofpic++, bmp);
-                        temp.notifyDataSetChanged();
+                    if(numofpic <= 50) {
                         String tempid = UUID.randomUUID().toString();
+                        Bitmap bmp =  getScaleBitmap(this, getTempImage().getPath(),tempid);
                         savePicture(tempid,bmp);
-                        ProjectDetailActivity.newpicid.add(tempid);  //更新新图片列表
+                        ProjectDetailActivity.newpicid.add(tempid);  //???????
                         PictureDetail temppicture = new PictureDetail();
                         temppicture.pictureName = tempid;
                         if (QuestionActivity.readfromlocal.containsKey(itemid))
@@ -461,10 +341,9 @@ public class PhotoActivity extends AppCompatActivity {
                     }
                     else
                     {
-                        Toast.makeText(this,"最多支持9张照片",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this,"请不要超过50张照片",Toast.LENGTH_SHORT).show();
                     }
                 }
-                showcomment(imagelist.size());
                 saveMaptofile();
                 break;
         }
@@ -483,7 +362,7 @@ public class PhotoActivity extends AppCompatActivity {
         }
         return null;
     }
-    public static Bitmap getScaleBitmap(Context ctx, String filePath) {
+    public Bitmap getScaleBitmap(Context ctx, String filePath,String id) {
         BitmapFactory.Options opt = new BitmapFactory.Options();
         opt.inJustDecodeBounds = true;
         Bitmap bmp = BitmapFactory.decodeFile(filePath, opt);
@@ -501,13 +380,18 @@ public class PhotoActivity extends AppCompatActivity {
         opt.inSampleSize = 1;
         if (bmpWidth > bmpHeght) {
             if (bmpWidth > screenWidth)
-                opt.inSampleSize = 4;//bmpWidth / screenWidth;
+                opt.inSampleSize = 10;//bmpWidth / screenWidth;
         } else {
             if (bmpHeght > screenHeight)
-                opt.inSampleSize = 4;
+                opt.inSampleSize = 10;
         }
         opt.inJustDecodeBounds = false;
 
+        bmp = BitmapFactory.decodeFile(filePath, opt);
+        savebitmap(id+"bitmap",bmp);
+        pictureadapter.setimage(numofpic++, bmp);
+        pictureadapter.notifyDataSetChanged();
+        opt.inSampleSize = 4;
         bmp = BitmapFactory.decodeFile(filePath, opt);
         Log.v("photo",String.valueOf(bmp.getRowBytes() * bmp.getHeight()));
         return bmp;

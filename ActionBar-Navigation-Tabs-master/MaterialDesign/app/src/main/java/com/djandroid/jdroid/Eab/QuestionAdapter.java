@@ -15,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.TaskService.Helper.TaskCategoryDetail;
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.ItemDetail;
@@ -126,6 +125,10 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             auditscore = (EditText) itemView.findViewById(R.id.auditscore);
             this.auditlistener = auditlistener;
             auditscore.addTextChangedListener(auditlistener);
+
+
+            textScore.setVisibility(View.GONE);
+            auditscore.setVisibility(View.GONE);
 
             goodcamera = (ImageView)itemView.findViewById(R.id.camera);
             this.context = maincontext;
