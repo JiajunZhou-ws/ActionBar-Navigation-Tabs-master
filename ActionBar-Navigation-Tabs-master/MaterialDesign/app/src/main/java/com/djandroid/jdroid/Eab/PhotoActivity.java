@@ -88,7 +88,11 @@ public class PhotoActivity extends AppCompatActivity {
         gridview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 //Toast.makeText(PhotoActivity.this, "short click" + String.valueOf(position), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(PhotoActivity.this,PreviewActivity.class);
+                //Intent intent = new Intent(PhotoActivity.this,PreviewActivity.class);
+                //intent.putExtra("picturename",imagelist.get(position).pictureName);
+                //PhotoActivity.this.startActivity(intent);
+                Intent intent = new Intent(PhotoActivity.this,PhotoExplain.class);
+                intent.putExtra("cameratype",cameratype);
                 intent.putExtra("picturename",imagelist.get(position).pictureName);
                 PhotoActivity.this.startActivity(intent);
             }
@@ -233,8 +237,9 @@ public class PhotoActivity extends AppCompatActivity {
     }
     private void savebitmap(String filename , Bitmap bmp) {
         try {
-            FileOutputStream outbitmap =  openFileOutput(filename+"bitmap",
-                    Activity.MODE_PRIVATE);
+            File f = new File(this.getFilesDir().getPath()+"/"+filename+"bitmap");
+           // Toast.makeText(this, this.getFilesDir().getPath(), Toast.LENGTH_SHORT).show();
+            FileOutputStream outbitmap = new FileOutputStream(f);
             bmp.compress(Bitmap.CompressFormat.PNG, 90, outbitmap);
             outbitmap.flush();
             outbitmap.close();
@@ -250,23 +255,27 @@ public class PhotoActivity extends AppCompatActivity {
         try{
             if(fileIsExists(fileName+"bitmap"))
             {
-                FileInputStream fis = new FileInputStream(fileName+"bitmap");
+                FileInputStream fis = new FileInputStream(this.getFilesDir().getPath() + "/" + fileName+"bitmap");
                 Bitmap bitmap  = BitmapFactory.decodeStream(fis);
+                Log.v("photobitmap",String.valueOf(bitmap.getRowBytes() * bitmap.getHeight()));
                 pictureadapter.setimage(i,bitmap);
                 fis.close();
             }
-            else if(fileIsExists(fileName))
-            {
-                FileInputStream fin = openFileInput(fileName);
-                int length = fin.available();
-                byte[] buffer = new byte[length];
-                fin.read(buffer);
-                res = EncodingUtils.getString(buffer, "UTF-8");
-                pictureadapter.setimage(i,Base64Util.base64ToBitmap(res));
-                fin.close();
-            }
             else
-                Toast.makeText(this,"????"+fileName,Toast.LENGTH_SHORT).show();
+            {
+                if(fileIsExists(fileName))
+                {
+                    FileInputStream fin = openFileInput(fileName);
+                    int length = fin.available();
+                    byte[] buffer = new byte[length];
+                    fin.read(buffer);
+                    res = EncodingUtils.getString(buffer, "UTF-8");
+                    pictureadapter.setimage(i,Base64Util.base64ToBitmap(res));
+                    fin.close();
+                }
+                else
+                    Toast.makeText(this,"????"+fileName,Toast.LENGTH_SHORT).show();
+            }
         }
         catch(Exception e){
             e.printStackTrace();
@@ -388,7 +397,10 @@ public class PhotoActivity extends AppCompatActivity {
         opt.inJustDecodeBounds = false;
 
         bmp = BitmapFactory.decodeFile(filePath, opt);
-        savebitmap(id+"bitmap",bmp);
+        savebitmap(id,bmp);
+        int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+        Log.d("TAG", "Max memory is " + maxMemory + "KB");
+        Log.v("photobitmap",String.valueOf(bmp.getRowBytes() * bmp.getHeight()));
         pictureadapter.setimage(numofpic++, bmp);
         pictureadapter.notifyDataSetChanged();
         opt.inSampleSize = 4;

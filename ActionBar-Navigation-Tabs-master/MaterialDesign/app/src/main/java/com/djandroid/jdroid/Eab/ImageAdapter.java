@@ -58,7 +58,4 @@ public class ImageAdapter extends BaseAdapter {
     }
     private LinkedHashMap<Integer,Bitmap> Picture;
     // references to our images
-    private Integer[] mThumbIds = {
-            R.drawable.a,R.drawable.a,R.drawable.a,R.drawable.a,R.drawable.a,R.drawable.a,R.drawable.a,R.drawable.a,R.drawable.a
-    };
 }
