@@ -93,6 +93,8 @@ public class PhotoActivity extends AppCompatActivity {
                 //PhotoActivity.this.startActivity(intent);
                 Intent intent = new Intent(PhotoActivity.this,PhotoExplain.class);
                 intent.putExtra("cameratype",cameratype);
+                intent.putExtra("itemid",itemid);
+                intent.putExtra("pictureindex",position);
                 intent.putExtra("picturename",imagelist.get(position).pictureName);
                 PhotoActivity.this.startActivity(intent);
             }
@@ -133,9 +135,9 @@ public class PhotoActivity extends AppCompatActivity {
 
     protected void dialog(final int n) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("???????" + String.valueOf(n + 1));
-        builder.setTitle("??");
-        builder.setPositiveButton("??", new DialogInterface.OnClickListener() {
+        builder.setMessage("是否要删除图片" + String.valueOf(n + 1));
+        builder.setTitle("提示");
+        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 imagelist.remove(n);
@@ -148,7 +150,7 @@ public class PhotoActivity extends AppCompatActivity {
                 pictureadapter.notifyDataSetChanged();
             }
         });
-        builder.setNegativeButton("??", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -228,7 +230,7 @@ public class PhotoActivity extends AppCompatActivity {
             outputStream.write(Base64Util.bitmapToBase64(bmp).getBytes());
             outputStream.flush();
             outputStream.close();
-            Toast.makeText(this, "??????", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "保存图片成功", Toast.LENGTH_SHORT).show();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -274,7 +276,7 @@ public class PhotoActivity extends AppCompatActivity {
                     fin.close();
                 }
                 else
-                    Toast.makeText(this,"????"+fileName,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this,"未读取到该照片"+fileName,Toast.LENGTH_SHORT).show();
             }
         }
         catch(Exception e){
