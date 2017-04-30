@@ -2,7 +2,6 @@ package com.djandroid.jdroid.Eab;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.opengl.Visibility;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,19 +18,15 @@ import com.djandroid.jdroid.Eab.ClientLibrary.EauditingClient;
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.PictureService.Response.GetPictureResponse;
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.TaskService.Helper.TaskInformation;
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.TaskService.Response.TaskItemForAuditorResponse;
-import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.PictureDetail;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.apache.http.util.EncodingUtils;
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -207,6 +202,9 @@ public class ProjectDetailActivity extends AppCompatActivity
                 }
             }
         });
+        if(fileIsExists(taskid + "task")) {
+            updatebutton.setEnabled(false);
+        }
         updatebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -291,7 +289,7 @@ public class ProjectDetailActivity extends AppCompatActivity
                    GotoCategoryActivity();
                }
                for (int i = 0; i < needdownloadpicture.size(); i++) {
-                   getpicture = new GetPicture(needdownloadpicture.get(i));
+                   getpicture = new GetPicture(needdownloadpicture.get(i),taskid);
                    getpicture.execute((Void) null);
                }
            }
@@ -302,7 +300,6 @@ public class ProjectDetailActivity extends AppCompatActivity
        private void GotoCategoryActivity()
        {
            Intent intent = new Intent(ProjectDetailActivity.this, ProjectItemActivity.class);
-           //intent.putExtra("projectdetail", new Gson().toJson(taskdetailresponse));
            startActivity(intent);
        }
        private void getAllPictureName()
@@ -354,8 +351,10 @@ public class ProjectDetailActivity extends AppCompatActivity
 
        public class GetPicture extends AsyncTask<Void, Void, GetPictureResponse> {
            String picturename;
-           GetPicture(String picturename) {
+           String taskid;
+           GetPicture(String picturename,String taskid) {
                this.picturename = picturename;
+               this.taskid=taskid;
            }
            @Override
            protected void onPreExecute() {
@@ -365,7 +364,7 @@ public class ProjectDetailActivity extends AppCompatActivity
                // TODO: attempt authentication against projectdetail network service.
                // Simulate network access.
                try {
-                   return EauditingClient.PictureGet(picturename,ProjectDetailActivity.taskid);
+                   return EauditingClient.PictureGet(picturename,taskid);
                } catch (NetworkException e) {
                    e.printStackTrace();
                }
@@ -385,6 +384,9 @@ public class ProjectDetailActivity extends AppCompatActivity
        @Override
        protected void onResume() {
            super.onResume();
+           if(fileIsExists(taskid + "task")) {
+               updatebutton.setEnabled(false);
+           }
            progressBar.setVisibility(View.GONE);
            progresstext.setVisibility(View.GONE);
        }

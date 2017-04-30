@@ -31,7 +31,7 @@ public class PhotoExplain extends AppCompatActivity {
     ImageView image;
     Toolbar toolbar;
     RadioGroup radioGroupOption;
-    EditText editcomment;
+    EditText editcomment,editcomment1,editcomment2;
     RadioButton buttonhigh,buttonmedium,buttonlow,buttonnone;
     List<PictureDetail> imagelist = new ArrayList<>();
     @Override
@@ -54,8 +54,10 @@ public class PhotoExplain extends AppCompatActivity {
         buttonhigh = (RadioButton)findViewById(R.id.high1);
         buttonmedium = (RadioButton)findViewById(R.id.middle1);
         buttonlow = (RadioButton)findViewById(R.id.low1);
-        buttonnone = (RadioButton)findViewById(R.id.none);
+        buttonnone = (RadioButton)findViewById(R.id.norisk1);
         editcomment = (EditText)findViewById(R.id.editcomment1);
+        editcomment1 = (EditText)findViewById(R.id.editcomment2);
+        editcomment2 = (EditText)findViewById(R.id.editcomment3);
 
         Intent intent = getIntent();
         final String picturename = intent.getStringExtra("picturename");
@@ -70,7 +72,7 @@ public class PhotoExplain extends AppCompatActivity {
         }
         else
         {
-            imagelist = imagelist;
+            imagelist = QuestionActivity.readfromlocal.get(itemid).badPictureList;
             radioGroupOption.setVisibility(View.VISIBLE);
             if(imagelist.get(position).pictureViolation == ViolationLevel.Critical)
                 radioGroupOption.check(buttonhigh.getId());
@@ -95,7 +97,11 @@ public class PhotoExplain extends AppCompatActivity {
             });
         }
         editcomment.setText(imagelist.get(position).pictureExplanation);
+        editcomment1.setText(imagelist.get(position).pictureConsequence);
+        editcomment2.setText(imagelist.get(position).pictureSuggestion);
         editcomment.addTextChangedListener(new MyCustomEditTextListener(position));
+        editcomment1.addTextChangedListener(new MyCustomEditTextListener1(position));
+        editcomment2.addTextChangedListener(new MyCustomEditTextListener2(position));
         try {
             readfromlocalpictrue(picturename);
         } catch (IOException e) {
@@ -126,6 +132,46 @@ public class PhotoExplain extends AppCompatActivity {
         public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
             //Toast.makeText(getBaseContext(),String.valueOf(position),Toast.LENGTH_SHORT).show();
             imagelist.get(position).pictureExplanation = charSequence.toString();
+        }
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+        }
+    }
+    private class MyCustomEditTextListener1 implements TextWatcher {
+        int position;
+        MyCustomEditTextListener1(int position)
+        {
+            this.position = position;
+        }
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            // no op
+        }
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            //Toast.makeText(getBaseContext(),String.valueOf(position),Toast.LENGTH_SHORT).show();
+            imagelist.get(position).pictureConsequence = charSequence.toString();
+        }
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+        }
+    }
+    private class MyCustomEditTextListener2 implements TextWatcher {
+        int position;
+        MyCustomEditTextListener2(int position)
+        {
+            this.position = position;
+        }
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            // no op
+        }
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            //Toast.makeText(getBaseContext(),String.valueOf(position),Toast.LENGTH_SHORT).show();
+            imagelist.get(position).pictureSuggestion = charSequence.toString();
         }
         @Override
         public void afterTextChanged(Editable editable) {

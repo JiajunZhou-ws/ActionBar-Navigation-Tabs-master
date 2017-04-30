@@ -1,10 +1,8 @@
 package com.djandroid.jdroid.Eab;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -83,6 +81,7 @@ public class ItemRecyclerAdapter extends  RecyclerView.Adapter<ItemRecylerViewHo
         public void onClick(View v) {
             ItemRecylerViewHolder vholder = (ItemRecylerViewHolder) v.getTag();
             int position = vholder.getPosition();
+            ProjectItemActivity.rememberposition=position;
             //Toast.makeText(context,"This is position "+position,Toast.LENGTH_SHORT ).show();
             Intent intent=new Intent();
             intent.putExtra("projectitems", new Gson().toJson(ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(position)));

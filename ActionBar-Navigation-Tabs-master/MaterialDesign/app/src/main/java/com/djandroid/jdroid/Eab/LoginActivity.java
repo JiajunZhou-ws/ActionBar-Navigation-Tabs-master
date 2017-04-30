@@ -1,10 +1,5 @@
 package com.djandroid.jdroid.Eab;
 
-import com.djandroid.jdroid.Eab.ClientLibrary.*;
-import com.djandroid.jdroid.Eab.ClientLibrary.Common.ClientConfiguration;
-import com.djandroid.jdroid.Eab.ClientLibrary.Common.NetworkException;
-import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.AuditorService.Response.AuditorLoginResponse;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -31,6 +26,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.djandroid.jdroid.Eab.ClientLibrary.Common.ClientConfiguration;
+import com.djandroid.jdroid.Eab.ClientLibrary.Common.NetworkException;
+import com.djandroid.jdroid.Eab.ClientLibrary.EauditingClient;
+import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.AuditorService.Response.AuditorLoginResponse;
 
 import org.apache.http.util.EncodingUtils;
 
@@ -191,7 +191,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() >= 4;
     }
 
     /**

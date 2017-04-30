@@ -1,7 +1,6 @@
 package com.djandroid.jdroid.Eab;
 
 import android.app.Activity;
-import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -12,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,9 +49,11 @@ public class ProjectItemActivity extends AppCompatActivity {
     TaskItemUpload taskupload;
     TaskSubmit tasksubmit;
     LinkedHashMap<String,ItemDetail> uploadmap = new LinkedHashMap<>();
+    private LinearLayoutManager mLinearLayoutManager;
     private int uploadpicturenumber = 0;
     public static List<Integer> categorycolor = new ArrayList<>();
     public static int categorypotion = 0;
+    public static int rememberposition = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,16 +72,17 @@ public class ProjectItemActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view1);
 
         categorycolor.clear();
-
+        mLinearLayoutManager = new LinearLayoutManager(this);
         adapter = new ItemRecyclerAdapter(this);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(mLinearLayoutManager);
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        recyclerView.scrollToPosition(rememberposition);
         adapter.notifyDataSetChanged();
     }
 

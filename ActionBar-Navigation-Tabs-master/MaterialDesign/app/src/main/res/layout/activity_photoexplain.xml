@@ -23,12 +23,12 @@
         <ImageView
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:layout_marginTop="34dp"
+            android:layout_marginTop="10dp"
             android:id="@+id/detailimageview" />
 
     </LinearLayout>
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content">
     <TextView
         android:id="@+id/text_view_answer1"
@@ -37,7 +37,7 @@
         android:textSize="18dp"
         android:layout_gravity="bottom"
         android:layout_height="match_parent"
-        android:text="检查结果1："/>
+        android:text="检查结果："/>
     <EditText
         android:id="@+id/editcomment1"
         android:layout_width="0dp"
@@ -52,6 +52,56 @@
         android:scrollHorizontally="false"
         />
        </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/text_view_answer2"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="18dp"
+            android:layout_gravity="bottom"
+            android:layout_height="match_parent"
+            android:text="缺陷后果："/>
+        <EditText
+            android:id="@+id/editcomment2"
+            android:layout_width="0dp"
+            android:layout_weight="8"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:inputType="textCapSentences|textMultiLine"
+            android:minLines="3"
+            android:gravity="left|top"
+            android:hint="此处输入备注或者评论"
+            android:textSize="14dp"
+            android:scrollHorizontally="false"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/text_view_answer3"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="18dp"
+            android:layout_gravity="bottom"
+            android:layout_height="match_parent"
+            android:text="解决建议："/>
+        <EditText
+            android:id="@+id/editcomment3"
+            android:layout_width="0dp"
+            android:layout_weight="8"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:inputType="textCapSentences|textMultiLine"
+            android:minLines="3"
+            android:gravity="left|top"
+            android:hint="此处输入备注或者评论"
+            android:textSize="14dp"
+            android:scrollHorizontally="false"
+            />
+    </LinearLayout>
     <RadioGroup
         android:id="@+id/RiskRadioGroup1"
         android:layout_width="match_parent"

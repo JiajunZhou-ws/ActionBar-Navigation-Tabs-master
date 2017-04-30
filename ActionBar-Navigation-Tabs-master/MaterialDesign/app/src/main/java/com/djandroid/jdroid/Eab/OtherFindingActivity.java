@@ -10,12 +10,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.ItemDetail;
-import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.PictureDetail;
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.ScoreType;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 public class OtherFindingActivity extends ActionBarActivity {
@@ -64,7 +61,6 @@ public class OtherFindingActivity extends ActionBarActivity {
                     temp.scoreType = ScoreType.None;
                     QuestionActivity.questions.add(questiontemp);
                     QuestionActivity.readfromlocal.put(questiontemp.itemid,temp);
-
                     ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(ProjectItemActivity.categorypotion).taskItemList.add(temp);
                     finish();
                 }

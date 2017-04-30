@@ -6,5 +6,7 @@ package com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail;
 public class PictureDetail {
     public String pictureName;
     public String pictureExplanation;
+    public String pictureConsequence; //缺陷后果
+    public String pictureSuggestion;  //解决建议
     public ViolationLevel pictureViolation = ViolationLevel.None;
 }
