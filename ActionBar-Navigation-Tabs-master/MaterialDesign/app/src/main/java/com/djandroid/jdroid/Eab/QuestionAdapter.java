@@ -136,6 +136,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                 @Override
                 public void onClick(View view) {
                     int position =(int) goodcamera.getTag();
+                    QuestionActivity.rememberposition = position;
                     Log.v("zhoujiajun", String.valueOf(position));
                     Intent intent = new Intent(context,PhotoActivity.class);
                     intent.putExtra("itemid",questions.get(position).itemid);
@@ -149,6 +150,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                 @Override
                 public void onClick(View view) {
                     int position =(int) badcamera.getTag();
+                    QuestionActivity.rememberposition = position;
                     Log.v("zhoujiajun", String.valueOf(position));
                     Intent intent = new Intent(context,PhotoActivity.class);
                     intent.putExtra("itemid",questions.get(position).itemid);

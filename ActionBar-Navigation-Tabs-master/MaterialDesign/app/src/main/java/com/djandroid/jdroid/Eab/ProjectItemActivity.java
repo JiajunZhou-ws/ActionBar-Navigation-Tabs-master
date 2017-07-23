@@ -11,7 +11,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -101,21 +100,7 @@ public class ProjectItemActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
          if (id == R.id.uploadfile) {
-             try {
-                 uploadpicturenumber = 0;
-                 uploadpicture();
-                 uploadtask();
-             } catch (IOException e) {
-                 e.printStackTrace();
-             }
-             //ProjectDetailActivity.newpicid.clear();
-             savePictureNewList();  //clear local cache of picturenewlist
-             return true;
-         }
-        else if(id == R.id.uploadallfile)
-         {
              dialog();
-             //recyclerView.setVisibility(View.INVISIBLE);
          }
         else if(id == R.id.submit_task)
          {
@@ -153,7 +138,7 @@ public class ProjectItemActivity extends AppCompatActivity {
 
     protected void dialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("确认强制上传吗，这会使用的大量的流量，建议不要轻易使用，除非数据不够同步？");
+        builder.setMessage("确认上传吗，这会使用的大量的流量，建在有wifi的地方使用？");
 
         builder.setTitle("提示");
 

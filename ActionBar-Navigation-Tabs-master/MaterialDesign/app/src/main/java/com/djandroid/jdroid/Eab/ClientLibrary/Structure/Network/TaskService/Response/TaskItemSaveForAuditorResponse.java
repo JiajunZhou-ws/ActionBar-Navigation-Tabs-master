@@ -5,8 +5,8 @@ package com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.TaskService.Res
  */
 public enum TaskItemSaveForAuditorResponse{
     Success,
-    SaveFailed,
-    WrongAuditor,
-    WrongStatus,
-    NetWorkError
+    SaveFailed, //服务器上该任务已经不存在
+    WrongAuditor, //您不是该任务有效的上传者
+    WrongStatus, //已提交条目无法上传
+    NetWorkError //网络传输错误
 }

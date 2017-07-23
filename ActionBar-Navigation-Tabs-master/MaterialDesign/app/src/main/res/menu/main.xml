@@ -11,8 +11,4 @@
         android:id="@+id/submit_task"
         android:title="提交任务"
         app:showAsAction="ifRoom|withText" />
-    <item
-        android:id="@+id/uploadallfile"
-        android:title="强制上传"
-        app:showAsAction="ifRoom|withText" />
 </menu>

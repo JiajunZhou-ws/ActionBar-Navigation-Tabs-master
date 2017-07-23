@@ -39,6 +39,7 @@ public class QuestionActivity extends AppCompatActivity {
     public static List<Question> questions = new ArrayList<>();
     public static String catogoryid;
     public static LinkedHashMap<String,ItemDetail> readfromlocal = new LinkedHashMap<>();
+    public static int rememberposition = 0;
     QuestionAdapter questionAdapter;
     Toolbar toolbar;
     @Override
@@ -154,6 +155,7 @@ public class QuestionActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        recyclerViewQuestions.scrollToPosition(rememberposition);
         questionAdapter.notifyDataSetChanged();
         recyclerViewQuestions.setAdapter(questionAdapter);
         //Toast.makeText(this,"ahouojdfio",Toast.LENGTH_SHORT).show();

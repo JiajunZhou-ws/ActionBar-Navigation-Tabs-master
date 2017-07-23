@@ -41,6 +41,7 @@ public class ProjectDetailActivity extends AppCompatActivity
     private int needdownloadpicturenumber;
     private String lastmodifiedtime;
     public static String taskid;
+    public static String taskname;
     public static int savepicturenum;
     public static List<String> newpicid = new ArrayList<String>();  //read from file in this activity
     Toolbar toolbar;
@@ -92,6 +93,7 @@ public class ProjectDetailActivity extends AppCompatActivity
         final TaskInformation temp = new Gson().fromJson(intent.getStringExtra("TaskInfomation"), TaskInformation.class);
 
         taskid = temp.taskId;
+        taskname = temp.projectName;
         if (temp.projectName.length() == 0)
             projecttitle.setVisibility(View.GONE);
         else {

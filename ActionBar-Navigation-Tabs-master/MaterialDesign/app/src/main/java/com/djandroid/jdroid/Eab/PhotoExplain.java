@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -33,6 +34,15 @@ public class PhotoExplain extends AppCompatActivity {
     RadioGroup radioGroupOption;
     EditText editcomment,editcomment1,editcomment2;
     RadioButton buttonhigh,buttonmedium,buttonlow,buttonnone;
+    float x1 = 0;
+    float x2 = 0;
+    float y1 = 0;
+    float y2 = 0;
+    int position;
+    String cameratype;
+    MyCustomEditTextListener editcommentlistener;
+    MyCustomEditTextListener1 editcomment1listener;
+    MyCustomEditTextListener2 editcomment2listener;
     List<PictureDetail> imagelist = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +71,9 @@ public class PhotoExplain extends AppCompatActivity {
 
         Intent intent = getIntent();
         final String picturename = intent.getStringExtra("picturename");
-        String cameratype = intent.getStringExtra("cameratype");
+        cameratype = intent.getStringExtra("cameratype");
         final String itemid = intent.getStringExtra("itemid");
-        final int position = intent.getIntExtra("pictureindex",1);
+        position = intent.getIntExtra("pictureindex",1);
         Log.v("index",String.valueOf(position));
 
         if(cameratype.equals("good")) {
@@ -85,6 +95,10 @@ public class PhotoExplain extends AppCompatActivity {
             radioGroupOption.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup radioGroup, int checkid) {
+                    View viewById = radioGroupOption.findViewById(checkid);
+                    if (!viewById.isPressed()){
+                        return;
+                    }
                     if(checkid == buttonhigh.getId())
                         imagelist.get(position).pictureViolation = ViolationLevel.Critical;
                     else if(checkid == buttonmedium.getId())
@@ -99,9 +113,12 @@ public class PhotoExplain extends AppCompatActivity {
         editcomment.setText(imagelist.get(position).pictureExplanation);
         editcomment1.setText(imagelist.get(position).pictureConsequence);
         editcomment2.setText(imagelist.get(position).pictureSuggestion);
-        editcomment.addTextChangedListener(new MyCustomEditTextListener(position));
-        editcomment1.addTextChangedListener(new MyCustomEditTextListener1(position));
-        editcomment2.addTextChangedListener(new MyCustomEditTextListener2(position));
+        editcommentlistener = new MyCustomEditTextListener(position);
+        editcomment1listener = new MyCustomEditTextListener1(position);
+        editcomment2listener = new MyCustomEditTextListener2(position);
+        editcomment.addTextChangedListener(editcommentlistener);
+        editcomment1.addTextChangedListener(editcomment1listener);
+        editcomment2.addTextChangedListener(editcomment2listener);
         try {
             readfromlocalpictrue(picturename);
         } catch (IOException e) {
@@ -118,11 +135,128 @@ public class PhotoExplain extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        //继承了Activity的onTouchEvent方法，直接监听点击事件
+        if(event.getAction() == MotionEvent.ACTION_DOWN) {
+            //当手指按下的时候
+            x1 = event.getX();
+            y1 = event.getY();
+        }
+        if(event.getAction() == MotionEvent.ACTION_UP) {
+            //当手指离开的时候
+            x2 = event.getX();
+            y2 = event.getY();
+            if(y1 - y2 > 40) {
+                if(editcomment2.hasFocus())
+                {
+                    editcomment2.clearFocus();
+                    editcomment1.requestFocus();
+                }
+                else if(editcomment1.hasFocus())
+                {
+                    editcomment1.clearFocus();
+                    editcomment.requestFocus();
+                }
+            } else if(y2 - y1 > 50) {
+                //Toast.makeText(this, "向下滑", Toast.LENGTH_SHORT).show();
+                if(editcomment.hasFocus()) {
+                    editcomment.clearFocus();
+                    editcomment1.requestFocus();
+                }
+                else if(editcomment1.hasFocus())
+                {
+                    editcomment1.clearFocus();
+                    editcomment2.requestFocus();
+                }
+            } else if(x1 - x2 > 50) {
+                if(position - 1 >= 0)
+                {
+                    position--;
+                    try {
+                        readfromlocalpictrue(imagelist.get(position).pictureName);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    editcomment.removeTextChangedListener(editcommentlistener);
+                    editcomment1.removeTextChangedListener(editcomment1listener);
+                    editcomment2.removeTextChangedListener(editcomment2listener);
+                    editcomment.setText(imagelist.get(position).pictureExplanation);
+                    editcomment1.setText(imagelist.get(position).pictureConsequence);
+                    editcomment2.setText(imagelist.get(position).pictureSuggestion);
+                    editcommentlistener.setposition(position);
+                    editcomment1listener.setposition(position);
+                    editcomment2listener.setposition(position);
+                    editcomment.addTextChangedListener(editcommentlistener);
+                    editcomment1.addTextChangedListener(editcomment1listener);
+                    editcomment2.addTextChangedListener(editcomment2listener);
+                    if(cameratype.equals("bad")) {
+                        if (imagelist.get(position).pictureViolation == ViolationLevel.Critical)
+                            radioGroupOption.check(buttonhigh.getId());
+                        else if (imagelist.get(position).pictureViolation == ViolationLevel.Major)
+                            radioGroupOption.check(buttonmedium.getId());
+                        else if (imagelist.get(position).pictureViolation == ViolationLevel.Minor)
+                            radioGroupOption.check(buttonlow.getId());
+                        else
+                            radioGroupOption.check(buttonnone.getId());
+                    }
+
+                }
+                else
+                {
+                    Toast.makeText(this, "已经是第一张照片", Toast.LENGTH_SHORT).show();
+                }
+                Toast.makeText(this, "向左滑", Toast.LENGTH_SHORT).show();
+            } else if(x2 - x1 > 50) {
+                if(imagelist.size() > position + 1)
+                {
+                    position++;
+                    try {
+                        readfromlocalpictrue(imagelist.get(position).pictureName);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    editcomment.removeTextChangedListener(editcommentlistener);
+                    editcomment1.removeTextChangedListener(editcomment1listener);
+                    editcomment2.removeTextChangedListener(editcomment2listener);
+                    editcomment.setText(imagelist.get(position).pictureExplanation);
+                    editcomment1.setText(imagelist.get(position).pictureConsequence);
+                    editcomment2.setText(imagelist.get(position).pictureSuggestion);
+                    editcommentlistener.setposition(position);
+                    editcomment1listener.setposition(position);
+                    editcomment2listener.setposition(position);
+                    editcomment.addTextChangedListener(editcommentlistener);
+                    editcomment1.addTextChangedListener(editcomment1listener);
+                    editcomment2.addTextChangedListener(editcomment2listener);
+                    if(cameratype.equals("bad")) {
+                        if (imagelist.get(position).pictureViolation == ViolationLevel.Critical)
+                            radioGroupOption.check(buttonhigh.getId());
+                        else if (imagelist.get(position).pictureViolation == ViolationLevel.Major)
+                            radioGroupOption.check(buttonmedium.getId());
+                        else if (imagelist.get(position).pictureViolation == ViolationLevel.Minor)
+                            radioGroupOption.check(buttonlow.getId());
+                        else
+                            radioGroupOption.check(buttonnone.getId());
+                    }
+                }
+                else
+                {
+                    Toast.makeText(this, "已经是最后一张照片", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+        return super.onTouchEvent(event);
+    }
+
     private class MyCustomEditTextListener implements TextWatcher {
         int position;
         MyCustomEditTextListener(int position)
         {
             this.position = position;
+        }
+        public void setposition(int num)
+        {
+            this.position = num;
         }
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
@@ -144,6 +278,10 @@ public class PhotoExplain extends AppCompatActivity {
         {
             this.position = position;
         }
+        public void setposition(int n)
+        {
+            this.position = n;
+        }
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
             // no op
@@ -160,6 +298,10 @@ public class PhotoExplain extends AppCompatActivity {
     }
     private class MyCustomEditTextListener2 implements TextWatcher {
         int position;
+        public void setposition(int n)
+        {
+            this.position = n;
+        }
         MyCustomEditTextListener2(int position)
         {
             this.position = position;

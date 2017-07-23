@@ -10,6 +10,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -55,7 +57,9 @@ public class PhotoActivity extends AppCompatActivity {
     Integer numofpic;
     String itemid;
     String cameratype;
+
     private List<PictureDetail> imagelist = new ArrayList<>();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,10 +79,11 @@ public class PhotoActivity extends AppCompatActivity {
         numofpic = 0;
         pictureadapter = new ImageAdapter(this);
 
+
         Intent intent = getIntent();
         itemid = intent.getStringExtra("itemid");
         cameratype = intent.getStringExtra("cameratype");
-        if(cameratype.equals("good"))
+        if (cameratype.equals("good"))
             imagelist = QuestionActivity.readfromlocal.get(itemid).goodPictureList; //get the picturelist
         else
             imagelist = QuestionActivity.readfromlocal.get(itemid).badPictureList; //get the picturelist
@@ -97,11 +102,11 @@ public class PhotoActivity extends AppCompatActivity {
                 //Intent intent = new Intent(PhotoActivity.this,PreviewActivity.class);
                 //intent.putExtra("picturename",imagelist.get(position).pictureName);
                 //PhotoActivity.this.startActivity(intent);
-                Intent intent = new Intent(PhotoActivity.this,PhotoExplain.class);
-                intent.putExtra("cameratype",cameratype);
-                intent.putExtra("itemid",itemid);
-                intent.putExtra("pictureindex",position);
-                intent.putExtra("picturename",imagelist.get(position).pictureName);
+                Intent intent = new Intent(PhotoActivity.this, PhotoExplain.class);
+                intent.putExtra("cameratype", cameratype);
+                intent.putExtra("itemid", itemid);
+                intent.putExtra("pictureindex", position);
+                intent.putExtra("picturename", imagelist.get(position).pictureName);
                 PhotoActivity.this.startActivity(intent);
             }
         });
@@ -114,11 +119,10 @@ public class PhotoActivity extends AppCompatActivity {
             }
         });
     }
+
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)
-    {
-        if (keyCode == KeyEvent.KEYCODE_BACK )
-        {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             savePictureNewList();
             saveMaptofile();
             finish();
@@ -127,24 +131,28 @@ public class PhotoActivity extends AppCompatActivity {
         return false;
 
     }
-    private class MyCustomEditTextListener implements TextWatcher{
+
+    private class MyCustomEditTextListener implements TextWatcher {
         int position;
-        MyCustomEditTextListener(int position)
-        {
+
+        MyCustomEditTextListener(int position) {
             this.position = position;
         }
+
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
             // no op
         }
+
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
             //Toast.makeText(getBaseContext(),String.valueOf(position),Toast.LENGTH_SHORT).show();
-            if(cameratype.equals("good"))
+            if (cameratype.equals("good"))
                 QuestionActivity.readfromlocal.get(itemid).goodPictureList.get(position - 1).pictureExplanation = charSequence.toString();
             else
                 QuestionActivity.readfromlocal.get(itemid).badPictureList.get(position - 1).pictureExplanation = charSequence.toString();
         }
+
         @Override
         public void afterTextChanged(Editable editable) {
 
@@ -217,12 +225,10 @@ public class PhotoActivity extends AppCompatActivity {
 
     private void PreparePicture() throws IOException {
         Intent intent = getIntent();
-        if(imagelist != null && imagelist.size() > 0)
-        {
+        if (imagelist != null && imagelist.size() > 0) {
             numofpic = imagelist.size();
-            for(int i = 0 ; i < numofpic ; i++)
-            {
-                readfromlocalpictrue(imagelist.get(i).pictureName , i);
+            for (int i = 0; i < numofpic; i++) {
+                readfromlocalpictrue(imagelist.get(i).pictureName, i);
             }
         }
     }
@@ -241,7 +247,8 @@ public class PhotoActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-    private void savePicture(String filename , Bitmap bmp) {
+
+    private void savePicture(String filename, Bitmap bmp) {
         try {
             FileOutputStream outputStream = openFileOutput(filename,
                     Activity.MODE_PRIVATE);
@@ -255,10 +262,11 @@ public class PhotoActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-    private void savebitmap(String filename , Bitmap bmp) {
+
+    private void savebitmap(String filename, Bitmap bmp) {
         try {
-            File f = new File(this.getFilesDir().getPath()+"/"+filename+"bitmap");
-           // Toast.makeText(this, this.getFilesDir().getPath(), Toast.LENGTH_SHORT).show();
+            File f = new File(this.getFilesDir().getPath() + "/" + filename + "bitmap");
+            // Toast.makeText(this, this.getFilesDir().getPath(), Toast.LENGTH_SHORT).show();
             FileOutputStream outbitmap = new FileOutputStream(f);
             bmp.compress(Bitmap.CompressFormat.PNG, 90, outbitmap);
             outbitmap.flush();
@@ -271,54 +279,45 @@ public class PhotoActivity extends AppCompatActivity {
     }
 
     public void readfromlocalpictrue(String fileName, int i) throws IOException {
-        String res="";
-        try{
-            if(fileIsExists(fileName+"bitmap"))
-            {
-                FileInputStream fis = new FileInputStream(this.getFilesDir().getPath() + "/" + fileName+"bitmap");
-                Bitmap bitmap  = BitmapFactory.decodeStream(fis);
-                Log.v("photobitmap",String.valueOf(bitmap.getRowBytes() * bitmap.getHeight()));
-                pictureadapter.setimage(i,bitmap);
+        String res = "";
+        try {
+            if (fileIsExists(fileName + "bitmap")) {
+                FileInputStream fis = new FileInputStream(this.getFilesDir().getPath() + "/" + fileName + "bitmap");
+                Bitmap bitmap = BitmapFactory.decodeStream(fis);
+                Log.v("photobitmap", String.valueOf(bitmap.getRowBytes() * bitmap.getHeight()));
+                pictureadapter.setimage(i, bitmap);
                 fis.close();
-            }
-            else
-            {
-                if(fileIsExists(fileName))
-                {
+            } else {
+                if (fileIsExists(fileName)) {
                     FileInputStream fin = openFileInput(fileName);
                     int length = fin.available();
                     byte[] buffer = new byte[length];
                     fin.read(buffer);
                     res = EncodingUtils.getString(buffer, "UTF-8");
-                    pictureadapter.setimage(i,Base64Util.base64ToBitmap(res));
+                    pictureadapter.setimage(i, Base64Util.base64ToBitmap(res));
                     fin.close();
-                }
-                else
-                    Toast.makeText(this,"未读取到该照片"+fileName,Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(this, "未读取到该照片" + fileName, Toast.LENGTH_SHORT).show();
             }
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         // return res;
     }
-    public boolean fileIsExists(String strFile)
-    {
-        try
-        {
-            File f=new File(this.getFilesDir().getPath() + "/" + strFile);
-            if(!f.exists())
-            {
+
+    public boolean fileIsExists(String strFile) {
+        try {
+            File f = new File(this.getFilesDir().getPath() + "/" + strFile);
+            if (!f.exists()) {
                 return false;
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return false;
         }
         return true;
     }
-    public static Bitmap createWatermark(Context context, Bitmap bitmap, String markText, int markBitmapId) {
+
+    public static Bitmap createWatermark(Context context, Bitmap bitmap, String markText,String markText1, int markBitmapId) {
 
         // 当水印文字与水印图片都没有的时候，返回原图
         if (TextUtils.isEmpty(markText) && markBitmapId == 0) {
@@ -359,15 +358,12 @@ public class PhotoActivity extends AppCompatActivity {
             // 水印的颜色
             mPaint.setColor(Color.WHITE);
 
-            if (textBounds.width() > bitmapWidth / 3 || textBounds.height() > bitmapHeight / 3) {
-                return bitmap;
-            }
-
             // 文字开始的坐标
             textX = bitmapWidth - textBounds.width() - 10;//这里的-10和下面的+6都是微调的结果
-            textY = bitmapHeight - textBounds.height() + 6;
+            textY = bitmapHeight - textBounds.height()*4 + 6;
             // 画文字
             canvas.drawText(markText, textX, textY, mPaint);
+            canvas.drawText(markText1,textX, textY + textBounds.height(),mPaint);
         }
 
         //------------开始绘制图片-------------------------
@@ -398,15 +394,33 @@ public class PhotoActivity extends AppCompatActivity {
 
         return bmp;
     }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case 1:
                 if (resultCode == RESULT_OK) {
-                    if(numofpic <= 50) {
+                    if (numofpic <= 50) {
                         String tempid = UUID.randomUUID().toString();
-                        Bitmap bmp =  getScaleBitmap(this, getTempImage().getPath(),tempid);
-                        Bitmap watermarkbmp=createWatermark(this.getApplicationContext(),bmp,MainActivity.username,0);
+                        Bitmap bmp = getScaleBitmap(this, getTempImage().getPath(), tempid);
+                        String markcontent = "";
+
+                        markcontent = MainActivity.username + " " + ProjectDetailActivity.taskname;
+
+                        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                        Double latitude = 0.0;
+                        Double longitude = 0.0;
+
+
+                        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+                            Location location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+                            if(location != null){
+                                latitude = location.getLatitude();
+                                longitude = location.getLongitude();
+                            }
+                        }
+                        String markcontent1 = latitude.toString() + "," + longitude.toString();
+                        Bitmap watermarkbmp=createWatermark(this.getApplicationContext(),bmp,markcontent,markcontent1,0);
                         savePicture(tempid,watermarkbmp);
                         ProjectDetailActivity.newpicid.add(tempid);  //???????
                         PictureDetail temppicture = new PictureDetail();
@@ -510,5 +524,4 @@ public class PhotoActivity extends AppCompatActivity {
         Log.v("photo",String.valueOf(bmp.getRowBytes() * bmp.getHeight()));
         return bmp;
     }
-
 }
