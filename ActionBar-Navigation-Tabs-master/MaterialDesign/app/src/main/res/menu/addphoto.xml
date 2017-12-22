@@ -4,7 +4,6 @@
     tools:context=".MainActivity">
     <item
         android:id="@+id/addphoto"
-        android:icon="@drawable/addphoto"
-        android:title="@string/action_example"
+        android:title="拍照"
         app:showAsAction="ifRoom" />
 </menu>

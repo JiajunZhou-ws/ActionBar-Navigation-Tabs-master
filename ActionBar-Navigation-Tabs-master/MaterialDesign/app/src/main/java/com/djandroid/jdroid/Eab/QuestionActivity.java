@@ -132,7 +132,7 @@ public class QuestionActivity extends AppCompatActivity {
                 Question question = new Question();
                 question.id = idnumber + 1;
                 question.itemid = entry.getValue().itemId;
-                question.question = "#" + question.id + ":" + entry.getValue().itemDetail;
+                question.question = question.id + ":" + entry.getValue().itemDetail;
                 question.description = entry.getValue().itemExplanation;
                 question.isdescriptionvisible = false;
                 question.score = entry.getValue().scoreValue;

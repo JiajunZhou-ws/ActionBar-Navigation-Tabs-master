@@ -206,7 +206,7 @@ public class PhotoExplain extends AppCompatActivity {
                 {
                     Toast.makeText(this, "已经是第一张照片", Toast.LENGTH_SHORT).show();
                 }
-                Toast.makeText(this, "向左滑", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "前一张", Toast.LENGTH_SHORT).show();
             } else if(x2 - x1 > 50) {
                 if(imagelist.size() > position + 1)
                 {
@@ -243,6 +243,7 @@ public class PhotoExplain extends AppCompatActivity {
                 {
                     Toast.makeText(this, "已经是最后一张照片", Toast.LENGTH_SHORT).show();
                 }
+                Toast.makeText(this, "下一张", Toast.LENGTH_SHORT).show();
             }
         }
         return super.onTouchEvent(event);
