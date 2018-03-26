@@ -2,17 +2,16 @@ package com.djandroid.jdroid.Eab;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,7 +20,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -30,7 +28,6 @@ import com.djandroid.jdroid.Eab.ClientLibrary.Common.ClientConfiguration;
 import com.djandroid.jdroid.Eab.ClientLibrary.Common.NetworkException;
 import com.djandroid.jdroid.Eab.ClientLibrary.EauditingClient;
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.TaskService.Helper.TaskInformation;
-import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.TaskOtherInformation;
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.Network.TaskService.Response.TaskListForAuditorResponse;
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.AuditStatus;
 import com.google.gson.Gson;
@@ -297,7 +294,7 @@ public class MainActivity extends AppCompatActivity
         Log.e("number", "--->" + number);
         switch (number) {
             case 1:
-                mTitle = getString(R.string.title_section1);
+                mTitle = "第一至第十区段吴中铁路质量监管";
                 break;
             case 2:
                 mTitle = getString(R.string.title_section2);

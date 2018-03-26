@@ -7,4 +7,7 @@ import java.util.Map;
  */
 public class TaskOtherInformation {
     public Map<String,String> information;
+    public String taskCompany;
+    public int taskWatermark;
+    public String taskName;
 }

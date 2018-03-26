@@ -63,6 +63,24 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         holder.badcamera.setTag(position);
         holder.commentlistener.updatePosition(holder.getAdapterPosition(),holder.textcomment);
         holder.textcomment.setText(questions.get(holder.getAdapterPosition()).comment);
+        if(readfromlocal.containsKey(questions.get(holder.getAdapterPosition()).itemid)) {
+            if(!readfromlocal.get(questions.get(holder.getAdapterPosition()).itemid).goodPictureList.isEmpty())
+                holder.goodpicnum.setText("√照片" + readfromlocal.get(questions.get(holder.getAdapterPosition()).itemid).goodPictureList.size() + "张");
+            else
+                holder.goodpicnum.setText("√照片"+"0张");
+            if(!readfromlocal.get(questions.get(holder.getAdapterPosition()).itemid).goodPictureList.isEmpty())
+                holder.badpicnum.setText("×照片"+readfromlocal.get(questions.get(holder.getAdapterPosition()).itemid).badPictureList.size() + "张");
+            else
+                holder.badpicnum.setText("×照片" + "0张");
+        }
+        else {
+            holder.goodpicnum.setText("√照片" + "0张");
+            holder.badpicnum.setText("×照片" + "0张");
+        }
+
+        holder.goodpicnum.setTextColor(Color.GREEN);
+
+        holder.badpicnum.setTextColor(Color.RED);
         holder.auditlistener.updatePosition(holder.getAdapterPosition());
         holder.auditscore.setText(String.valueOf(questions.get(holder.getAdapterPosition()).score));
         holder.setOptions(holder,current, position);
@@ -83,6 +101,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
 
         private LinearLayout linearLayoutContainer;
         private TextView textViewQuestion, textDescription, textScore;
+        private TextView goodpicnum,badpicnum;
         private EditText textcomment,auditscore;
         private RadioGroup radioGroupOptions;
         private RadioButton radioButtonOption1, radioButtonOption2;
@@ -98,6 +117,8 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             textViewQuestion = (TextView) itemView.findViewById(R.id.text_view_question);
             textDescription = (TextView) itemView.findViewById(R.id.text_view_explanation);
             textScore = (TextView) itemView.findViewById(R.id.text_view_score);
+            goodpicnum = (TextView) itemView.findViewById(R.id.goodpicnum);
+            badpicnum = (TextView) itemView.findViewById(R.id.badpicnum);
 
             textViewQuestion.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -179,15 +200,18 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             radioGroupOptions.setTag(position);
             Log.e(TAG, position + " :setOptions: " + question.toString());
             radioGroupOptions.check(checkIDtoRealid(question.checkedId));
+
+            //score part
             if(question.checkedId == 4) {
-                viewholder.auditscore.setFocusableInTouchMode(false);
+                viewholder.auditscore.setFocusableInTouchMode(true);
                 viewholder.textScore.setTextColor(Color.BLACK);
             }
             else {
                 viewholder.auditscore.clearFocus();
                 viewholder.auditscore.setFocusableInTouchMode(false);
-                viewholder.textScore.setTextColor(Color.BLACK);
+                viewholder.textScore.setTextColor(Color.RED);
             }
+
             radioGroupOptions.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -195,15 +219,17 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                     Question que = questions.get(pos);
                     que.checkedId = RealidtocheckID(checkedId);
                     viewholder.textViewQuestion.setTextColor(Color.BLACK);
+
                     if(que.checkedId == 4) {
-                        viewholder.auditscore.setFocusableInTouchMode(false);
+                        viewholder.auditscore.setFocusableInTouchMode(true);
                         viewholder.textScore.setTextColor(Color.BLACK);
                     }
                     else {
                         viewholder.auditscore.clearFocus();
                         viewholder.auditscore.setFocusableInTouchMode(false);
-                        viewholder.textScore.setTextColor(Color.BLACK);
+                        viewholder.textScore.setTextColor(Color.RED);
                     }
+
                     if(readfromlocal.containsKey(questions.get(pos).itemid))
                     {
                         readfromlocal.get(questions.get(pos).itemid).scoreType = RealidtoScoretype(que.checkedId);

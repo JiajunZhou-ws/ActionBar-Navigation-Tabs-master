@@ -43,11 +43,13 @@ public class ProjectDetailActivity extends AppCompatActivity
     public static String taskid;
     public static String taskname;
     public static int savepicturenum;
+    public static boolean iswatermark;
     public static List<String> newpicid = new ArrayList<String>();  //read from file in this activity
     Toolbar toolbar;
     ProgressBar progressBar;
     TextView progresstext,projecttitle,projectname,projectarea,projectsiteid,projectsitename,projectsiteaddress,projectsitecontractor,projectcatagory;
     TextView projectdelegate,areasize,areatype,pmodelegate,projecttaskdate;
+    TextView projectcompany;
     Button detailbutton,updatebutton;
 
     GetProjectDetail getprojectdetail;
@@ -72,16 +74,17 @@ public class ProjectDetailActivity extends AppCompatActivity
         projecttitle = (TextView) findViewById(R.id.textView1);
         projectname = (TextView) findViewById(R.id.textView2);
         projectarea = (TextView) findViewById(R.id.textView3);
-        projectsiteid = (TextView) findViewById(R.id.textView4);
-        projectsitename = (TextView) findViewById(R.id.textView5);
-        projectsiteaddress = (TextView) findViewById(R.id.textView6);
-        projectsitecontractor = (TextView) findViewById(R.id.textView7);
-        projectcatagory = (TextView) findViewById(R.id.textView8);
-        projectdelegate = (TextView) findViewById(R.id.textView9);
-        areasize = (TextView) findViewById(R.id.textView10);
-        areatype = (TextView) findViewById(R.id.textView11);
-        pmodelegate = (TextView) findViewById(R.id.textView12);
-        projecttaskdate = (TextView) findViewById(R.id.textView13);
+        projectcompany = (TextView) findViewById(R.id.textView4);
+       // projectsiteid = (TextView) findViewById(R.id.textView4);
+       // projectsitename = (TextView) findViewById(R.id.textView5);
+      //  projectsiteaddress = (TextView) findViewById(R.id.textView6);
+        projectsitecontractor = (TextView) findViewById(R.id.textView5);
+        projectcatagory = (TextView) findViewById(R.id.textView6);
+        //projectdelegate = (TextView) findViewById(R.id.textView9);
+        areasize = (TextView) findViewById(R.id.textView7);
+        areatype = (TextView) findViewById(R.id.textView8);
+        //pmodelegate = (TextView) findViewById(R.id.textView9);
+        projecttaskdate = (TextView) findViewById(R.id.textView9);
 
         progresstext = (TextView) findViewById(R.id.progresstext);
         progressBar = (ProgressBar) findViewById(R.id.progressbar); //progressbar
@@ -91,28 +94,44 @@ public class ProjectDetailActivity extends AppCompatActivity
         updatebutton = (Button) findViewById(R.id.updatebutton);
         Intent intent = getIntent();
         final TaskInformation temp = new Gson().fromJson(intent.getStringExtra("TaskInfomation"), TaskInformation.class);
-
+        //final TaskOtherInformation temp1 =  new Gson().fromJson(temp.taskOtherInformation.toString(), TaskOtherInformation.class);
         taskid = temp.taskId;
         taskname = temp.projectName;
+
+        if(temp.taskOtherInformation.taskWatermark == 0)
+            iswatermark = false;
+        else
+            iswatermark = true;
+
         if (temp.projectName.length() == 0)
             projecttitle.setVisibility(View.GONE);
         else {
             projecttitle.setVisibility(View.VISIBLE);
             projecttitle.setText(temp.projectName);
         }
-        if (temp.projectName.length() == 0)
-            projectname.setVisibility(View.GONE);
-        else {
-            projectname.setVisibility(View.VISIBLE);
-            projectname.setText("项目名称：" + temp.projectName);
+        if (temp.taskOtherInformation.taskName != null) {
+         if(temp.taskOtherInformation.taskName.length() == 0)
+             projectname.setVisibility(View.GONE);
+            else{
+                projectname.setVisibility(View.VISIBLE);
+                projectname.setText("项目名称：" + temp.taskOtherInformation.taskName);
+            }
         }
         if (temp.taskRegion.length() == 0)
             projectarea.setVisibility(View.GONE);
         else {
             projectarea.setVisibility(View.VISIBLE);
-            projectarea.setText("区域：" + temp.taskRegion);
+            projectarea.setText("项目地点：" + temp.taskRegion);
         }
-        if (temp.taskSiteId.length() == 0)
+        if(temp.taskOtherInformation.taskCompany != null) {
+            if (temp.taskOtherInformation.taskCompany.length() == 0)
+                projectcompany.setVisibility(View.GONE);
+            else {
+                projectcompany.setVisibility(View.VISIBLE);
+                projectcompany.setText("建设单位:" + temp.taskOtherInformation.taskCompany);
+            }
+        }
+       /* if (temp.taskSiteId.length() == 0)
             projectsiteid.setVisibility(View.GONE);
         else {
             projectsiteid.setVisibility(View.VISIBLE);
@@ -131,13 +150,13 @@ public class ProjectDetailActivity extends AppCompatActivity
         {
             projectsiteaddress.setVisibility(View.VISIBLE);
             projectsiteaddress.setText("站点地址："+temp.taskSiteAddress);
-        }
+        }*/
         if(temp.taskSubcontractor.length() == 0)
             projectsitecontractor.setVisibility(View.GONE);
         else
         {
             projectsitecontractor.setVisibility(View.VISIBLE);
-            projectsitecontractor.setText("分包商："+temp.taskSubcontractor);
+            projectsitecontractor.setText("质量监督单位："+temp.taskSubcontractor);
         }
         if(temp.taskTabs.length() == 0)
             projectcatagory.setVisibility(View.GONE);
@@ -146,18 +165,18 @@ public class ProjectDetailActivity extends AppCompatActivity
             projectcatagory.setVisibility(View.VISIBLE);
             projectcatagory.setText("模块："+temp.taskTabs);
         }
-        if(temp.taskRepresent.length() == 0)
+       /* if(temp.taskRepresent.length() == 0)
             projectdelegate.setVisibility(View.GONE);
         else {
             projectdelegate.setVisibility(View.VISIBLE);
             projectdelegate.setText("代表处:" + temp.taskRepresent);
-        }
+        }*/
         if(temp.taskBuildingArea.length() == 0)
             areasize.setVisibility(View.GONE);
         else
         {
             areasize.setVisibility(View.VISIBLE);
-            areasize.setText("建筑面积:"+temp.taskBuildingArea);
+            areasize.setText("项目线路长度:"+temp.taskBuildingArea);
         }
         if(temp.taskBuildingArea.length() == 0)
             areatype.setVisibility(View.GONE);
@@ -166,13 +185,13 @@ public class ProjectDetailActivity extends AppCompatActivity
             areatype.setVisibility(View.VISIBLE);
             areatype.setText("建筑类型:"+temp.taskBuildingType);
         }
-        if(temp.taskPmo.length() == 0)
+       /* if(temp.taskPmo.length() == 0)
             pmodelegate.setVisibility(View.GONE);
         else
         {
             pmodelegate.setVisibility(View.VISIBLE);
             pmodelegate.setText("PMO代表:" + temp.taskPmo);
-        }
+        }*/
         if(temp.taskDate.length() == 0)
             projecttaskdate.setVisibility(View.GONE);
         else

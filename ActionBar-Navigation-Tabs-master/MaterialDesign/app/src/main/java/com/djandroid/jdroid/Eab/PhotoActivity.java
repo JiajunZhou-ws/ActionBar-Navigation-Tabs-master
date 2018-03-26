@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -46,9 +47,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static com.djandroid.jdroid.Eab.ProjectDetailActivity.iswatermark;
 
 public class PhotoActivity extends AppCompatActivity {
     /** Called when the activity is first created. */
@@ -394,37 +398,60 @@ public class PhotoActivity extends AppCompatActivity {
 
         return bmp;
     }
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case 1:
                 if (resultCode == RESULT_OK) {
                     if (numofpic <= 50) {
-                        String tempid = UUID.randomUUID().toString();
-                        Bitmap bmp = getScaleBitmap(this, getTempImage().getPath(), tempid);
-                        String markcontent = "";
+                        String pictureid = UUID.randomUUID().toString();
+                        Bitmap bmp = getScaleBitmap(this, getTempImage().getPath(), pictureid);
 
-                        markcontent = MainActivity.username + " " + ProjectDetailActivity.taskname;
+                        if(iswatermark)
+                        {
+                            String markcontent = "";
 
-                        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                        Double latitude = 0.0;
-                        Double longitude = 0.0;
+                            markcontent = MainActivity.username + " " + ProjectDetailActivity.taskname;
+
+                            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                            Double latitude = 0.0;
+                            Double longitude = 0.0;
 
 
-                        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-                            Location location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-                            if(location != null){
-                                latitude = location.getLatitude();
-                                longitude = location.getLongitude();
+                            if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+                                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                                if(location != null){
+                                    latitude = location.getLatitude();
+                                    longitude = location.getLongitude();
+                                }
                             }
+                            DecimalFormat df = new DecimalFormat("0.00");
+                            String markcontent1 = df.format(latitude).toString() + " " + df.format(longitude).toString();
+                            Bitmap watermarkbmp=createWatermark(this.getApplicationContext(),bmp,markcontent,markcontent1,0);
+                            savePicture(pictureid,watermarkbmp);
                         }
-                        String markcontent1 = latitude.toString() + "," + longitude.toString();
-                        Bitmap watermarkbmp=createWatermark(this.getApplicationContext(),bmp,markcontent,markcontent1,0);
-                        savePicture(tempid,watermarkbmp);
-                        ProjectDetailActivity.newpicid.add(tempid);  //???????
+                        else
+                            savePicture(pictureid,bmp);
+                        ProjectDetailActivity.newpicid.add(pictureid);  //???????
                         PictureDetail temppicture = new PictureDetail();
-                        temppicture.pictureName = tempid;
+                        temppicture.pictureName = pictureid;
                         if (QuestionActivity.readfromlocal.containsKey(itemid))
                         {
                             if(cameratype.equals("good")) {

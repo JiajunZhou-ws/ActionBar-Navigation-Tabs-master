@@ -99,7 +99,7 @@ public class QuestionActivity extends AppCompatActivity {
             Question question = new Question();
             question.id = i;
             question.itemid = taskcategorydetail.taskItemList.get(i).itemId;
-            question.question = "#" + (i + 1) + ":" + taskcategorydetail.taskItemList.get(i).itemDetail;
+            question.question = (i + 1) + ":" + taskcategorydetail.taskItemList.get(i).itemDetail;
             question.description = taskcategorydetail.taskItemList.get(i).itemExplanation;
             question.isdescriptionvisible = false;
             if(readfromlocal.containsKey(taskcategorydetail.taskItemList.get(i).itemId))

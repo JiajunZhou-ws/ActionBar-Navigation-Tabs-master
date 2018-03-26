@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.djandroid.jdroid.Eab.ClientLibrary.Structure.TabDetail.PictureDetail;
@@ -28,11 +29,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.djandroid.jdroid.Eab.QuestionActivity.readfromlocal;
 public class PhotoExplain extends AppCompatActivity {
     ImageView image;
     Toolbar toolbar;
     RadioGroup radioGroupOption;
     EditText editcomment,editcomment1,editcomment2;
+    TextView textview1, textview2, textview3;
     RadioButton buttonhigh,buttonmedium,buttonlow,buttonnone;
     float x1 = 0;
     float x2 = 0;
@@ -65,9 +68,7 @@ public class PhotoExplain extends AppCompatActivity {
         buttonmedium = (RadioButton)findViewById(R.id.middle1);
         buttonlow = (RadioButton)findViewById(R.id.low1);
         buttonnone = (RadioButton)findViewById(R.id.norisk1);
-        editcomment = (EditText)findViewById(R.id.editcomment1);
-        editcomment1 = (EditText)findViewById(R.id.editcomment2);
-        editcomment2 = (EditText)findViewById(R.id.editcomment3);
+
 
         Intent intent = getIntent();
         final String picturename = intent.getStringExtra("picturename");
@@ -75,14 +76,37 @@ public class PhotoExplain extends AppCompatActivity {
         final String itemid = intent.getStringExtra("itemid");
         position = intent.getIntExtra("pictureindex",1);
         Log.v("index",String.valueOf(position));
+       /* int typenum = 0;
+        if(readfromlocal.containsKey(itemid))
+        {
+            typenum = readfromlocal.get(itemid).scoreType.ordinal();
+        }
+        else
+            typenum = questions.get(position).checkedId;*/
+
+        textview1 = (TextView)findViewById(R.id.text_view_answer1);
+        textview2 = (TextView)findViewById(R.id.text_view_answer2);
+        textview3 = (TextView)findViewById(R.id.text_view_answer3);
+        editcomment = (EditText)findViewById(R.id.editcomment1);
+        editcomment1 = (EditText)findViewById(R.id.editcomment2);
+        editcomment2 = (EditText)findViewById(R.id.editcomment3);
+
+        if(cameratype.equals("good"))
+        {
+            textview2.setText("照片描述：");
+            textview3.setVisibility(View.GONE);
+            editcomment2.setVisibility(View.GONE);
+        }
+        else
+            textview2.setText("问题描述：");
 
         if(cameratype.equals("good")) {
-            imagelist = QuestionActivity.readfromlocal.get(itemid).goodPictureList;
+            imagelist = readfromlocal.get(itemid).goodPictureList;
             radioGroupOption.setVisibility(View.GONE);
         }
         else
         {
-            imagelist = QuestionActivity.readfromlocal.get(itemid).badPictureList;
+            imagelist = readfromlocal.get(itemid).badPictureList;
             radioGroupOption.setVisibility(View.VISIBLE);
             if(imagelist.get(position).pictureViolation == ViolationLevel.Critical)
                 radioGroupOption.check(buttonhigh.getId());
@@ -110,8 +134,8 @@ public class PhotoExplain extends AppCompatActivity {
                 }
             });
         }
-        editcomment.setText(imagelist.get(position).pictureExplanation);
-        editcomment1.setText(imagelist.get(position).pictureConsequence);
+        editcomment.setText(imagelist.get(position).pictureAddress);
+        editcomment1.setText(imagelist.get(position).pictureExplanation);
         editcomment2.setText(imagelist.get(position).pictureSuggestion);
         editcommentlistener = new MyCustomEditTextListener(position);
         editcomment1listener = new MyCustomEditTextListener1(position);
@@ -181,8 +205,8 @@ public class PhotoExplain extends AppCompatActivity {
                     editcomment.removeTextChangedListener(editcommentlistener);
                     editcomment1.removeTextChangedListener(editcomment1listener);
                     editcomment2.removeTextChangedListener(editcomment2listener);
-                    editcomment.setText(imagelist.get(position).pictureExplanation);
-                    editcomment1.setText(imagelist.get(position).pictureConsequence);
+                    editcomment.setText(imagelist.get(position).pictureAddress);
+                    editcomment1.setText(imagelist.get(position).pictureExplanation);
                     editcomment2.setText(imagelist.get(position).pictureSuggestion);
                     editcommentlistener.setposition(position);
                     editcomment1listener.setposition(position);
@@ -200,13 +224,13 @@ public class PhotoExplain extends AppCompatActivity {
                         else
                             radioGroupOption.check(buttonnone.getId());
                     }
-
+                    Toast.makeText(this, "前一张,第" + (position + 1) + "张", Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
                     Toast.makeText(this, "已经是第一张照片", Toast.LENGTH_SHORT).show();
                 }
-                Toast.makeText(this, "前一张", Toast.LENGTH_SHORT).show();
+
             } else if(x2 - x1 > 50) {
                 if(imagelist.size() > position + 1)
                 {
@@ -219,8 +243,8 @@ public class PhotoExplain extends AppCompatActivity {
                     editcomment.removeTextChangedListener(editcommentlistener);
                     editcomment1.removeTextChangedListener(editcomment1listener);
                     editcomment2.removeTextChangedListener(editcomment2listener);
-                    editcomment.setText(imagelist.get(position).pictureExplanation);
-                    editcomment1.setText(imagelist.get(position).pictureConsequence);
+                    editcomment.setText(imagelist.get(position).pictureAddress);
+                    editcomment1.setText(imagelist.get(position).pictureExplanation);
                     editcomment2.setText(imagelist.get(position).pictureSuggestion);
                     editcommentlistener.setposition(position);
                     editcomment1listener.setposition(position);
@@ -238,12 +262,13 @@ public class PhotoExplain extends AppCompatActivity {
                         else
                             radioGroupOption.check(buttonnone.getId());
                     }
+                    Toast.makeText(this, "下一张第" + (position + 1) + "张", Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
                     Toast.makeText(this, "已经是最后一张照片", Toast.LENGTH_SHORT).show();
                 }
-                Toast.makeText(this, "下一张", Toast.LENGTH_SHORT).show();
+
             }
         }
         return super.onTouchEvent(event);
@@ -266,7 +291,7 @@ public class PhotoExplain extends AppCompatActivity {
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
             //Toast.makeText(getBaseContext(),String.valueOf(position),Toast.LENGTH_SHORT).show();
-            imagelist.get(position).pictureExplanation = charSequence.toString();
+            imagelist.get(position).pictureAddress= charSequence.toString();
         }
         @Override
         public void afterTextChanged(Editable editable) {
@@ -290,7 +315,7 @@ public class PhotoExplain extends AppCompatActivity {
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
             //Toast.makeText(getBaseContext(),String.valueOf(position),Toast.LENGTH_SHORT).show();
-            imagelist.get(position).pictureConsequence = charSequence.toString();
+            imagelist.get(position).pictureExplanation = charSequence.toString();
         }
         @Override
         public void afterTextChanged(Editable editable) {

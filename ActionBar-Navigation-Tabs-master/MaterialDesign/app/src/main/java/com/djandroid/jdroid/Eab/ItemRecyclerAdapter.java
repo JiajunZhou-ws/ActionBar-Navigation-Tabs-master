@@ -48,8 +48,9 @@ public class ItemRecyclerAdapter extends  RecyclerView.Adapter<ItemRecylerViewHo
         } catch (IOException e) {
             e.printStackTrace();
         }
-        holder.tv1.setText(ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(position).categoryName +
-        "\n" + ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(position).tabName);
+        //holder.tv1.setText(ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(position).categoryName +
+        //"\n" + ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(position).tabName);
+        holder.tv1.setText(ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(position).categoryName);
         //holder.tv1.setTextColor(Color.RED);
         holder.itemView.setOnClickListener(clickListener);
         holder.itemView.setTag(holder);

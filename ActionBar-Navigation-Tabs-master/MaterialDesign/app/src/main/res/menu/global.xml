@@ -8,6 +8,6 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/otherfinding"
-        android:title="新建项目"
+        android:title="新增问题"
         app:showAsAction="ifRoom" />
 </menu>

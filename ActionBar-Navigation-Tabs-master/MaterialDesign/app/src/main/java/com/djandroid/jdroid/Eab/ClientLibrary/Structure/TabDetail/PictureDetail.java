@@ -8,5 +8,6 @@ public class PictureDetail {
     public String pictureExplanation;
     public String pictureConsequence; //缺陷后果
     public String pictureSuggestion;  //解决建议
+    public String pictureAddress;
     public ViolationLevel pictureViolation = ViolationLevel.None;
 }
