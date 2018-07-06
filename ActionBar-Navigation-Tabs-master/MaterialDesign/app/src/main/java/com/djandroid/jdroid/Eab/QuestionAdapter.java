@@ -64,11 +64,11 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         holder.commentlistener.updatePosition(holder.getAdapterPosition(),holder.textcomment);
         holder.textcomment.setText(questions.get(holder.getAdapterPosition()).comment);
         if(readfromlocal.containsKey(questions.get(holder.getAdapterPosition()).itemid)) {
-            if(!readfromlocal.get(questions.get(holder.getAdapterPosition()).itemid).goodPictureList.isEmpty())
+            if(null != readfromlocal.get(questions.get(holder.getAdapterPosition()).itemid).goodPictureList && !readfromlocal.get(questions.get(holder.getAdapterPosition()).itemid).goodPictureList.isEmpty())
                 holder.goodpicnum.setText("√照片" + readfromlocal.get(questions.get(holder.getAdapterPosition()).itemid).goodPictureList.size() + "张");
             else
                 holder.goodpicnum.setText("√照片"+"0张");
-            if(!readfromlocal.get(questions.get(holder.getAdapterPosition()).itemid).badPictureList.isEmpty())
+            if(null != readfromlocal.get(questions.get(holder.getAdapterPosition()).itemid).badPictureList && !readfromlocal.get(questions.get(holder.getAdapterPosition()).itemid).badPictureList.isEmpty())
                 holder.badpicnum.setText("×照片"+readfromlocal.get(questions.get(holder.getAdapterPosition()).itemid).badPictureList.size() + "张");
             else
                 holder.badpicnum.setText("×照片" + "0张");

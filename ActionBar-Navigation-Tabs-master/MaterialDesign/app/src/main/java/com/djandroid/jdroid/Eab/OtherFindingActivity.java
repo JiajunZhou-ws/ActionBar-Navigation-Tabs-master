@@ -59,6 +59,8 @@ public class OtherFindingActivity extends ActionBarActivity {
                         questiontemp.description = "";
                     questiontemp.checkedId = 0;
                     temp.scoreType = ScoreType.None;
+                    temp.goodPictureList = null;
+                    temp.badPictureList = null;
                     QuestionActivity.questions.add(questiontemp);
                     QuestionActivity.readfromlocal.put(questiontemp.itemid,temp);
                     ProjectDetailActivity.taskdetailresponse.taskCategoryList.get(ProjectItemActivity.categorypotion).taskItemList.add(temp);
